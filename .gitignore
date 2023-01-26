@@ -111,3 +111,6 @@ readme
 src/service/bck
 
 _build/
+_package.json
+info.txt
+readme
