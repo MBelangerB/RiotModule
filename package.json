@@ -1,26 +1,27 @@
 {
-  "name": "@bedy/riot",
+  "name": "bedyriot",
   "version": "1.0.0",
   "description": "Bedy - Module for call Riot service and obtains information",
   "main": "build/index.js",
+  "types": "./build/index.d.ts",
   "scripts": {
     "compile": "npx tsc",
     "start:dev": "npx nodemon",
     "start:prod": "npm run build && node build/index.js",
     "build": "rimraf ./build && tsc",
-    "pack": "npm run build && npm pack --dry-run",
+    "pack": "npm run build && npm pack",
     "preview": "npx npm-packlist",
-    "publish": "npm run build && npm publish",
-    "patch": "npm run build && npm version patch && npm publish",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "files": [
+    "/build"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/MBelangerB/RiotModule.git"
   },
   "author": "Bedy90",
   "license": "ISC",
-  "types": "./build/index.d.ts",
   "bugs": {
     "url": "https://github.com/MBelangerB/RiotModule/issues"
   },

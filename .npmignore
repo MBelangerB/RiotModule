@@ -1,0 +1,6 @@
+node_modules
+src
+_build
+tsconfig.json
+README.md
+*.tgz

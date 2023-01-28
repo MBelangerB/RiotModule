@@ -1,9 +1,10 @@
 
-import { ValidationService } from "./ValidationService";
-import EnvVars from "../Declaration/major/EnVars";
-import { RiotGameType } from "../Declaration/enum";
 import { AxiosError } from "axios";
-import { RequestService } from "./bck/RequestService";
+import EnvVars from "../declaration/major/EnvVars";
+import { RiotGameType } from "../declaration/enum";
+import { ValidationService } from "./ValidationService";
+import { RequestService } from "./RequestService";
+import { ISummonerDTO } from "../entity/Summoner-v4/SummonerDTO";
 
 // **** Variables **** //
 
@@ -23,13 +24,13 @@ export abstract class RiotService {
      * @returns
      * @throws Error params is invalid
      */
-    static async getRiotSummonerByName(summonerName: string, region: string) {
+    static async getRiotSummonerByName(summonerName: string, region: string) : Promise<ISummonerDTO> {
         const realRegion = ValidationService.convertToRealRegion(region);
         const summonerUrl = EnvVars.routes.summoner.v4.getBySummonerName.replace('{summonerName}', summonerName).replace('{region}', realRegion);
 
-        let returnValue;
-        // TODO: Cache for Riot Info
-        await RequestService.callRiotAPI(summonerUrl, RiotGameType.LeagueOfLegend).then((result) => {
+        let returnValue!: ISummonerDTO;
+
+        await RequestService.callRiotAPI<ISummonerDTO>(summonerUrl, RiotGameType.LeagueOfLegend).then((result) => {
             returnValue = result;
         }).catch((err) => {
             console.error(exports.RiotServiceLocalization.errInFunction('getRiotSummonerByName'));

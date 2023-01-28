@@ -1,6 +1,7 @@
-import dotenv from 'dotenv';
 import { RiotGameType } from '../enum';
-dotenv.config();
+
+// import dotenv from 'dotenv';
+// dotenv.config();
 
 export default {
     nodeEnv: (process.env.NODE_ENV ?? 'development'),
