@@ -38,5 +38,5 @@ export interface IChampionMasteryDTO {
 }
 
 export class ChampionMasteryDTO {
-    championMasteries!: Array<IChampionMasteryDTO>;
+    championMasteries: Array<IChampionMasteryDTO> = new Array<IChampionMasteryDTO>;
 }

@@ -93,10 +93,12 @@ export abstract class RiotService {
         const realRegion = ValidationService.convertToRealRegion(region);
         const masteriesUrl = EnvVars.routes.championMastery.v4.getChampionMasteriesBySummoner.replace('{encryptedSummonerId}', encryptedSummonerId).replace('{region}', realRegion);
 
-        let returnValue!: ChampionMasteryDTO; // Array<IChampionMasteryDTO>;
+        let returnValue: ChampionMasteryDTO = new ChampionMasteryDTO();
 
         await RequestService.callRiotAPI<Array<IChampionMasteryDTO>>(masteriesUrl, RiotGameType.LeagueOfLegend).then((result) => {
-            // returnValue.championMasteries = new Array<IChampionMasteryDTO>();
+            if (returnValue != null && returnValue.championMasteries == null) { 
+                returnValue.championMasteries= new Array<IChampionMasteryDTO>();
+            }
             returnValue.championMasteries = result;
 
         }).catch((err) => {
