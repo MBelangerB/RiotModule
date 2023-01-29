@@ -87,7 +87,7 @@ export default {
         switch (gameMode) {
             case RiotGameType.TeamFightTactic:
                 if (this.nodeEnv.toLocaleLowerCase() == "development") {
-                    token = this.riot.tftToken ?? this.riot.apiToken;
+                    token = this.riot.tftToken || this.riot.apiToken;
                 }
                 else {
                     token = this.riot.tftToken;
@@ -95,7 +95,7 @@ export default {
                 break;
             case RiotGameType.LeagueOfLegend:
                 if (this.nodeEnv.toLocaleLowerCase() == "development") {
-                    token = this.riot.leagueToken ?? this.riot.apiToken;
+                    token = this.riot.leagueToken || this.riot.apiToken;
                 }
                 else {
                     token = this.riot.leagueToken;

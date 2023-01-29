@@ -1,75 +1,40 @@
 import { RiotService } from "./service/RiotService";
 import { ValidationService } from "./service/ValidationService";
-import { ISummonerDTO, SummonerDTO } from "./entity/Summoner-v4/SummonerDTO";
-import { ILeagueEntryDTO } from "./entity/League-v4/LeagueEntryDTO";
 import { RiotGameType } from './declaration/enum';
-import { RegionData } from "./declaration/types";
-import EnvVars from "./declaration/major/EnvVars";
+import { RiotHttpStatusCode } from './declaration/RiotHttpStatusCode';
 
-// module.exports.default = {
-//     RiotService, RiotGameType
-// }
+// Export Declaraions pour import via { }
+export { RiotHttpStatusCode } from './declaration/RiotHttpStatusCode';
+export { RiotGameType } from './declaration/enum';
 
-// export abstract class BedyApi {
-//     ISummonerDTO: ISummonerDTO
-// }
-
-// module.exports.entity {
-//     ISummonerDTO, ILeagueEntryDTO
-// } 
-
-// module.exports = {
-//     RiotGameType,
-//     // ISummonerDTO
-//     //RiotService, RiotGameType
-// }
-
-// module.exports = {
-//     ISummonerDTO, ILeagueEntryDTO
-// }
-
-// export * from './declaration/major/EnvVars';
-
+// Export DTO pour import via { }
 export { ISummonerDTO } from "./entity/Summoner-v4/SummonerDTO";
+export { IChampionInfo } from "./entity/Champion-v3/ChampionInfo";
+export { ChampionMasteryDTO, IChampionMasteryDTO } from "./entity/ChampionMasteries-v4/ChampionMasteryDTO";
+export { ILeagueEntryDTO } from "./entity/League-v4/LeagueEntryDTO";
+
+// Export Service pour import via { }
 export { RiotService } from "./service/RiotService";
+export { ValidationService } from "./service/ValidationService";
 
-// export { ValidationService } from "./service/ValidationService";
-
-// OK ?
-// export {
-//     ILeagueEntryDTO
-//     // RiotService, ISummonerDTO, ILeagueEntryDTO
-// }
 
 // FORMAT CONST (OK) : exports.default = {
+/*
+    Accessible via BedyRiot dans import tel que
+        import BedyRiot from 'bedyriot';
+*/
 export default {
     RiotService,
     ValidationService,
     RiotGameType,
-    SummonerDTO
-    // ISummonerDTO
+    RiotHttpStatusCode
 } as const;
 
-// // FORMAT (OK): module.exports = { 
+
+// FORMAT (OK): module.exports = { 
 module.exports = {
-    // ISummonerDTO,
     RiotService: RiotService,
-    // ValidationService,
-    SummonerDTO: SummonerDTO
+    ValidationService: ValidationService,
+    RiotGameType: RiotGameType,
+    RiotHttpStatusCode: RiotHttpStatusCode
 }
-
-// // Format Export : OK ?
-export {
-    // RegionData,
-    SummonerDTO, 
-    // ISummonerDTO
-}
-
-
-
-// export const BedyApi = {
-//     RiotService
-// }
-
-// export.default => service
-// module.exports => service et class DTO

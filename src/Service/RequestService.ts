@@ -19,6 +19,7 @@ export abstract class RequestService {
       * @param responseType
       * @returns
       */
+     
     /* eslint-disable @typescript-eslint/no-explicit-any */
     static async callRiotAPI<T>(requestUrl: string, gameType: RiotGameType, responseType : ResponseType = 'json') : Promise<T> {
         const token = EnvVars.getToken(gameType);

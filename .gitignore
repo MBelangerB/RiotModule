@@ -114,3 +114,5 @@ _build/
 _package.json
 info.txt
 readme
+
+package copy**.json

@@ -10,7 +10,7 @@ export interface ISummonerDTO {
     /**
      * Date summoner was last modified specified as epoch milliseconds. The following events will update this timestamp: profile icon change, playing the tutorial or advanced tutorial, finishing a game, summoner name change
      */
-    revisionDate: number;
+    revisionDate?: number;
     /**
      * Summoner name.
      */
@@ -28,12 +28,13 @@ export interface ISummonerDTO {
      */
     summonerLevel: number;
 }
-export declare class SummonerDTO implements ISummonerDTO {
-    accountId: string;
-    profileIconId: number;
-    revisionDate: number;
-    name: string;
-    id: string;
-    puuid: string;
-    summonerLevel: number;
-}
+
+// export declare class SummonerDTO implements ISummonerDTO {
+//     accountId: string;
+//     profileIconId: number;
+//     revisionDate: number;
+//     name: string;
+//     id: string;
+//     puuid: string;
+//     summonerLevel: number;
+// }

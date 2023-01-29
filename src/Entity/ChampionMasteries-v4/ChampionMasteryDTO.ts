@@ -36,3 +36,7 @@ export interface IChampionMasteryDTO {
      */
     tokensEarned: number;
 }
+
+export class ChampionMasteryDTO {
+    championMasteries!: Array<IChampionMasteryDTO>;
+}

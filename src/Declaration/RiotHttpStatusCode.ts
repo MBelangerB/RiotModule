@@ -7,7 +7,7 @@
  * Hypertext Transfer Protocol (HTTP) response status codes.
  * @see {@link https://en.wikipedia.org/wiki/List_of_HTTP_status_codes}
  */
-enum RiotHttpStatusCode {
+export enum RiotHttpStatusCode {
     /**
      * Standard response for successful HTTP requests.
      * The actual response will depend on the request method used.
