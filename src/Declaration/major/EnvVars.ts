@@ -32,7 +32,8 @@ export default {
         championMastery: {
             v4: {
                 getChampionMasteriesBySummoner: "https://{region}.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-summoner/{encryptedSummonerId}",
-                getChampionMasteriesBySummonerAndChampionId: "https://{region}.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-summoner/{encryptedSummonerId}/by-champion/{championId}"
+                getChampionMasteriesBySummonerAndChampionId: "https://{region}.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-summoner/{encryptedSummonerId}/by-champion/{championId}",
+                getChampionMasteriesBySummonerAndCount: "https://{region}.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-summoner/{encryptedSummonerId}/top",
             }
         },
         champion: {
