@@ -18,145 +18,57 @@ export const RiotLocalization = {
     errInFunction: (functionName: string) => `An error occured in 'RiotService.${functionName}'.`,
 } as const;
 
-// **** Class  **** //
-export abstract class RiotService {
-
-    static SummonerV4: SummonerV4;
-    static ChampionMasteryV4: ChampionMasteryV4;
-    static ChampionV3: ChampionV3;
-    static LeagueV4: LeagueV4;
-
-    // /**
-    //  * Return a @type {ISummonerDTO}
-    //  * @param summonerName SummonerName
-    //  * @param region Region
-    //  * @returns  {ISummonerDTO}
-    //  * @throws Error params is invalid
-    //  */
-    // static async getRiotSummonerByName(summonerName: string, region: string): Promise<ISummonerDTO> {
-    //     const realRegion = ValidationService.convertToRealRegion(region);
-    //     const summonerUrl = EnvVars.routes.summoner.v4.getBySummonerName.replace('{summonerName}', summonerName).replace('{region}', realRegion);
-
-    //     let returnValue!: ISummonerDTO;
-
-    //     await RequestService.callRiotAPI<ISummonerDTO>(summonerUrl, RiotGameType.LeagueOfLegend).then((result) => {
-    //         returnValue = result;
-    //     }).catch((err) => {
-    //         console.error(exports.RiotServiceLocalization.errInFunction('getRiotSummonerByName'));
-    //         if (err instanceof AxiosError) {
-    //             console.error(err.message);
-    //         }
-    //         else if (err.response && err.response.data) {
-    //             console.error(err.response.data);
-    //         }
-    //         else {
-    //             console.error(err);
-    //         }
-    //         throw err;
-    //     });
-
-    //     return returnValue;
-    // }
-
-    // /**
-    //  * Return a @type {IChampionInfo}
-    //  * @param region 
-    //  * @returns  {IChampionInfo}
-    //  */
-    // static async getRiotRotate(region: string): Promise<IChampionInfo> {
-    //     const realRegion = ValidationService.convertToRealRegion(region);
-    //     const championRotateUrl = EnvVars.routes.champion.v3.championRotation.replace('{region}', realRegion);
-
-    //     let returnValue!: IChampionInfo;
-
-    //     await RequestService.callRiotAPI<IChampionInfo>(championRotateUrl, RiotGameType.LeagueOfLegend).then((result) => {
-    //         returnValue = result;
-    //     }).catch((err) => {
-    //         console.error(exports.RiotServiceLocalization.errInFunction('getRiotRotate'));
-    //         if (err instanceof AxiosError) {
-    //             console.error(err.message);
-    //         }
-    //         else if (err.response && err.response.data) {
-    //             console.error(err.response.data);
-    //         }
-    //         else {
-    //             console.error(err);
-    //         }
-    //         throw err;
-    //     });
-
-    //     return returnValue;
-    // }
-
-    // /**
-    //  * Return a @type {ChampionMasteryDTO} contains a array of @type {IChampionMasteryDTO}
-    //  * @param encryptedSummonerId 
-    //  * @param region 
-    //  * @returns {ChampionMasteryDTO}
-    //  */
-    // static async getSummonerChampionMasteries(encryptedSummonerId: string, region: string): Promise<ChampionMasteryDTO> {
-    //     const realRegion = ValidationService.convertToRealRegion(region);
-    //     const masteriesUrl = EnvVars.routes.championMastery.v4.getChampionMasteriesBySummoner.replace('{encryptedSummonerId}', encryptedSummonerId).replace('{region}', realRegion);
-
-    //     let returnValue: ChampionMasteryDTO = new ChampionMasteryDTO();
-
-    //     await RequestService.callRiotAPI<Array<IChampionMasteryDTO>>(masteriesUrl, RiotGameType.LeagueOfLegend).then((result) => {
-    //         if (returnValue != null && returnValue.championMasteries == null) {
-    //             returnValue.championMasteries = new Array<IChampionMasteryDTO>();
-    //         }
-    //         returnValue.championMasteries = result;
-
-    //     }).catch((err) => {
-    //         console.error(exports.RiotServiceLocalization.errInFunction('getRiotRotate'));
-    //         if (err instanceof AxiosError) {
-    //             console.error(err.message);
-    //         }
-    //         else if (err.response && err.response.data) {
-    //             console.error(err.response.data);
-    //         }
-    //         else {
-    //             console.error(err);
-    //         }
-    //         throw err;
-    //     });
-
-    //     return returnValue;
-    // }
-
-    // /**
-    //  * Return a @type {ILeagueEntryDTO}
-    //  * @param encryptedSummonerId 
-    //  * @param region 
-    //  * @returns 
-    //  */
-    // static async getRiotSummonerRank(encryptedSummonerId: string, region: string): Promise<Array<ILeagueEntryDTO>> {
-    //     const realRegion = ValidationService.convertToRealRegion(region);
-    //     const masteriesUrl = EnvVars.routes.league.v4.getLeagueEntriesForSummoner.replace('{encryptedSummonerId}', encryptedSummonerId).replace('{region}', realRegion);
-
-    //     let returnValue!: Array<ILeagueEntryDTO>;
-
-    //     await RequestService.callRiotAPI<Array<ILeagueEntryDTO>>(masteriesUrl, RiotGameType.LeagueOfLegend).then((result) => {
-    //         returnValue = result;
-
-    //     }).catch((err) => {
-    //         console.error(exports.RiotServiceLocalization.errInFunction('getRiotRotate'));
-    //         if (err instanceof AxiosError) {
-    //             console.error(err.message);
-    //         }
-    //         else if (err.response && err.response.data) {
-    //             console.error(err.response.data);
-    //         }
-    //         else {
-    //             console.error(err);
-    //         }
-    //         throw err;
-    //     });
-
-    //     return returnValue;
-    // }
+export interface IRiotService {
+    SummonerV4: SummonerV4;
+    ChampionMasteryV4: ChampionMasteryV4;
+    ChampionV3: ChampionV3;
+    LeagueV4: LeagueV4;
 }
 
+// https://bobbyhadz.com/blog/typescript-property-does-not-exist-on-type#:~:text=The%20%22Property%20does%20not%20exist,type%20with%20variable%20key%20names.&text=Copied!
+
+// **** Class  **** //
+export class RiotService implements IRiotService {
+    SummonerV4: SummonerV4 = new SummonerV4;
+    ChampionMasteryV4: ChampionMasteryV4 = new ChampionMasteryV4;
+    ChampionV3: ChampionV3 = new ChampionV3;
+    LeagueV4: LeagueV4 = new LeagueV4;
+}
+
+
 export class SummonerV4 {
+
+    /**
+ * Return a summoner
+ * @param summonerName SummonerName
+ * @param region Region
+ * @returns  {ISummonerDTO}
+ * @throws Error params is invalid
+ */
+    static async getBySummonerNameA(summonerName: string, region: string): Promise<ISummonerDTO> {
+        const realRegion = ValidationService.convertToRealRegion(region);
+        const summonerUrl = EnvVars.routes.summoner.v4.getBySummonerName.replace('{summonerName}', summonerName).replace('{region}', realRegion);
+
+        let returnValue!: ISummonerDTO;
+
+        await RequestService.callRiotAPI<ISummonerDTO>(summonerUrl, RiotGameType.LeagueOfLegend).then((result) => {
+            returnValue = result;
+        }).catch((err) => {
+            console.error(exports.RiotServiceLocalization.errInFunction('getSummonerBySummonerName'));
+            if (err instanceof AxiosError) {
+                console.error(err.message);
+            }
+            else if (err.response && err.response.data) {
+                console.error(err.response.data);
+            }
+            else {
+                console.error(err);
+            }
+            throw err;
+        });
+
+        return returnValue;
+    }
 
     /**
     * Return a summoner
@@ -194,7 +106,7 @@ export class SummonerV4 {
      * Return a summoner
      * @param puuid Summoner puuid
      * @param region Region
-     * @returns  {ISummonerDTO}
+     * @returns {ISummonerDTO}
      * @throws Error params is invalid
      */
     async getByPuuid(puuid: string, region: string): Promise<ISummonerDTO> {
@@ -230,7 +142,7 @@ export class ChampionMasteryV4 {
      * @param region 
      * @returns {ChampionMasteryDTO}
      */
-     async getByEncryptedSummonerId(encryptedSummonerId: string, region: string): Promise<ChampionMasteryDTO> {
+    async getByEncryptedSummonerId(encryptedSummonerId: string, region: string): Promise<ChampionMasteryDTO> {
         const realRegion = ValidationService.convertToRealRegion(region);
         const masteriesUrl = EnvVars.routes.championMastery.v4.getChampionMasteriesBySummoner.replace('{encryptedSummonerId}', encryptedSummonerId).replace('{region}', realRegion);
 
@@ -266,7 +178,7 @@ export class ChampionV3 {
      * @param region 
      * @returns  {IChampionInfo}
      */
-     static async getChampionRotations(region: string): Promise<IChampionInfo> {
+    async getChampionRotations(region: string): Promise<IChampionInfo> {
         const realRegion = ValidationService.convertToRealRegion(region);
         const championRotateUrl = EnvVars.routes.champion.v3.championRotation.replace('{region}', realRegion);
 
@@ -299,7 +211,7 @@ export class LeagueV4 {
      * @param region 
      * @returns 
      */
-     static async getLeagueEntriesByEncryptedSummonerId(encryptedSummonerId: string, region: string): Promise<Array<ILeagueEntryDTO>> {
+    async getLeagueEntriesByEncryptedSummonerId(encryptedSummonerId: string, region: string): Promise<Array<ILeagueEntryDTO>> {
         const realRegion = ValidationService.convertToRealRegion(region);
         const masteriesUrl = EnvVars.routes.league.v4.getLeagueEntriesForSummoner.replace('{encryptedSummonerId}', encryptedSummonerId).replace('{region}', realRegion);
 
@@ -333,8 +245,4 @@ export class LeagueV4 {
 export default {
     RiotLocalization,
     RiotService,
-    SummonerV4,
-    ChampionMasteryV4,
-    ChampionV3,
-    LeagueV4
 } as const;

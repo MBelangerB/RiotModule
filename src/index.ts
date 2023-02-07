@@ -14,9 +14,8 @@ export { ChampionMasteryDTO, IChampionMasteryDTO } from "./entity/ChampionMaster
 export { ILeagueEntryDTO } from "./entity/League-v4/LeagueEntryDTO";
 
 // Export Service pour import via { }
-export { RiotService } from "./service/RiotService";
+export { RiotService, ChampionV3, ChampionMasteryV4,LeagueV4,SummonerV4 } from "./service/RiotService";
 export { ValidationService } from "./service/ValidationService";
-
 
 // FORMAT CONST (OK) : exports.default = {
 /*
