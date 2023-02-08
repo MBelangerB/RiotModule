@@ -2,9 +2,14 @@
 
 A simple library to communicate with Riot's League of Legend API.
 
-
 ## Prerequisites
-This is an example of how to list things you need to use the software and how to install them.
+To use this library you will need an API key to access the Riot API.
+
+To get this key you need to make a request to Riot.
+
+[Riot Developer Portal](https://developer.riotgames.com)
+
+
 
 ## Features
 - Request helpers (caching) [TODO]
@@ -35,7 +40,7 @@ In developpement `Riot_APIDevKey`
 
 ## Exemple
 
-```typescript
+```ts
 import { RiotService, ValidationService, RiotHttpStatusCode} from 'bedyriot';
 
 # Initialize 'RiotService'
