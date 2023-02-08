@@ -38,6 +38,16 @@ To run this project, you will need to add the following environment variables to
 
 In developpement `Riot_APIDevKey`
 
+#### .env Exemple
+```bash
+# Production Mode
+Riot_LolToken='RGAPI-'
+Riot_TftToken='RGAPI-'
+
+# Developper Mode
+Riot_APIDevKey='RGAPI-'
+```
+
 ## Exemple
 
 ```ts
