@@ -12,8 +12,8 @@ export default {
         apiToken: (process.env.Riot_APIDevKey ?? ""),
     },
     cache: {
-        enabled: false
-      },
+        enabled: (process.env.CacheEnabled ?? true),
+    },
     routes: {
         v2: {
             liveGame: {
