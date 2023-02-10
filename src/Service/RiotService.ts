@@ -59,22 +59,7 @@ export class SummonerV4 {
             if (cacheValue != undefined) {
                 return cacheValue;
             }
-            // if (cacheValue instanceof SummonerDTO) {
-            //     return cacheValue;
-            // }
         }
-
-        // try {
-        //     if (EnvVars.cache.enabled) {
-        //         let cacheValue: ISummonerDTO = CacheService.getInstance().getCache<ISummonerDTO>(cacheName);
-        //         return cacheValue;
-        //     }
-        // }
-        // catch (ex: any) {
-        //     if (ex instanceof NoDataException) {
-        //         console.log(ex.toString());
-        //     }
-        // }
 
         await RequestService.callRiotAPI<ISummonerDTO>(summonerUrl, RiotGameType.LeagueOfLegend).then((result) => {
             returnValue = result;
@@ -118,17 +103,6 @@ export class SummonerV4 {
                 return cacheValue;
             }
         }
-        // try {
-        //     if (EnvVars.cache.enabled) {
-        //         let cacheValue: SummonerDTO = CacheService.getInstance().getCache<SummonerDTO>(cacheName);
-        //         return cacheValue;
-        //     }
-        // }
-        // catch (ex: any) {
-        //     if (ex instanceof NoDataException) {
-        //         console.log(ex.toString());
-        //     }
-        // }
 
         await RequestService.callRiotAPI<ISummonerDTO>(summonerUrl, RiotGameType.LeagueOfLegend).then((result) => {
             returnValue = result;
@@ -166,9 +140,7 @@ export class ChampionMasteryV4 {
         const realRegion = ValidationService.convertToRealRegion(region);
         const masteriesUrl = EnvVars.routes.championMastery.v4.getChampionMasteriesBySummoner.replace('{encryptedSummonerId}', encryptedSummonerId).replace('{region}', realRegion);
 
-        // ! => Array<IChampionMasteryDTO>
-        let returnValue: Array<IChampionMasteryDTO> = Array<IChampionMasteryDTO>(); // ChampionMasteryDTO = new ChampionMasteryDTO();
-        // Array<IChampionMasteryDTO>
+        let returnValue: Array<IChampionMasteryDTO> = Array<IChampionMasteryDTO>();
 
         const cacheName = CacheName.LEAGUE_MASTERIES.replace('{0}', realRegion).replace('{1}', encryptedSummonerId);
         if (EnvVars.cache.enabled) {
@@ -179,10 +151,6 @@ export class ChampionMasteryV4 {
         }
 
         await RequestService.callRiotAPI<Array<IChampionMasteryDTO>>(masteriesUrl, RiotGameType.LeagueOfLegend).then((result) => {
-            // if (returnValue != null && returnValue.championMasteries == null) {
-            //     returnValue.championMasteries = new Array<IChampionMasteryDTO>();
-            // }
-            // returnValue.championMasteries = result;
             returnValue = result;
 
         }).catch((err) => {
@@ -227,17 +195,6 @@ export class ChampionV3 {
                 return cacheValue;
             }
         }
-        // try {
-        //     if (EnvVars.cache.enabled) {
-        //         let cacheValue: IChampionInfo = CacheService.getInstance().getCache<IChampionInfo>(cacheName);
-        //         return cacheValue;
-        //     }
-        // }
-        // catch (ex: any) {
-        //     if (ex instanceof NoDataException) {
-        //         console.log(ex.toString());
-        //     }
-        // }
 
         await RequestService.callRiotAPI<IChampionInfo>(championRotateUrl, RiotGameType.LeagueOfLegend).then((result) => {
             returnValue = result;
@@ -284,19 +241,6 @@ export class LeagueV4 {
                 return cacheValue;
             }
         }
-
-        // try {
-        //     if (EnvVars.cache.enabled) {
-        //         let cacheValue: Array<ILeagueEntryDTO> = CacheService.getInstance().getCache<Array<ILeagueEntryDTO>>(cacheName);
-        //         return cacheValue;
-        //     }
-        // }
-        // catch (ex: any) {
-        //     if (ex instanceof NoDataException) {
-        //         console.log(ex.toString());
-        //     }
-        // }
-
 
         await RequestService.callRiotAPI<Array<ILeagueEntryDTO>>(masteriesUrl, RiotGameType.LeagueOfLegend).then((result) => {
             returnValue = result;
