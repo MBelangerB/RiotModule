@@ -2,6 +2,7 @@ import NodeCache = require("node-cache");
 import { NoDataException } from "../declaration/exception/NoDataException";
 
 // https://www.npmjs.com/package/node-cache
+// https://losikov.medium.com/part-7-internal-caching-in-node-js-3f18411bcf2
 
 // **** Variables **** //
 
@@ -40,6 +41,7 @@ export const CacheName = {
  * Cache timer in seconds
  */
 export const CacheTimer = {
+    DEFAULT: 300,
     /**
      * Default rotate time is 10 min
      */
@@ -59,14 +61,28 @@ export const CacheTimer = {
 }
 
 // **** Class  **** //
-export class CacheService<T> {
-    myCache: NodeCache;
-    ttlSeconds: number;
+export class CacheService { // <T> {
+    private static _instance: CacheService;
 
-    constructor(ttlSeconds: number) {
+    private myCache: NodeCache;
+    private ttlSeconds: number;
+
+    private constructor(ttlSeconds: number = CacheTimer.DEFAULT) {
         this.ttlSeconds = ttlSeconds;
         this.myCache = new NodeCache({ stdTTL: ttlSeconds, checkperiod: ttlSeconds * 0.2, useClones: false });
     }
+    
+    /**
+     * Return the current instance on the cache or initialize it
+     * @param ttlSeconds 
+     * @returns 
+     */
+    public static getInstance(ttlSeconds: number = CacheTimer.DEFAULT): CacheService {
+        if (!CacheService._instance) {
+            CacheService._instance = new CacheService(ttlSeconds);
+        }
+        return CacheService._instance;
+      }
 
     /**
      * Check if there is any data associated with the KeyName.
@@ -92,9 +108,9 @@ export class CacheService<T> {
      * @param ttlSeconds {optional} 
      * @returns 
      */
-    setCache(keyName: string, value: T, ttlSeconds: number = -1): boolean {
+    setCache<T>(keyName: string, value: T, ttlSeconds: number = -1) : boolean {
         let success: boolean = false;
-        if (ttlSeconds == null || ttlSeconds <= 0) {
+        if (ttlSeconds == null || ttlSeconds >= 0) {
             success = this.myCache.set(keyName, value, ttlSeconds);
         } else {
             success = this.myCache.set(keyName, value);
@@ -109,12 +125,12 @@ export class CacheService<T> {
      * @returns 
      * @throw {NoDataException} if no data
      */
-    getCache(keyName: string): T {
+    getCache<T>(keyName: string): T {
         let value: any = this.myCache.get(keyName);
         if (value == undefined) {
             throw new NoDataException("No data for this key.", keyName);
         }
-
+        console.log(`Success to get catch : ${keyName}`);
         return value;
     }
 
@@ -124,7 +140,9 @@ export class CacheService<T> {
      * @returns 
      * @throw {NoDataException} if no data
      */
-    async getCacheAsync(keyName: string): Promise<T> {
+    async getCacheAsync<T>(keyName: string): Promise<T> {
+        console.log(`Try get async catch : ${keyName}`);
+
         let cacheCopy: NodeCache = this.myCache;
         const getCacheData = new Promise<T>(function (resolve, reject) {
             const value: any = cacheCopy.get(keyName);
@@ -137,6 +155,7 @@ export class CacheService<T> {
 
         return Promise.resolve(getCacheData);
     }
+
 
     /**
      * Remove the data associated with the KeyName from the cache.
@@ -175,3 +194,5 @@ export default {
     CacheTimer,
     CacheService,
 } as const;
+
+// export default CacheService.getInstance();

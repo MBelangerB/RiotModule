@@ -7,6 +7,10 @@ export class NoDataException extends Error {
       this.name = "NoDataException"; // (2)
       this.keyName = keyName;
     }
+
+    public toString = () : string => {
+      return `No data in cache for key : (${this.keyName})`;
+    }
   }
 
 
