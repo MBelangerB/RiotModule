@@ -6,10 +6,9 @@ import { ValidationService } from "./ValidationService";
 import { RequestService } from "./RequestService";
 import { ISummonerDTO } from "../entity/Summoner-v4/SummonerDTO";
 import { IChampionInfo } from "../entity/Champion-v3/ChampionInfo";
-import { ChampionMasteryDTO, IChampionMasteryDTO } from "../entity/ChampionMasteries-v4/ChampionMasteryDTO";
+import { IChampionMasteryDTO } from "../entity/ChampionMasteries-v4/ChampionMasteryDTO";
 import { ILeagueEntryDTO } from "../entity/League-v4/LeagueEntryDTO";
 import { CacheService, CacheTimer, CacheName } from "./CacheService";
-import { NoDataException } from "../declaration/exception/NoDataException";
 
 // **** Variables **** //
 // TEst : Htetkokolij
@@ -36,6 +35,7 @@ export class RiotService implements IRiotService {
     ChampionV3: ChampionV3 = new ChampionV3;
     LeagueV4: LeagueV4 = new LeagueV4;
 }
+// TODO: Replace AWAIT RequestService.callRiotAPI by Promise < resolve, reject >
 
 
 export class SummonerV4 {
@@ -44,7 +44,7 @@ export class SummonerV4 {
     * Return a summoner
     * @param summonerName SummonerName
     * @param region Region
-    * @returns  {ISummonerDTO}
+    * @returns {ISummonerDTO}
     * @throws Error params is invalid
     */
     async getBySummonerName(summonerName: string, region: string): Promise<ISummonerDTO> {
@@ -54,22 +54,32 @@ export class SummonerV4 {
         let returnValue!: ISummonerDTO;
 
         const cacheName = CacheName.LEAGUE_SUMMONER.replace('{0}', realRegion).replace('{1}', summonerName);
-        try {
-            if (EnvVars.cache.enabled) {   
-                let cacheValue: ISummonerDTO = CacheService.getInstance().getCache<ISummonerDTO>(cacheName);
+        if (EnvVars.cache.enabled) {
+            const cacheValue: ISummonerDTO | undefined = CacheService.getInstance().getCache<ISummonerDTO>(cacheName);
+            if (cacheValue != undefined) {
                 return cacheValue;
             }
+            // if (cacheValue instanceof SummonerDTO) {
+            //     return cacheValue;
+            // }
         }
-        catch (ex: any) {
-            if (ex instanceof NoDataException) {
-                console.log(ex.toString());
-            }
-        }
+
+        // try {
+        //     if (EnvVars.cache.enabled) {
+        //         let cacheValue: ISummonerDTO = CacheService.getInstance().getCache<ISummonerDTO>(cacheName);
+        //         return cacheValue;
+        //     }
+        // }
+        // catch (ex: any) {
+        //     if (ex instanceof NoDataException) {
+        //         console.log(ex.toString());
+        //     }
+        // }
 
         await RequestService.callRiotAPI<ISummonerDTO>(summonerUrl, RiotGameType.LeagueOfLegend).then((result) => {
             returnValue = result;
         }).catch((err) => {
-            console.error(exports.RiotLocalization.errInFunction('getSummonerBySummonerName'));
+            console.error(exports.RiotLocalization.errInFunction('getBySummonerName'));
             if (err instanceof AxiosError) {
                 console.error(err.message);
             }
@@ -102,22 +112,28 @@ export class SummonerV4 {
 
         let returnValue!: ISummonerDTO;
         const cacheName = CacheName.LEAGUE_SUMMONER.replace('{0}', realRegion).replace('{1}', puuid);
-        try {
-            if (EnvVars.cache.enabled) {
-                let cacheValue: ISummonerDTO = CacheService.getInstance().getCache<ISummonerDTO>(cacheName);
+        if (EnvVars.cache.enabled) {
+            const cacheValue: ISummonerDTO | undefined = CacheService.getInstance().getCache<ISummonerDTO>(cacheName);
+            if (cacheValue != undefined) {
                 return cacheValue;
             }
         }
-        catch (ex: any) {
-            if (ex instanceof NoDataException) {
-                console.log(ex.toString());
-            }
-        }
+        // try {
+        //     if (EnvVars.cache.enabled) {
+        //         let cacheValue: SummonerDTO = CacheService.getInstance().getCache<SummonerDTO>(cacheName);
+        //         return cacheValue;
+        //     }
+        // }
+        // catch (ex: any) {
+        //     if (ex instanceof NoDataException) {
+        //         console.log(ex.toString());
+        //     }
+        // }
 
         await RequestService.callRiotAPI<ISummonerDTO>(summonerUrl, RiotGameType.LeagueOfLegend).then((result) => {
             returnValue = result;
         }).catch((err) => {
-            console.error(exports.RiotLocalization.errInFunction('getSummonerByPuuid'));
+            console.error(exports.RiotLocalization.errInFunction('getByPuuid'));
             if (err instanceof AxiosError) {
                 console.error(err.message);
             }
@@ -141,38 +157,36 @@ export class SummonerV4 {
 export class ChampionMasteryV4 {
 
     /**
-     * Return a @type {ChampionMasteryDTO} contains a array of @type {IChampionMasteryDTO}
+     * Return a @type {Array<IChampionMasteryDTO>} 
      * @param encryptedSummonerId 
      * @param region 
      * @returns {ChampionMasteryDTO}
      */
-    async getByEncryptedSummonerId(encryptedSummonerId: string, region: string): Promise<ChampionMasteryDTO> {
+    async getByEncryptedSummonerId(encryptedSummonerId: string, region: string): Promise<Array<IChampionMasteryDTO>> {
         const realRegion = ValidationService.convertToRealRegion(region);
         const masteriesUrl = EnvVars.routes.championMastery.v4.getChampionMasteriesBySummoner.replace('{encryptedSummonerId}', encryptedSummonerId).replace('{region}', realRegion);
 
-        let returnValue: ChampionMasteryDTO = new ChampionMasteryDTO();
+        // ! => Array<IChampionMasteryDTO>
+        let returnValue: Array<IChampionMasteryDTO> = Array<IChampionMasteryDTO>(); // ChampionMasteryDTO = new ChampionMasteryDTO();
+        // Array<IChampionMasteryDTO>
 
         const cacheName = CacheName.LEAGUE_MASTERIES.replace('{0}', realRegion).replace('{1}', encryptedSummonerId);
-        try {
-            if (EnvVars.cache.enabled) {
-                let cacheValue: ChampionMasteryDTO = CacheService.getInstance().getCache<ChampionMasteryDTO>(cacheName);
+        if (EnvVars.cache.enabled) {
+            const cacheValue: Array<IChampionMasteryDTO> | undefined = CacheService.getInstance().getCache<Array<IChampionMasteryDTO>>(cacheName);
+            if (cacheValue != undefined) {
                 return cacheValue;
-            }
-        }
-        catch (ex: any) {
-            if (ex instanceof NoDataException) {
-                console.log(ex.toString());
             }
         }
 
         await RequestService.callRiotAPI<Array<IChampionMasteryDTO>>(masteriesUrl, RiotGameType.LeagueOfLegend).then((result) => {
-            if (returnValue != null && returnValue.championMasteries == null) {
-                returnValue.championMasteries = new Array<IChampionMasteryDTO>();
-            }
-            returnValue.championMasteries = result;
+            // if (returnValue != null && returnValue.championMasteries == null) {
+            //     returnValue.championMasteries = new Array<IChampionMasteryDTO>();
+            // }
+            // returnValue.championMasteries = result;
+            returnValue = result;
 
         }).catch((err) => {
-            console.error(exports.RiotLocalization.errInFunction('getRiotRotate'));
+            console.error(exports.RiotLocalization.errInFunction('getByEncryptedSummonerId'));
             if (err instanceof AxiosError) {
                 console.error(err.message);
             }
@@ -186,7 +200,7 @@ export class ChampionMasteryV4 {
         });
 
         if (EnvVars.cache.enabled) {
-            CacheService.getInstance().setCache<ChampionMasteryDTO>(cacheName, returnValue, CacheTimer.MASTERIES);
+            CacheService.getInstance().setCache<Array<IChampionMasteryDTO>>(cacheName, returnValue, CacheTimer.MASTERIES);
         }
 
         return returnValue;
@@ -207,22 +221,28 @@ export class ChampionV3 {
         let returnValue!: IChampionInfo;
 
         const cacheName = CacheName.LEAGUE_ROTATE.replace('{0}', realRegion);
-        try {
-            if (EnvVars.cache.enabled) {
-                let cacheValue: IChampionInfo = CacheService.getInstance().getCache<IChampionInfo>(cacheName);
+        if (EnvVars.cache.enabled) {
+            const cacheValue: IChampionInfo | undefined = CacheService.getInstance().getCache<IChampionInfo>(cacheName);
+            if (cacheValue != undefined) {
                 return cacheValue;
             }
         }
-        catch (ex: any) {
-            if (ex instanceof NoDataException) {
-                console.log(ex.toString());
-            }
-        }
+        // try {
+        //     if (EnvVars.cache.enabled) {
+        //         let cacheValue: IChampionInfo = CacheService.getInstance().getCache<IChampionInfo>(cacheName);
+        //         return cacheValue;
+        //     }
+        // }
+        // catch (ex: any) {
+        //     if (ex instanceof NoDataException) {
+        //         console.log(ex.toString());
+        //     }
+        // }
 
         await RequestService.callRiotAPI<IChampionInfo>(championRotateUrl, RiotGameType.LeagueOfLegend).then((result) => {
             returnValue = result;
         }).catch((err) => {
-            console.error(exports.RiotLocalization.errInFunction('getRiotRotate'));
+            console.error(exports.RiotLocalization.errInFunction('getChampionRotations'));
             if (err instanceof AxiosError) {
                 console.error(err.message);
             }
@@ -258,24 +278,31 @@ export class LeagueV4 {
         let returnValue!: Array<ILeagueEntryDTO>;
 
         const cacheName = CacheName.LEAGUE_RANK.replace('{0}', realRegion).replace('{1}', encryptedSummonerId);
-        try {
-            if (EnvVars.cache.enabled) {
-                let cacheValue: Array<ILeagueEntryDTO> = CacheService.getInstance().getCache<Array<ILeagueEntryDTO>>(cacheName);
+        if (EnvVars.cache.enabled) {
+            const cacheValue: Array<ILeagueEntryDTO> | undefined = CacheService.getInstance().getCache<Array<ILeagueEntryDTO>>(cacheName);
+            if (cacheValue != undefined) {
                 return cacheValue;
             }
         }
-        catch (ex: any) {
-            if (ex instanceof NoDataException) {
-                console.log(ex.toString());
-            }
-        }
+
+        // try {
+        //     if (EnvVars.cache.enabled) {
+        //         let cacheValue: Array<ILeagueEntryDTO> = CacheService.getInstance().getCache<Array<ILeagueEntryDTO>>(cacheName);
+        //         return cacheValue;
+        //     }
+        // }
+        // catch (ex: any) {
+        //     if (ex instanceof NoDataException) {
+        //         console.log(ex.toString());
+        //     }
+        // }
 
 
         await RequestService.callRiotAPI<Array<ILeagueEntryDTO>>(masteriesUrl, RiotGameType.LeagueOfLegend).then((result) => {
             returnValue = result;
 
         }).catch((err) => {
-            console.error(exports.RiotLocalization.errInFunction('getRiotRotate'));
+            console.error(exports.RiotLocalization.errInFunction('getLeagueEntriesByEncryptedSummonerId'));
             if (err instanceof AxiosError) {
                 console.error(err.message);
             }

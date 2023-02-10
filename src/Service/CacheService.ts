@@ -11,7 +11,6 @@ export const CacheLocalization = {
     unauth: 'Unauthorized',
 } as const;
 
-
 export const CacheName = {
     /**
      * Params {0} = REGION
@@ -39,8 +38,13 @@ export const CacheName = {
 
 /**
  * Cache timer in seconds
+ * ttl = seconds * minutes * hours
+ * ttl = 60 * 60 * 1; // cache for 1 Hour
  */
 export const CacheTimer = {
+    /**
+     * Default cache timer is 5min
+     */
     DEFAULT: 300,
     /**
      * Default rotate time is 10 min
@@ -61,14 +65,14 @@ export const CacheTimer = {
 }
 
 // **** Class  **** //
-export class CacheService { // <T> {
+export class CacheService {
     private static _instance: CacheService;
 
     private myCache: NodeCache;
-    private ttlSeconds: number;
+    // private ttlSeconds: number;
 
     private constructor(ttlSeconds: number = CacheTimer.DEFAULT) {
-        this.ttlSeconds = ttlSeconds;
+        // this.ttlSeconds = ttlSeconds;
         this.myCache = new NodeCache({ stdTTL: ttlSeconds, checkperiod: ttlSeconds * 0.2, useClones: false });
     }
     
@@ -125,36 +129,44 @@ export class CacheService { // <T> {
      * @returns 
      * @throw {NoDataException} if no data
      */
-    getCache<T>(keyName: string): T {
-        let value: any = this.myCache.get(keyName);
-        if (value == undefined) {
-            throw new NoDataException("No data for this key.", keyName);
-        }
-        console.log(`Success to get catch : ${keyName}`);
-        return value;
+    getCache<T>(keyName: string): T | undefined {
+        if (this.checkIfExists(keyName)) {
+            let value: T | undefined = this.myCache.get(keyName);
+            return value;
+        } 
+        return undefined;
+
+        // let value: any = this.myCache.get(keyName);
+        // if (value == undefined) {
+        //     return undefined;
+        //     // throw new NoDataException("No data for this key.", keyName);
+        // }
+        // console.log(`Success to get catch : ${keyName}`);
+        // return value;
     }
 
-    /**
-     * Get the data associated with the KeyName.
-     * @param keyName 
-     * @returns 
-     * @throw {NoDataException} if no data
-     */
-    async getCacheAsync<T>(keyName: string): Promise<T> {
-        console.log(`Try get async catch : ${keyName}`);
+    // TODO fix if we keep
+    // /**
+    //  * Get the data associated with the KeyName.
+    //  * @param keyName 
+    //  * @returns 
+    //  * @throw {NoDataException} if no data
+    //  */
+    // async getCacheAsync<T>(keyName: string): Promise<T> {
+    //     console.log(`Try get async catch : ${keyName}`);
 
-        let cacheCopy: NodeCache = this.myCache;
-        const getCacheData = new Promise<T>(function (resolve, reject) {
-            const value: any = cacheCopy.get(keyName);
-            if (value == undefined) {
-                reject("No data for this key.");
-            }
+    //     let cacheCopy: NodeCache = this.myCache;
+    //     const getCacheData = new Promise<T>(function (resolve, reject) {
+    //         const value: any = cacheCopy.get(keyName);
+    //         if (value == undefined) {
+    //             reject("No data for this key.");
+    //         }
 
-            resolve(value);
-        });
+    //         resolve(value);
+    //     });
 
-        return Promise.resolve(getCacheData);
-    }
+    //     return Promise.resolve(getCacheData);
+    // }
 
 
     /**
