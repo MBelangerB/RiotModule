@@ -1,4 +1,4 @@
-import { IBannedChampion, IObserver } from "./FeaturedGames";
+import { IBannedChampion, IObserver } from './FeaturedGames';
 export interface ICurrentGameInfo {
     /**
      * The ID of the game

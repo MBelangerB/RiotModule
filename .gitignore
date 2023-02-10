@@ -104,12 +104,4 @@ dist
 # TernJS port file
 .tern-port
 
-# Temp
-_package.json
-info.txt
-src/service/bck
-
-_build/
-_package.json
-
-package copy**.json
+build/

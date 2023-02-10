@@ -9,7 +9,7 @@
 	"parserOptions": {
 		"ecmaVersion": 2022
 	},
-	"ignorePatterns": ["/src/db/**", "/dist/**", "/backup/*", "/test/*"],
+	"ignorePatterns": ["/build/**", "/test/*"],
 	"rules": {
 		"quotes": ["error", "single"],
 		"no-var": "error",

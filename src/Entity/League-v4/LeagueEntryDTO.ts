@@ -1,4 +1,4 @@
-import { IMiniSeriesDTO } from "./LeagueListDTO";
+import { IMiniSeriesDTO } from './LeagueListDTO';
 export interface ILeagueEntryDTO {
     leagueId: string;
     /**

@@ -1,4 +1,4 @@
-import { IPlayerDTO } from "./PlayerDTO";
+import { IPlayerDTO } from './PlayerDTO';
 
 export interface ITeamDTO {
     id: string;

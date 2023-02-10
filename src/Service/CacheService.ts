@@ -1,15 +1,9 @@
-import NodeCache = require("node-cache");
-import { NoDataException } from "../declaration/exception/NoDataException";
+import NodeCache = require('node-cache');
 
 // https://www.npmjs.com/package/node-cache
 // https://losikov.medium.com/part-7-internal-caching-in-node-js-3f18411bcf2
 
 // **** Variables **** //
-
-// Errors
-export const CacheLocalization = {
-    unauth: 'Unauthorized',
-} as const;
 
 export const CacheName = {
     /**
@@ -17,24 +11,28 @@ export const CacheName = {
      */
     LEAGUE_ROTATE: 'leagueRotate-{0}',
     /**
-     * Params 
+     * Params
      *      {0} = REGION
      *      {1} = SUMMONER NAME (or accountId ??)
      */
     LEAGUE_SUMMONER: 'leagueSummoner-{0}-{1}',
     /**
-     * Params 
+     * Params
      *      {0} = REGION
      *      {1} = SUMMONER NAME (or accountId ??)
      */
     LEAGUE_MASTERIES: 'leagueMasteries-{0}-{1}',
     /**
-     * Params 
+     * Params
      *      {0} = REGION
      *      {1} = SUMMONER NAME (or accountId ??)
      */
-    LEAGUE_RANK: 'leagueRank-{0}-{1}'
-}
+    LEAGUE_RANK: 'leagueRank-{0}-{1}',
+    /**
+     * Params {0} = Dragon champion key (Number)
+     */
+    DRAGON_CHAMPION: 'dragonChamp-{0}',
+};
 
 /**
  * Cache timer in seconds
@@ -62,24 +60,27 @@ export const CacheTimer = {
      * Default rank time is 3 min
      */
     RANK: 180,
-}
+    /**
+     * Default dragon time is 24 hours
+     */
+    DRAGON_CHAMPION: (60 * 60 * 24),
+    DRAGON_VERSION: (60 * 60 * 24),
+};
 
 // **** Class  **** //
 export class CacheService {
     private static _instance: CacheService;
 
     private myCache: NodeCache;
-    // private ttlSeconds: number;
 
     private constructor(ttlSeconds: number = CacheTimer.DEFAULT) {
-        // this.ttlSeconds = ttlSeconds;
         this.myCache = new NodeCache({ stdTTL: ttlSeconds, checkperiod: ttlSeconds * 0.2, useClones: false });
     }
-    
+
     /**
      * Return the current instance on the cache or initialize it
-     * @param ttlSeconds 
-     * @returns 
+     * @param ttlSeconds
+     * @returns
      */
     public static getInstance(ttlSeconds: number = CacheTimer.DEFAULT): CacheService {
         if (!CacheService._instance) {
@@ -90,7 +91,7 @@ export class CacheService {
 
     /**
      * Check if there is any data associated with the KeyName.
-     * @param keyName 
+     * @param keyName
      * @returns true if exist
      */
     checkIfExists(keyName: string): boolean {
@@ -99,21 +100,21 @@ export class CacheService {
 
     /**
      * Get the list of keys currently in the cache
-     * @returns 
+     * @returns
      */
-    getKeyList(): Array<String> {
+    getKeyList(): Array<string> {
         return this.myCache.keys();
     }
 
     /**
      * Adds the data associated with the KeyName to the cache.
-     * @param keyName 
-     * @param value 
-     * @param ttlSeconds {optional} 
-     * @returns 
+     * @param keyName
+     * @param value
+     * @param ttlSeconds {optional}
+     * @returns
      */
-    setCache<T>(keyName: string, value: T, ttlSeconds: number = -1) : boolean {
-        let success: boolean = false;
+    setCache<T>(keyName: string, value: T, ttlSeconds = -1) : boolean {
+        let success = false;
         if (ttlSeconds == null || ttlSeconds >= 0) {
             success = this.myCache.set(keyName, value, ttlSeconds);
         } else {
@@ -125,31 +126,23 @@ export class CacheService {
 
     /**
      * Get the data associated with the KeyName.
-     * @param keyName 
-     * @returns 
+     * @param keyName
+     * @returns
      * @throw {NoDataException} if no data
      */
     getCache<T>(keyName: string): T | undefined {
         if (this.checkIfExists(keyName)) {
-            let value: T | undefined = this.myCache.get(keyName);
+            const value: T | undefined = this.myCache.get(keyName);
             return value;
-        } 
+        }
         return undefined;
-
-        // let value: any = this.myCache.get(keyName);
-        // if (value == undefined) {
-        //     return undefined;
-        //     // throw new NoDataException("No data for this key.", keyName);
-        // }
-        // console.log(`Success to get catch : ${keyName}`);
-        // return value;
     }
 
     // TODO fix if we keep
     // /**
     //  * Get the data associated with the KeyName.
-    //  * @param keyName 
-    //  * @returns 
+    //  * @param keyName
+    //  * @returns
     //  * @throw {NoDataException} if no data
     //  */
     // async getCacheAsync<T>(keyName: string): Promise<T> {
@@ -168,11 +161,10 @@ export class CacheService {
     //     return Promise.resolve(getCacheData);
     // }
 
-
     /**
      * Remove the data associated with the KeyName from the cache.
-     * @param keyName 
-     * @returns 
+     * @param keyName
+     * @returns
      */
     removeCache(keyName: string): number {
         return this.myCache.del(keyName);
@@ -182,13 +174,13 @@ export class CacheService {
      * Clean the contents of the cache
      */
     cleanCache(): void {
-        this.myCache.flushAll()
+        this.myCache.flushAll();
     }
 
     /**
      * Check the time remaining before the cache expires for a KeyName.
-     * @param keyName 
-     * @returns 
+     * @param keyName
+     * @returns
      */
     getDelayBeforeExpiration(keyName: string): number | undefined {
         return this.myCache.getTtl(keyName);
@@ -201,10 +193,7 @@ export class CacheService {
 // **** Export default **** //
 
 export default {
-    CacheLocalization,
     CacheName,
     CacheTimer,
     CacheService,
 } as const;
-
-// export default CacheService.getInstance();

@@ -1,7 +1,7 @@
 import axios, { ResponseType } from 'axios';
 import { RiotGameType } from '../declaration/enum';
-import EnvVars from "../declaration/major/EnvVars";
-import RiotHttpStatusCode from "../declaration/RiotHttpStatusCode";
+import EnvVars from '../declaration/major/EnvVars';
+import RiotHttpStatusCode from '../declaration/RiotHttpStatusCode';
 
 // **** Variables **** //
 
@@ -19,11 +19,11 @@ export abstract class RequestService {
       * @param responseType
       * @returns
       */
-     
+
     /* eslint-disable @typescript-eslint/no-explicit-any */
     static async callRiotAPI<T>(requestUrl: string, gameType: RiotGameType, responseType : ResponseType = 'json') : Promise<T> {
         const token = EnvVars.getToken(gameType);
-        
+
         const axiosQuery = new Promise<T>(function (resolve, reject) {
             try {
                 console.info(`Call Riot API with '${requestUrl}'`);
@@ -38,8 +38,7 @@ export abstract class RequestService {
                                     // Do whatever you want to transform the data
                                     return JSON.parse(data);
                                 }
-                            }
-                            catch (ex) {
+                            } catch (ex) {
                                 return data;
                             }
                         }],
@@ -54,8 +53,7 @@ export abstract class RequestService {
                 }).catch(error => {
                     reject(error);
                 });
-            }
-            catch (ex) {
+            } catch (ex) {
                 reject(ex);
             }
         });

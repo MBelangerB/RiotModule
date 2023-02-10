@@ -1,14 +1,13 @@
-
-import { AxiosError } from "axios";
-import EnvVars from "../declaration/major/EnvVars";
-import { RiotGameType } from "../declaration/enum";
-import { ValidationService } from "./ValidationService";
-import { RequestService } from "./RequestService";
-import { ISummonerDTO } from "../entity/Summoner-v4/SummonerDTO";
-import { IChampionInfo } from "../entity/Champion-v3/ChampionInfo";
-import { IChampionMasteryDTO } from "../entity/ChampionMasteries-v4/ChampionMasteryDTO";
-import { ILeagueEntryDTO } from "../entity/League-v4/LeagueEntryDTO";
-import { CacheService, CacheTimer, CacheName } from "./CacheService";
+import { AxiosError } from 'axios';
+import EnvVars from '../declaration/major/EnvVars';
+import { RiotGameType } from '../declaration/enum';
+import { ValidationService } from './ValidationService';
+import { RequestService } from './RequestService';
+import { ISummonerDTO } from '../entity/Summoner-v4/SummonerDTO';
+import { IChampionInfo } from '../entity/Champion-v3/ChampionInfo';
+import { IChampionMasteryDTO } from '../entity/ChampionMasteries-v4/ChampionMasteryDTO';
+import { ILeagueEntryDTO } from '../entity/League-v4/LeagueEntryDTO';
+import { CacheService, CacheTimer, CacheName } from './CacheService';
 
 // **** Variables **** //
 // TEst : Htetkokolij
@@ -67,11 +66,9 @@ export class SummonerV4 {
             console.error(exports.RiotLocalization.errInFunction('getBySummonerName'));
             if (err instanceof AxiosError) {
                 console.error(err.message);
-            }
-            else if (err.response && err.response.data) {
+            } else if (err.response && err.response.data) {
                 console.error(err.response.data);
-            }
-            else {
+            } else {
                 console.error(err);
             }
             throw err;
@@ -110,11 +107,9 @@ export class SummonerV4 {
             console.error(exports.RiotLocalization.errInFunction('getByPuuid'));
             if (err instanceof AxiosError) {
                 console.error(err.message);
-            }
-            else if (err.response && err.response.data) {
+            } else if (err.response && err.response.data) {
                 console.error(err.response.data);
-            }
-            else {
+            } else {
                 console.error(err);
             }
             throw err;
@@ -131,9 +126,9 @@ export class SummonerV4 {
 export class ChampionMasteryV4 {
 
     /**
-     * Return a @type {Array<IChampionMasteryDTO>} 
-     * @param encryptedSummonerId 
-     * @param region 
+     * Return a @type {Array<IChampionMasteryDTO>}
+     * @param encryptedSummonerId
+     * @param region
      * @returns {ChampionMasteryDTO}
      */
     async getByEncryptedSummonerId(encryptedSummonerId: string, region: string): Promise<Array<IChampionMasteryDTO>> {
@@ -157,11 +152,9 @@ export class ChampionMasteryV4 {
             console.error(exports.RiotLocalization.errInFunction('getByEncryptedSummonerId'));
             if (err instanceof AxiosError) {
                 console.error(err.message);
-            }
-            else if (err.response && err.response.data) {
+            } else if (err.response && err.response.data) {
                 console.error(err.response.data);
-            }
-            else {
+            } else {
                 console.error(err);
             }
             throw err;
@@ -179,7 +172,7 @@ export class ChampionV3 {
 
     /**
      * Return a @type {IChampionInfo}
-     * @param region 
+     * @param region
      * @returns  {IChampionInfo}
      */
     async getChampionRotations(region: string): Promise<IChampionInfo> {
@@ -202,11 +195,9 @@ export class ChampionV3 {
             console.error(exports.RiotLocalization.errInFunction('getChampionRotations'));
             if (err instanceof AxiosError) {
                 console.error(err.message);
-            }
-            else if (err.response && err.response.data) {
+            } else if (err.response && err.response.data) {
                 console.error(err.response.data);
-            }
-            else {
+            } else {
                 console.error(err);
             }
             throw err;
@@ -224,9 +215,9 @@ export class LeagueV4 {
 
     /**
      * Return a @type {ILeagueEntryDTO}
-     * @param encryptedSummonerId 
-     * @param region 
-     * @returns 
+     * @param encryptedSummonerId
+     * @param region
+     * @returns
      */
     async getLeagueEntriesByEncryptedSummonerId(encryptedSummonerId: string, region: string): Promise<Array<ILeagueEntryDTO>> {
         const realRegion = ValidationService.convertToRealRegion(region);
@@ -249,11 +240,9 @@ export class LeagueV4 {
             console.error(exports.RiotLocalization.errInFunction('getLeagueEntriesByEncryptedSummonerId'));
             if (err instanceof AxiosError) {
                 console.error(err.message);
-            }
-            else if (err.response && err.response.data) {
+            } else if (err.response && err.response.data) {
                 console.error(err.response.data);
-            }
-            else {
+            } else {
                 console.error(err);
             }
             throw err;
