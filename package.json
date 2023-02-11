@@ -5,13 +5,14 @@
   "main": "build/index.js",
   "types": "./build/index.d.ts",
   "scripts": {
-    "compile": "npx tsc",
+    "compile:npx": "npx tsc",
+    "compile:rim": "rimraf ./build && tsc",
     "start:dev": "npx nodemon",
-    "start:prod": "npm run build && node build/index.js",
-    "build": "rimraf ./build && tsc",
-    "pack": "npm run build && npm pack",
+    "start:prod": "npm run compile:npx && node build/index.js",
+    "local:pack": "npm run compile:npx && npm pack",
     "preview": "npx npm-packlist",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "eslint": "npx eslint .",
+    "eslintFix": "npx eslint . --fix"
   },
   "files": [
     "/build"
@@ -27,11 +28,17 @@
   },
   "homepage": "https://github.com/MBelangerB/RiotModule#readme",
   "dependencies": {
-    "axios": "^1.2.5"
+    "axios": "^1.2.5",
+    "node-cache": "^5.1.2",
+    "path": "^0.12.7"
   },
   "devDependencies": {
-    "@types/node": "^18.11.18",
+    "@types/fs-extra": "^11.0.1",
+    "@types/node": "^18.13.0",
+    "@typescript-eslint/eslint-plugin": "^5.51.0",
     "dotenv": "^16.0.3",
+    "eslint": "^8.33.0",
+    "fs-extra": "^11.1.0",
     "nodemon": "^2.0.20",
     "rimraf": "^4.1.2",
     "ts-node": "^10.9.1",

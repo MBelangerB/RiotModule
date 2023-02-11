@@ -1,6 +1,9 @@
+/* eslint-disable max-len */
+/* eslint-disable no-shadow */
+
 export interface IChallengeConfigInfoDTO {
     id: number;
-    localizedNames: Map<String, Map<String, string>>;
+    localizedNames: Map<string, Map<string, string>>;
     /**
      * - DISABLED - not visible and not calculated, HIDDEN - not visible, but calculated, ENABLED - visible and calculated, ARCHIVED - visible, but not calculated
      */
@@ -12,9 +15,10 @@ export interface IChallengeConfigInfoDTO {
     startTimestamp: number;
     endTimestamp: number;
     leaderboard: boolean;
-    thresholds: Map<String, number>;
+    thresholds: Map<string, number>;
 }
-export declare enum State {
+
+export enum State {
     /**
      * DISABLED - not visible and not calculated
      */
@@ -32,7 +36,8 @@ export declare enum State {
      */
     ARCHIVED = 3
 }
-export declare enum Tracking {
+
+export enum Tracking {
     /**
      * LIFETIME - stats are incremented without reset
      */

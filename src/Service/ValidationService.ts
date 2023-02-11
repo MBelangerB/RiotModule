@@ -54,11 +54,9 @@ export abstract class ValidationService {
         const realRegion = this.regionDataMapping[region.toUpperCase()];
         if (typeof region === 'undefined' || region.trim().length === 0) {
             throw new Error(ValidationLocalization.errParamsIsMissing('region'));
-        }
-        else if (!this.autorizedRegion.includes(realRegion)) {
+        } else if (!this.autorizedRegion.includes(realRegion)) {
             throw new Error(ValidationLocalization.errParamsIsInvalid('region', region));
-        }
-        else {
+        } else {
             return realRegion;
         }
     }

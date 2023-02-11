@@ -37,6 +37,10 @@ export interface IChampionMasteryDTO {
     tokensEarned: number;
 }
 
-export class ChampionMasteryDTO {
-    championMasteries: Array<IChampionMasteryDTO> = new Array<IChampionMasteryDTO>;
-}
+// export interface IArrChampionMasteryDTO {
+//     championMasteries: Array<IChampionMasteryDTO>;
+// }
+
+// export class ChampionMasteryDTO {
+//     championMasteries: Array<IChampionMasteryDTO> = new Array<IChampionMasteryDTO>;
+// }

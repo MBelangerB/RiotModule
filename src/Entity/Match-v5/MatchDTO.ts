@@ -1,3 +1,6 @@
+/* eslint-disable max-len */
+/* eslint-disable no-shadow */
+
 export interface IMatchDTO {
     /**
      * Match metadata.
@@ -8,6 +11,7 @@ export interface IMatchDTO {
      */
     info: IInfoDTO;
 }
+
 export interface IMetadataDTO {
     /**
      * 	Match data version.
@@ -22,6 +26,7 @@ export interface IMetadataDTO {
      */
     participants: Array<string>;
 }
+
 export interface IInfoDTO {
     /**
      * Unix timestamp for when the game is created on the game server (i.e., the loading screen).
@@ -74,11 +79,13 @@ export interface IInfoDTO {
      */
     tournamentCode: string;
 }
-export declare enum KaynChampionTransform {
+
+export enum KaynChampionTransform {
     None = 0,
     Slayer = 1,
     Assassin = 2
 }
+
 export interface IParticipantDTO {
     assists: number;
     baronKills: number;
@@ -205,36 +212,43 @@ export interface IParticipantDTO {
     wardsPlaced: number;
     win: boolean;
 }
+
 export interface IPerksDTO {
     statPerks: IPerkStatsDTO;
     styles: Array<IPerkStyleDTO>;
 }
+
 export interface IPerkStatsDTO {
     defense: number;
     flex: number;
     offense: number;
 }
+
 export interface IPerkStyleDTO {
     description: string;
     selections: Array<IPerkStyleSelectionDTO>;
     style: number;
 }
+
 export interface IPerkStyleSelectionDTO {
     perk: number;
     var1: number;
     var2: number;
     var3: number;
 }
+
 export interface ITeamDTO {
     bans: Array<IBanDTO>;
     objectives: IObjectivesDTO;
     teamId: number;
     win: boolean;
 }
+
 export interface IBanDTO {
     championId: number;
     pickTurn: number;
 }
+
 export interface IObjectivesDTO {
     baron: IObjectiveDTO;
     champion: IObjectiveDTO;
@@ -243,6 +257,7 @@ export interface IObjectivesDTO {
     riftHerald: IObjectiveDTO;
     tower: IObjectiveDTO;
 }
+
 export interface IObjectiveDTO {
     first: boolean;
     kills: number;

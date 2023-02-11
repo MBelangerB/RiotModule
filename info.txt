@@ -1,0 +1,31 @@
+https://khalilstemmler.com/blogs/typescript/node-starter-project/
+https://www.twilio.com/blog/2017/06/writing-a-node-module-in-typescript.html
+
+npx tsc --init --rootDir src --outDir build --esModuleInterop --resolveJsonModule --lib es6 --module commonjs --allowJs true --noImplicitAny true
+
+
+
+
+https://www.twilio.com/blog/2017/06/writing-a-node-module-in-typescript.html
+
+    "pack": "npm run build && npm pack --dry-run",
+  "type": "module",
+
+
+-- Start project
+  npm init --scope=@bedy
+
+  
+  -- https://spin.atomicobject.com/2022/06/21/npm-package-typescript/
+  
+
+  # RiotModule
+Bedy npm Riot Module
+
+
+    "publish": "npm run build && npm publish",
+    "patch": "npm run build && npm version patch && npm publish",
+
+https://readme.so/fr
+https://www.makeareadme.com/
+    https://readme.shaankhan.dev/
