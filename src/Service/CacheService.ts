@@ -32,6 +32,10 @@ export const CacheName = {
      * Params {0} = Dragon champion key (Number)
      */
     DRAGON_CHAMPION: 'dragonChamp-{0}',
+    /**
+     * Dragon version cache
+     */
+     DRAGON_VERSION: 'dragonVersion',
 };
 
 /**

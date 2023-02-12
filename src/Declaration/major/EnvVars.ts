@@ -16,8 +16,7 @@ export default {
     },
     dragon: {
         folder: (process.env.dragonBaseFolder ?? '/dragon'),
-        // lang: [ "fr_FR", "en_US"],
-        dragon: {
+        url: {
             version: 'https://ddragon.leagueoflegends.com/api/versions.json',
             queues: 'http://static.developer.riotgames.com/docs/lol/queues.json',
             champions: 'http://ddragon.leagueoflegends.com/cdn/{version}/data/{lang}/champion.json',
