@@ -5,6 +5,7 @@ export interface IDragonVersion {
     internalVersion: string | null,
     previousVersion?: string,
     onlineVersion?: string,
+    requiredUpdate?: boolean
 }
 
 // -----------------------------
@@ -16,6 +17,15 @@ export interface IDragonFile<T> {
     version: string;
     data: T;
 }
+
+// export class DragonFile<T> implements IDragonFile<T> {
+//     type!: string;
+//     format!: string;
+//     version!: string;
+//     data!: T;
+// }
+
+
 // export type VersionData = {
 //     [versions: string] : string[];
 //     // version: string[];   
@@ -28,11 +38,19 @@ export interface IVersionData {
     version: string[];   
 }
 
+export class VersionData implements IVersionData {
+    version: string[] = [];
+}
+
 // -----------------------------
 // Dragon Champion
 // -----------------------------
 export interface IChampionData {
     [championName: string]: IDragonChampion
+}
+
+export interface INumericChampionData {
+    [championId: number]: IDragonChampion
 }
 
 export interface IDragonChampion {

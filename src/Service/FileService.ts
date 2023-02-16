@@ -1,8 +1,6 @@
 import { readFileSync, mkdirSync, existsSync } from 'fs';
 import { writeFile } from 'fs/promises';
-import axios, { ResponseType } from 'axios';
 import { castDataToJSON } from '../declaration/functions';
-import RiotHttpStatusCode from '../declaration/RiotHttpStatusCode';
 
 
 // **** Variables **** //
@@ -63,16 +61,21 @@ export abstract class FileService {
      * @returns
      */
     static async writeFile(filePath: string, fileContent: string): Promise<string> {
-        const file = new Promise<string>((resolve, reject) => {
+        const file = new Promise<string>(async (resolve, reject) => {
             try {
+                let fileWrite;
                 if (typeof (fileContent) !== 'string') {
-                    writeFile(filePath, castDataToJSON(fileContent));
+                    fileWrite = writeFile(filePath, castDataToJSON(fileContent), { flag: 'w' });
                 } else {
-                    writeFile(filePath, fileContent);
+                    fileWrite = writeFile(filePath, fileContent, { encoding: 'utf8', flag: 'w' });
                 }
 
-                console.info(FileServiceLocalization.msgFileCreatedOrUpdate(filePath));
-                resolve(FileServiceLocalization.msgFileCreatedOrUpdate(filePath));
+                await Promise.resolve(fileWrite).then(success => {
+                    console.info(FileServiceLocalization.msgFileCreatedOrUpdate(filePath));
+                    resolve(FileServiceLocalization.msgFileCreatedOrUpdate(filePath));
+                }).catch(err => {
+                    throw err;
+                });
 
             } catch (ex) {
                 console.error(FileServiceLocalization.errInFunction('writeFile'));
