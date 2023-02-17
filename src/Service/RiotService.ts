@@ -8,6 +8,10 @@ import { IChampionInfo } from '../entity/Champion-v3/ChampionInfo';
 import { IChampionMasteryDTO } from '../entity/ChampionMasteries-v4/ChampionMasteryDTO';
 import { ILeagueEntryDTO } from '../entity/League-v4/LeagueEntryDTO';
 import { CacheService, CacheTimer, CacheName } from './CacheService';
+import { DragonService } from './DragonService';
+import { IChampion, Rotation } from '../model/RiotModel';
+import { DragonChampion } from '../model/DragonModel';
+import { ChampionOption } from '../declaration/types';
 
 // **** Variables **** //
 // TEst : Htetkokolij
@@ -175,22 +179,24 @@ export class ChampionV3 {
      * @param region
      * @returns  {IChampionInfo}
      */
-    async getChampionRotations(region: string): Promise<IChampionInfo> {
+    async getChampionRotations(region: string, options?: ChampionOption | null): Promise<Rotation> {
+
         const realRegion = ValidationService.convertToRealRegion(region);
         const championRotateUrl = EnvVars.routes.champion.v3.championRotation.replace('{region}', realRegion);
 
-        let returnValue!: IChampionInfo;
-
-        const cacheName = CacheName.LEAGUE_ROTATE.replace('{0}', realRegion);
+        let cacheName = CacheName.LEAGUE_ROTATE.replace('{0}', realRegion);
         if (EnvVars.cache.enabled) {
-            const cacheValue: IChampionInfo | undefined = CacheService.getInstance().getCache<IChampionInfo>(cacheName);
+            let cacheValue: IChampionInfo;
+            cacheValue = CacheService.getInstance().getCache<IChampionInfo>(cacheName)!;
+
             if (cacheValue != undefined) {
-                return cacheValue;
+                return await this.buildRotation(cacheValue, options);
             }
         }
 
+        let riotReturnValue!: IChampionInfo;
         await RequestService.callRiotAPI<IChampionInfo>(championRotateUrl, RiotGameType.LeagueOfLegend).then((result) => {
-            returnValue = result;
+            riotReturnValue = result;
         }).catch((err) => {
             console.error(exports.RiotLocalization.errInFunction('getChampionRotations'));
             if (err instanceof AxiosError) {
@@ -204,10 +210,72 @@ export class ChampionV3 {
         });
 
         if (EnvVars.cache.enabled) {
-            CacheService.getInstance().setCache<IChampionInfo>(cacheName, returnValue, CacheTimer.ROTATE);
+            CacheService.getInstance().setCache<IChampionInfo>(cacheName, riotReturnValue, CacheTimer.ROTATE);
         }
 
-        return returnValue;
+        return await this.buildRotation(riotReturnValue, options);
+    }
+
+    /**
+     * Use [IChampionInfo] for build Rotation with option
+     * @param riotRotation 
+     * @param options 
+     * @returns 
+     */
+    private async buildRotation(riotRotation: IChampionInfo, options?: ChampionOption | null): Promise<Rotation> {
+
+        const prepareRotation = new Promise<Rotation>(async (resolve: any, reject: any) => {
+            let returnValue: Rotation = new Rotation();
+            returnValue.maxNewPlayerLevel = riotRotation.maxNewPlayerLevel;
+
+            await riotRotation.freeChampionIds.reduce(async (prevChampionId, currentChampId) => {
+                await prevChampionId;
+
+                let info: DragonChampion = await DragonService.getChampionInfo(currentChampId, options?.culture);
+
+                let freeChamp: IChampion = {
+                    id: parseInt(info.key)
+                };
+
+                if (options && options.showChampionName == true) {
+                    freeChamp.name = info.name
+                }
+                if (options && options.showSquare == true) {
+                    freeChamp.squareUrl = EnvVars.dragon.imageUrl.squareByChampionId.replace('{championId}', info.key)
+                }
+                if (options && options.showLoadingScreen == true) {
+                    freeChamp.loadingScreenUrl = EnvVars.dragon.imageUrl.loadingScreenByChampion.replace('{championName}', info.id).replace('{skinId}', '0');
+                }
+
+                returnValue.freeChampionIds.push(freeChamp);
+            }, Promise.resolve());
+
+            await riotRotation.freeChampionIdsForNewPlayers.reduce(async (prevChampionId, currentChampId) => {
+                await prevChampionId;
+
+                let info: DragonChampion = await DragonService.getChampionInfo(currentChampId, options?.culture);
+
+                let freeChamp: IChampion = {
+                    id: parseInt(info.key)
+                };
+
+                if (options && options.showChampionName == true) {
+                    freeChamp.name = info.name
+                }
+                if (options && options.showSquare == true) {
+                    freeChamp.squareUrl = EnvVars.dragon.imageUrl.squareByChampionId.replace('{championId}', info.key)
+                }
+                if (options && options.showLoadingScreen == true) {
+                    freeChamp.loadingScreenUrl = EnvVars.dragon.imageUrl.loadingScreenByChampion.replace('{championName}', info.id).replace('{skinId}', '0');
+                }
+
+                returnValue.freeChampionIdsForNewPlayers.push(freeChamp);
+            }, Promise.resolve());
+
+            resolve(returnValue);
+        });
+
+        return await Promise.resolve(prepareRotation);
     }
 }
 

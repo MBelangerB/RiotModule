@@ -45,13 +45,6 @@ export class VersionData implements IVersionData {
 // -----------------------------
 // Dragon Champion
 // -----------------------------
-export interface IChampionData {
-    [championName: string]: IDragonChampion
-}
-
-export interface INumericChampionData {
-    [championId: number]: IDragonChampion
-}
 
 export interface IDragonChampion {
     id: string;
@@ -69,4 +62,12 @@ export interface IChampDataImage {
     y: number;
     w: number;
     h: number;
+}
+
+export class DragonChampion implements IDragonChampion {
+    id: string = "";
+    key: string = "";
+    name: string = "";
+    title: string = "";
+    image!: IChampDataImage;
 }
