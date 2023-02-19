@@ -1,4 +1,4 @@
-import { DragonCulture } from "./enum"
+import { DragonCulture } from './enum';
 
 export type RegionData = {
     [region: string]: string
@@ -6,7 +6,6 @@ export type RegionData = {
 
 /**
  * Champion options
- * 
  */
 export type ChampionOption = {
     /**

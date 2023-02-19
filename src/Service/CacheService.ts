@@ -28,10 +28,10 @@ export const CacheName = {
      *      {1} = SUMMONER NAME (or accountId ??)
      */
     LEAGUE_RANK: 'leagueRank-{0}-{1}',
-    /**
-     * Params {0} = Dragon champion key (Number)
-     */
-    DRAGON_CHAMPION_ID: 'dragonChamp-{0}',
+    // /**
+    //  * Params {0} = Dragon champion key (Number)
+    //  */
+    // DRAGON_CHAMPION_ID: 'dragonChamp-{0}',
     /**
      * Params {0} = Culture
      */

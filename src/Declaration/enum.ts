@@ -35,5 +35,5 @@ export enum DragonFile {
 export default {
     RiotGameType,
     DragonCulture,
-    DragonFile
+    DragonFile,
 } as const;

@@ -11,6 +11,7 @@
 	},
 	"ignorePatterns": ["/build/**", "/test/*"],
 	"rules": {
+		"@typescript-eslint/no-non-null-assertion": "off",
 		"quotes": ["error", "single"],
 		"no-var": "error",
 		"prefer-const": "error",

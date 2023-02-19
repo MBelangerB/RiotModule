@@ -26,12 +26,12 @@ export default {
             runesReforged: 'http://ddragon.leagueoflegends.com/cdn/{version}/data/{lang}/runesReforged.json',
             championIcon: 'http://ddragon.leagueoflegends.com/cdn/{version}/img/champion/{name}.png',
             realmInfo: 'https://ddragon.leagueoflegends.com/realms/na.json',
-            championName: 'http://ddragon.leagueoflegends.com/cdn/13.3.1/data/fr_FR/champion/Aatrox.json'
+            championName: 'http://ddragon.leagueoflegends.com/cdn/13.3.1/data/fr_FR/champion/Aatrox.json',
         },
         imageUrl: {
             squareByChampionId: 'https://cdn.communitydragon.org/latest/champion/{championId}/square',
-            loadingScreenByChampion: 'http://ddragon.leagueoflegends.com/cdn/img/champion/loading/{championName}_{skinId}.jpg'
-        }
+            loadingScreenByChampion: 'http://ddragon.leagueoflegends.com/cdn/img/champion/loading/{championName}_{skinId}.jpg',
+        },
     },
     routes: {
         v2: {

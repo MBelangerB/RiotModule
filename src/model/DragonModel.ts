@@ -28,14 +28,14 @@ export interface IDragonFile<T> {
 
 // export type VersionData = {
 //     [versions: string] : string[];
-//     // version: string[];   
+//     // version: string[];
 // }
 
 // -----------------------------
 // Dragon Version
 // -----------------------------
 export interface IVersionData {
-    version: string[];   
+    version: string[];
 }
 
 export class VersionData implements IVersionData {
@@ -65,9 +65,9 @@ export interface IChampDataImage {
 }
 
 export class DragonChampion implements IDragonChampion {
-    id: string = "";
-    key: string = "";
-    name: string = "";
-    title: string = "";
+    id = '';
+    key = '';
+    name = '';
+    title = '';
     image!: IChampDataImage;
 }
