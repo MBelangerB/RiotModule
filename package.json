@@ -10,6 +10,7 @@
     "start:dev": "npx nodemon",
     "start:prod": "npm run compile:npx && node build/index.js",
     "local:pack": "npm run compile:npx && npm pack",
+    "local:packCopy": "npm run compile:npx && npm pack && copy.bat",
     "preview": "npx npm-packlist",
     "eslint": "npx eslint .",
     "eslintFix": "npx eslint . --fix"

@@ -1,4 +1,5 @@
 import { RiotService } from './service/RiotService';
+import { DragonService } from './service/DragonService';
 import { ValidationService } from './service/ValidationService';
 import { RiotGameType } from './declaration/enum';
 import { RiotHttpStatusCode } from './declaration/RiotHttpStatusCode';
@@ -17,6 +18,11 @@ export { ILeagueEntryDTO } from './entity/League-v4/LeagueEntryDTO';
 export { RiotService, ChampionV3, ChampionMasteryV4, LeagueV4, SummonerV4 } from './service/RiotService';
 export { ValidationService } from './service/ValidationService';
 
+export { DragonService } from './service/DragonService';
+export { IDragonVersion } from './model/DragonModel';
+export { ReturnData } from './declaration/interface/IReturnData';
+
+
 // FORMAT CONST (OK) : exports.default = {
 /*
     Accessible via BedyRiot dans import tel que
@@ -24,6 +30,7 @@ export { ValidationService } from './service/ValidationService';
 */
 export default {
     RiotService,
+    DragonService,
     ValidationService,
     RiotGameType,
     RiotHttpStatusCode,
@@ -33,6 +40,7 @@ export default {
 // FORMAT (OK): module.exports = {
 module.exports = {
     RiotService: RiotService,
+    DragonService: DragonService,
     ValidationService: ValidationService,
     RiotGameType: RiotGameType,
     RiotHttpStatusCode: RiotHttpStatusCode,
