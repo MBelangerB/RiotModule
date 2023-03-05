@@ -12,6 +12,7 @@ README.md
 .gitignore
 .hg
 .npmignore
+.github
 .npmrc
 .lock-wscript
 .svn
@@ -19,3 +20,7 @@ README.md
 config.gypi
 CVS
 npm-debug.log
+
+# Coverage directory used by tools like istanbul
+coverage*
+*.lcov

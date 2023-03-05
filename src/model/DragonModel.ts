@@ -8,6 +8,14 @@ export interface IDragonVersion {
     requiredUpdate?: boolean
 }
 
+export class DragonVersion implements IDragonVersion {
+    internalVersion: string | null = null;
+    previousVersion?: string | undefined;
+    onlineVersion?: string | undefined;
+    requiredUpdate?: boolean | undefined;
+
+}
+
 // -----------------------------
 // Dragon
 // -----------------------------
@@ -18,12 +26,12 @@ export interface IDragonFile<T> {
     data: T;
 }
 
-// export class DragonFile<T> implements IDragonFile<T> {
-//     type!: string;
-//     format!: string;
-//     version!: string;
-//     data!: T;
-// }
+export class DragonFile<T> implements IDragonFile<T> {
+    type!: string;
+    format!: string;
+    version!: string;
+    data!: T;
+}
 
 
 // export type VersionData = {
