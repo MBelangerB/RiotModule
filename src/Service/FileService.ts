@@ -1,4 +1,5 @@
 import { readFileSync, mkdirSync, existsSync } from 'fs';
+import { removeSync } from 'fs-extra';
 import { writeFile } from 'fs/promises';
 import { castDataToJSON } from '../declaration/functions';
 
@@ -26,6 +27,15 @@ export abstract class FileService {
      */
     static checkFileExists(filePath: string): boolean {
         return existsSync(filePath);
+    }
+
+    /**
+     * Delete a file or folder
+     * @param filePath 
+     * @returns 
+     */
+    static removeFile(filePath: string): void {
+        return removeSync(filePath);
     }
 
     /**
@@ -61,7 +71,7 @@ export abstract class FileService {
      * @returns
      */
     static async writeFile(filePath: string, fileContent: string): Promise<string> {
-        const file = new Promise<string>(async (resolve, reject) => {
+        const writingFile = new Promise<string>(async (resolve, reject) => {
             try {
                 let fileWrite;
                 if (typeof (fileContent) !== 'string') {
@@ -70,12 +80,19 @@ export abstract class FileService {
                     fileWrite = writeFile(filePath, fileContent, { encoding: 'utf8', flag: 'w' });
                 }
 
-                await Promise.resolve(fileWrite).then(success => {
+                fileWrite.then(res => {
                     console.info(FileServiceLocalization.msgFileCreatedOrUpdate(filePath));
                     resolve(FileServiceLocalization.msgFileCreatedOrUpdate(filePath));
                 }).catch(err => {
                     throw err;
                 });
+
+                // await Promise.resolve(fileWrite).then( () => {
+                //     console.info(FileServiceLocalization.msgFileCreatedOrUpdate(filePath));
+                //     resolve(FileServiceLocalization.msgFileCreatedOrUpdate(filePath));
+                // }).catch(err => {
+                //     throw err;
+                // });
 
             } catch (ex) {
                 console.error(FileServiceLocalization.errInFunction('writeFile'));
@@ -84,7 +101,13 @@ export abstract class FileService {
             }
         });
 
-        return Promise.resolve(file);
+        return Promise.resolve(writingFile).then(ret => {
+            return ret;
+        }).catch(err => {
+            throw err;
+        });
+
+        // return Promise.resolve(writingFile);
     }
 
     // https://www.geeksforgeeks.org/node-js-fs-readfilesync-method/
@@ -100,52 +123,6 @@ export abstract class FileService {
         const data = JSON.parse(rawdata);
         return data;
     }
-
-    // /**
-    //  * Request a URL for read the file content
-    //  * @param requestUrl
-    //  * @param responseType
-    //  * @returns
-    //  */
-    // /* eslint-disable @typescript-eslint/no-explicit-any */
-    // static async downloadExternalFile(requestUrl: string, responseType: ResponseType = 'json'): Promise<any> {
-    //     const downloadResult = new Promise<any>(function (resolve, reject) {
-    //         try {
-    //             console.info(`Downloading the '${requestUrl}' file`);
-    //             axios(encodeURI(requestUrl),
-    //                 {
-    //                     method: 'GET',
-    //                     responseType: responseType,
-    //                     responseEncoding: 'utf8', // default
-    //                     transformResponse: [function (data) {
-    //                         try {
-    //                             if (data) {
-    //                                 // Do whatever you want to transform the data
-    //                                 return JSON.parse(data);
-    //                             }
-    //                         } catch (ex) {
-    //                             return data;
-    //                         }
-    //                     }],
-    //                 }).then(response => {
-    //                     switch (response.status) {
-    //                         case RiotHttpStatusCode.OK:
-    //                             resolve(response.data);
-    //                             break;
-    //                         default:
-    //                             reject(response);
-    //                     }
-    //                 }).catch(error => {
-    //                     reject(error);
-    //                 });
-    //             } catch (ex) {
-    //                 reject(ex);
-    //             }
-    //     });
-
-    //     return Promise.resolve(downloadResult);
-    // }
-
 }
 
 export default {

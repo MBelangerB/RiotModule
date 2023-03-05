@@ -19,18 +19,18 @@ describe('==> Test DRAGON <==', () => {
 
   beforeEach(() => {
     // runs once before the first test in this block
-    console.log('beforeEach : Remove dragon path');
+    console.log('beforeEach : Remove dragon path.');
     FileService.removeFile(DragonPath.dragonFolder);
   });
 
   afterEach(() => {
     // runs once before the first test in this block
-    console.log('afterEach : Remove dragon path');
+    console.log('afterEach : Remove dragon path.');
     FileService.removeFile(DragonPath.dragonFolder);
   });
 
-
   it('Create dragon folder tree', (done) => {
+    console.log('=== START PREPARE TREE ===');
     DragonService.prepareTree().then((result: ReturnData<DragonVersion>) => {
       assert.ok(result);
       assert.isNotNull(result);
@@ -51,9 +51,11 @@ describe('==> Test DRAGON <==', () => {
 
       done();
     });
+    console.log('=== END PREPARE TREE ===\n\n');
   });
 
   it('Download version list (Dragon)', (done) => {
+    console.log('=== START GET VERSION FILE ===');
     DragonService.getDragonVersion().then((result: ReturnData<DragonVersion>) => {
       assert.ok(result);
       assert.ok(result.data);
@@ -84,10 +86,12 @@ describe('==> Test DRAGON <==', () => {
       console.log(ex);
       done();
     });
-
+    console.log('=== END GET VERSION FILE ===\n\n');
   }); // .timeout(10000);
 
   it('Download the list of champions (Dragon)', (done) => {
+    console.log('=== START GET CHAMPION FILE (with version) ===');
+
     DragonService.getDragonVersion().then((versionData: ReturnData<DragonVersion>) => {
       assert.ok(versionData);
       assert.ok(versionData.data);
@@ -97,7 +101,7 @@ describe('==> Test DRAGON <==', () => {
       assert.notEqual(versionData.data?.internalVersion, "0");
 
       const championUrl: string = DragonService.getFileUrl(DragonFile.Champion, DragonCulture.fr_fr, versionData.data!);
-      DragonService.downloadDragonFile<IDragonChampion>(championUrl, DragonCulture.fr_fr, versionData.data!).then((content: ReturnData<IDragonChampion>) => {
+      DragonService.downloadDragonFile<IDragonChampion>(championUrl, DragonCulture.fr_fr, versionData.data!)?.then((content: ReturnData<IDragonChampion>) => {
         assert.ok(content);
         assert.isNotNull(content);
         assert.isNotNull(content.data);
@@ -127,7 +131,7 @@ describe('==> Test DRAGON <==', () => {
 
       // done();
     });
-
+    console.log('=== END GET CHAMPION FILEE ===\n\n');
   }).timeout(15000); 
 
 }); // END : 'Test DRAGON'
