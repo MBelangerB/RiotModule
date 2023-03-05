@@ -19,7 +19,7 @@ export { RiotService, ChampionV3, ChampionMasteryV4, LeagueV4, SummonerV4 } from
 export { ValidationService } from './service/ValidationService';
 
 export { DragonService } from './service/DragonService';
-export { IDragonVersion } from './model/DragonModel';
+export { IDragonVersion, DragonVersion } from './model/DragonModel';
 export { ReturnData } from './declaration/interface/IReturnData';
 
 

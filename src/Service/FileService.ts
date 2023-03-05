@@ -1,5 +1,5 @@
-import { readFileSync, mkdirSync, existsSync } from 'fs';
-import { writeFile } from 'fs/promises';
+import { readFileSync, mkdirSync, existsSync, writeFileSync } from 'fs';
+import { removeSync } from 'fs-extra';
 import { castDataToJSON } from '../declaration/functions';
 
 
@@ -10,9 +10,9 @@ import { castDataToJSON } from '../declaration/functions';
 export const FileServiceLocalization = {
     errInFunction: (functionName: string) => `An error occured in 'FileService.${functionName}'.`,
     msgFolderBeenCreated: (folderName: string) => `The folder '${folderName}' has been created.`,
+    msgFolderAlreadyExists: (folderName: string) => `The folder '${folderName}' already exists.`,
     msgFileCreatedOrUpdate: (fileName: string) => `The file '${fileName}' has been created or updated.`,
 } as const;
-
 
 /**
  * File process
@@ -29,29 +29,37 @@ export abstract class FileService {
     }
 
     /**
-     * Create folder recursively
+     * Delete a file or folder
+     * @param filePath
+     * @returns
+     */
+    static removeFile(filePath: string): void {
+        return removeSync(filePath);
+    }
+
+    /**
+     * [Promise] Create folder recursively
      * @param folderPath
      * @returns
      */
-    static async createFolder(folderPath: string): Promise<string> {
-        const folder = new Promise<string>((resolve, reject) => {
-            try {
-                if (!existsSync(folderPath)) {
-                    // File not Exists
-                    mkdirSync(folderPath, { recursive: true });
+    static createFolder(folderPath: string): string {
+        try {
+            if (!existsSync(folderPath)) {
+                // File not Exists
+                mkdirSync(folderPath, { recursive: true });
 
-                    console.info(FileServiceLocalization.msgFolderBeenCreated(folderPath));
-                    resolve(FileServiceLocalization.msgFolderBeenCreated(folderPath));
-                }
-
-            } catch (ex) {
-                console.error(FileServiceLocalization.errInFunction('createFolder'));
-                console.error(ex);
-                reject(ex);
+                console.info(FileServiceLocalization.msgFolderBeenCreated(folderPath));
+                return FileServiceLocalization.msgFolderBeenCreated(folderPath);
+            } else {
+                return FileServiceLocalization.msgFolderAlreadyExists(folderPath);
             }
-        });
-
-        return Promise.resolve(folder);
+        /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+        } catch (ex: any) {
+            console.error(FileServiceLocalization.errInFunction('createFolder'));
+            // console.error(ex);
+            // Dont return « ex ». Return custom exception with own message
+            return ex.message;
+        }
     }
 
     /**
@@ -60,31 +68,21 @@ export abstract class FileService {
      * @param fileContent
      * @returns
      */
-    static async writeFile(filePath: string, fileContent: string): Promise<string> {
-        const file = new Promise<string>(async (resolve, reject) => {
-            try {
-                let fileWrite;
-                if (typeof (fileContent) !== 'string') {
-                    fileWrite = writeFile(filePath, castDataToJSON(fileContent), { flag: 'w' });
-                } else {
-                    fileWrite = writeFile(filePath, fileContent, { encoding: 'utf8', flag: 'w' });
-                }
-
-                await Promise.resolve(fileWrite).then(success => {
-                    console.info(FileServiceLocalization.msgFileCreatedOrUpdate(filePath));
-                    resolve(FileServiceLocalization.msgFileCreatedOrUpdate(filePath));
-                }).catch(err => {
-                    throw err;
-                });
-
-            } catch (ex) {
-                console.error(FileServiceLocalization.errInFunction('writeFile'));
-                console.error(ex);
-                reject(ex);
+    static writeFile(filePath: string, fileContent: string): boolean {
+        try {
+            if (typeof (fileContent) !== 'string') {
+                writeFileSync(filePath, castDataToJSON(fileContent), { flag: 'w' });
+            } else {
+                writeFileSync(filePath, fileContent, { encoding: 'utf8', flag: 'w' });
             }
-        });
+            console.info(FileServiceLocalization.msgFileCreatedOrUpdate(filePath));
 
-        return Promise.resolve(file);
+            return true;
+        } catch (ex) {
+            console.error(FileServiceLocalization.errInFunction('writeFile'));
+            console.error(ex);
+            return false;
+        }
     }
 
     // https://www.geeksforgeeks.org/node-js-fs-readfilesync-method/
@@ -95,57 +93,25 @@ export abstract class FileService {
      * @param flag
      * @returns
      */
-    static async readInternalFile(filePath: string, fileEncoding: BufferEncoding = 'utf8', flag = 'r') {
+    /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+    static readInternalJSONFile(filePath: string, fileEncoding: BufferEncoding = 'utf8', flag = 'r'): any {
         const rawdata = readFileSync(filePath, { encoding: fileEncoding, flag: flag });
-        const data = JSON.parse(rawdata);
+        /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+        const data: any = JSON.parse(rawdata);
         return data;
     }
 
-    // /**
-    //  * Request a URL for read the file content
-    //  * @param requestUrl
-    //  * @param responseType
-    //  * @returns
-    //  */
-    // /* eslint-disable @typescript-eslint/no-explicit-any */
-    // static async downloadExternalFile(requestUrl: string, responseType: ResponseType = 'json'): Promise<any> {
-    //     const downloadResult = new Promise<any>(function (resolve, reject) {
-    //         try {
-    //             console.info(`Downloading the '${requestUrl}' file`);
-    //             axios(encodeURI(requestUrl),
-    //                 {
-    //                     method: 'GET',
-    //                     responseType: responseType,
-    //                     responseEncoding: 'utf8', // default
-    //                     transformResponse: [function (data) {
-    //                         try {
-    //                             if (data) {
-    //                                 // Do whatever you want to transform the data
-    //                                 return JSON.parse(data);
-    //                             }
-    //                         } catch (ex) {
-    //                             return data;
-    //                         }
-    //                     }],
-    //                 }).then(response => {
-    //                     switch (response.status) {
-    //                         case RiotHttpStatusCode.OK:
-    //                             resolve(response.data);
-    //                             break;
-    //                         default:
-    //                             reject(response);
-    //                     }
-    //                 }).catch(error => {
-    //                     reject(error);
-    //                 });
-    //             } catch (ex) {
-    //                 reject(ex);
-    //             }
-    //     });
-
-    //     return Promise.resolve(downloadResult);
-    // }
-
+    /**
+     * Read a file content and return raw data
+     * @param filePath
+     * @param fileEncoding
+     * @param flag
+     * @returns
+     */
+    /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+    static readInternalTextFile(filePath: string, fileEncoding: BufferEncoding = 'utf8', flag = 'r'): string {
+        return readFileSync(filePath, { encoding: fileEncoding, flag: flag });
+    }
 }
 
 export default {

@@ -179,6 +179,7 @@ export class ChampionMasteryV4 {
   */
     private async buildChampionMasteries(summonerMasteries: Array<IChampionMasteryDTO>, options?: ChampionOption | null): Promise<ChampionMasteries> {
         /* eslint-disable @typescript-eslint/no-explicit-any */
+        // TODO: Rework
         const prepareMasteries = new Promise<ChampionMasteries>(async (resolve: any) => {
             const returnValue: ChampionMasteries = new ChampionMasteries();
 
@@ -298,6 +299,7 @@ export class ChampionV3 {
     private async buildRotation(riotRotation: IChampionInfo, options?: ChampionOption | null): Promise<Rotation> {
         /* eslint-disable @typescript-eslint/no-explicit-any */
         /* eslint-disable @typescript-eslint/no-unused-vars */
+        //TODO: Reowrk
         const prepareRotation = new Promise<Rotation>(async (resolve: any, reject: any) => {
             const returnValue: Rotation = new Rotation();
             returnValue.maxNewPlayerLevel = riotRotation.maxNewPlayerLevel;
