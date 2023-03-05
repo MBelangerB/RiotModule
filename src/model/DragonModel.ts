@@ -8,6 +8,14 @@ export interface IDragonVersion {
     requiredUpdate?: boolean
 }
 
+export class DragonVersion implements IDragonVersion {
+    internalVersion: string | null = null;
+    previousVersion?: string | undefined;
+    onlineVersion?: string | undefined;
+    requiredUpdate?: boolean | undefined;
+
+}
+
 // -----------------------------
 // Dragon
 // -----------------------------

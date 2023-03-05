@@ -68,42 +68,42 @@ export abstract class RequestService {
      * @returns
      */
     /* eslint-disable @typescript-eslint/no-explicit-any */
-    static async downloadExternalFile<T>(requestUrl: string, responseType: ResponseType = 'json'): Promise<T> {
-        const downloadResult = new Promise<T>(function (resolve, reject) {
-            try {
-                console.info(`Downloading the '${requestUrl}' file`);
-                axios(encodeURI(requestUrl),
-                    {
-                        method: 'GET',
-                        responseType: responseType,
-                        responseEncoding: 'utf8',
-                        transformResponse: [function (data) {
-                            try {
-                                if (data) {
-                                    // Do whatever you want to transform the data
-                                    return JSON.parse(data);
-                                }
-                            } catch (ex) {
-                                return data;
+    static downloadExternalFile<T>(requestUrl: string, responseType: ResponseType = 'json'): Promise<T> {
+        try {
+            console.info(`Downloading the '${requestUrl}' file`);
+            let axiosPromise = axios(encodeURI(requestUrl),
+                {
+                    method: 'GET',
+                    responseType: responseType,
+                    responseEncoding: 'utf8',
+                    transformResponse: [function (data) {
+                        try {
+                            if (data) {
+                                // Do whatever you want to transform the data
+                                return JSON.parse(data);
                             }
-                        }],
-                    }).then(response => {
-                        switch (response.status) {
-                            case RiotHttpStatusCode.OK:
-                                resolve(response.data);
-                                break;
-                            default:
-                                reject(response);
+                        } catch (ex) {
+                            return data;
                         }
-                    }).catch(error => {
-                        reject(error);
-                    });
-            } catch (ex) {
-                reject(ex);
-            }
-        });
+                    }],
+                });
 
-        return await Promise.resolve(downloadResult);
+            return axiosPromise.then(response => {
+                switch (response.status) {
+                    case RiotHttpStatusCode.OK:
+                        return response.data;
+                        break;
+                    default:
+                        throw response;
+                }
+            }).catch(error => {
+                throw error;
+            });
+
+        } catch (ex) {
+            throw ex;
+        }
+
     }
 }
 

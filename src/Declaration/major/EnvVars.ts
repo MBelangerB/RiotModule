@@ -1,4 +1,5 @@
 import { RiotGameType } from '../enum';
+import { getBoolean } from '../functions';
 
 // import dotenv from 'dotenv';
 // dotenv.config();
@@ -12,7 +13,7 @@ export default {
         apiToken: (process.env.Riot_APIDevKey ?? ''),
     },
     cache: {
-        enabled: (process.env.CacheEnabled ?? true),
+        enabled: (getBoolean(process.env.CacheEnabled) ?? true),
     },
     dragon: {
         folder: (process.env.dragonBaseFolder ?? '/dragon'),

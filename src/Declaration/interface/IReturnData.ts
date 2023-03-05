@@ -9,7 +9,10 @@ export class ReturnData<T> implements IReturnData<T> {
     messages?: string[];
     data?: T | undefined;
 
-    addMessage(message:string) {
+    constructor() {
+    }
+
+    addMessage(message: string) {
         if (!this.messages) {
             this.messages = [];
         }
