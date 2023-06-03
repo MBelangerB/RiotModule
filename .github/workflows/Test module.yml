@@ -47,6 +47,11 @@ jobs:
     - name: ls depenci
       run: ls **
     #  run: npm install --only=dev
+    
+    - name: Debugging with ssh
+    # You may pin to the exact commit or the version.
+    # uses: lhotari/action-upterm@d23c2722bdab893785c9fbeae314cbf080645bd7
+      uses: lhotari/action-upterm@v1
               
 #    - run: npm run build --if-present
     - run: npm run test:ts_run
