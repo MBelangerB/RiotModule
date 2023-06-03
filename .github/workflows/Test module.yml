@@ -27,7 +27,7 @@ jobs:
      #   cache: 'npm'
         
     - name: Install Typescript
-      run: npm install typescript -g
+      run: npm install typescript@4.8.4 -g
       
     - name: node version
       run: node -v
@@ -37,6 +37,9 @@ jobs:
       
     - name: tsc version
       run: tsc -v  
+      
+    - name: ls
+      run: ls
       
     - name: Install dependencies
       run: npm ci
