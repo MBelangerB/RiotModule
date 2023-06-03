@@ -17,19 +17,30 @@ jobs:
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
-    - uses: actions/checkout@v3
+    - name: Checkout
+      uses: actions/checkout@v3.5.2
 
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
-        cache: 'npm'
+     #   cache: 'npm'
         
     - name: Install Typescript
-      run: npm install typescript --save-dev
+      run: npm install typescript -g
+      
+    - name: node version
+      run: node -v
+      
+    - name: npm version
+      run: npm -v
+      
+    - name: tsc version
+      run: tsc -v  
       
     - name: Install dependencies
-      run: npm install --only=dev
+      run: npm ci
+    #  run: npm install --only=dev
               
 #    - run: npm run build --if-present
     - run: npm run test:ts_run
