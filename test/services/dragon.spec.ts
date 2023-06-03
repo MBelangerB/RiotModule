@@ -134,7 +134,8 @@ describe('===> Test DragonService', () => {
         assert.isNotNull(result);
         assert.isNotNull(result.data);
 
-      }).catch(err => {
+      /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+      }).catch((err: any) => {
         assert.fail(err);
       });
 
