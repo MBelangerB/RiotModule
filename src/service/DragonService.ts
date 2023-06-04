@@ -1,4 +1,4 @@
-import { join, dirname } from 'path';
+import { join, resolve } from 'path';
 import { FileService } from './FileService';
 import { CacheService, CacheName, CacheTimer } from './CacheService';
 
@@ -31,58 +31,14 @@ export abstract class DragonService {
     // #region "Path Area"
     /**
      * Read « Require Main » for get the default app path
-     * TODO: Check result on debian
-     * TODO: reworking
      * @returns
      */
     static getMainPath(): string {
         let returnPath = './';
+        let mainPath: string =  resolve(returnPath);
 
-        if (require && require.main) {
-            const isTest: boolean = require.main?.path.includes('mocha');
-
-            if (isTest) {
-                const paths: string[] = require.main.paths;
-                for (let index = 0; index < paths.length; index++) {
-                    const path = paths[index];
-                    if (!path.includes('mocha')) {
-                        returnPath = path;
-                        index = paths.length;
-                        break;
-                    }
-                    index++;
-                }
-
-                if (returnPath.includes('node_modules')) {
-                    const testPath = dirname(returnPath);
-                    if (!testPath.includes('node_modules')) {
-                        returnPath = testPath;
-                    } else {
-                        const splitDirName = returnPath.split('node_modules');
-                        if (splitDirName && splitDirName.length > 1) {
-                            returnPath = dirname(splitDirName[0]);
-                        }
-                    }
-                }
-
-            } else if (require.main && require.main.path) {
-                const appDir = dirname(require.main.path);
-                returnPath = dirname(appDir);
-
-            } else if (require.main && require.main.filename) {
-                const appDir = dirname(require.main.filename);
-                returnPath = dirname(appDir);
-            }
-
-        } else {
-            const splitDirName = __dirname.split('node_modules');
-            if (splitDirName && splitDirName.length > 1) {
-                returnPath = dirname(splitDirName[0]);
-            }
-        }
-
-        console.info('MainPath : %s', returnPath);
-        return returnPath;
+        console.info('MainPath : %s', mainPath);
+        return mainPath;
     }
 
     /**

@@ -10,7 +10,7 @@ import { DragonFileName, DragonPath } from '../../src/service/DragonService';
 import { DragonCulture, DragonFileType } from '../../src/declaration/enum';
 import { DragonChampion, DragonVersion, IDragonChampion, IDragonVersion, VersionData } from '../../src/model/DragonModel';
 import { replaceAll } from '../../src/declaration/functions';
-import { join } from 'path';
+import { join, resolve } from 'path';
 // import EnvVars from '../../src/declaration/major/EnvVars';
 
 // let should = chai.should();
@@ -41,11 +41,7 @@ describe('===> Test DragonService', () => {
     let result: string = DragonService.getDragonFullPath();
     console.info('Get DragonFullPath : ' + result);
 
-    let baseString: string | undefined = process.env.dragonBaseFolder?.replace('./', '');
-    baseString = replaceAll(baseString!, '/', '\\')
-
-    console.info('Base String : ' + baseString);
-
+    let baseString: string = resolve(process.env.dragonBaseFolder?.replace('./', '') || '');
     assert.ok(result);
     expect(result).to.contain(baseString);
     done();
