@@ -22,7 +22,10 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v3.5.2
-
+      
+    - name: Setup Pages
+      uses: actions/configure-pages@v3.0.6
+        
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3
       with:
@@ -34,30 +37,20 @@ jobs:
       
     # OK
     # - run: echo 'Test2 ${{ vars.RIOT_APIDEVKEY }}'
-    - run: echo 'Test $Riot_APIDevKey'
-    - run: echo 'Hi ${{ env.Riot_APIDevKey }}' 
-    # - name: node version
-    #  run: node -v
-      
-    # - name: npm version
-    #  run: npm -v
-      
-    # - name: tsc version
-    #  run: tsc -v  
-      
-    # - name: ls
-    #  run: ls **
       
     - name: Install dependencies
       run: npm ci
-      
-    - name: ls depenci
-      run: ls **
-    #  run: npm install --only=dev
+               
+    # - run: npm run build --if-present
+    # - run: npm run test:ts_run
+    - run: npm run test:ts_coverage
+
+    - name: Debugging with ssh
+     # You may pin to the exact commit or the version.
+      uses: lhotari/action-upterm@v1
     
-    # - name: Debugging with ssh
-    #  # You may pin to the exact commit or the version.
-    #  uses: lhotari/action-upterm@v1
-              
-#    - run: npm run build --if-present
-    - run: npm run test:ts_run
+#     - name: Upload artifact
+#       uses: actions/upload-pages-artifact@v1
+#       with:
+#         # Upload entire repository
+#         path: '/coverage'
