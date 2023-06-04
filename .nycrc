@@ -10,6 +10,7 @@
     ],
     "reporter": [
         "html",
+        "json",
         "lcov",
         "text",
         "text-summary"
