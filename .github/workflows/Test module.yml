@@ -6,8 +6,8 @@ name: RiotModule test2
 on:
   # Manual action
   workflow_dispatch:
-# env:
-#      Riot_APIDevKey: ${{ vars.RIOT_APIDEVKEY }}
+env:
+     Riot_APIDevKey: ${{ vars.RIOT_APIDEVKEY }}
       
 jobs:
   build:
@@ -32,9 +32,10 @@ jobs:
     - name: Install Typescript
       run: npm install typescript@4.8.4 -g
       
-    - run: echo 'Test2 ${{ vars.RIOT_APIDEVKEY }}'
-    - run: echo 'Test $RIOT_APIDEVKEY'
-    - run: echo 'Hi ${{ env.RIOT_APIDEVKEY }}' 
+    # OK
+    # - run: echo 'Test2 ${{ vars.RIOT_APIDEVKEY }}'
+    - run: echo 'Test $Riot_APIDevKey'
+    - run: echo 'Hi ${{ env.Riot_APIDevKey }}' 
     # - name: node version
     #  run: node -v
       
