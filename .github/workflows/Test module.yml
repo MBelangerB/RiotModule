@@ -58,12 +58,12 @@ jobs:
     - name: Run Test Coverage
       run: npm run test:ts_coverage --verbose
 
-    - name: Debugging with ssh
-     # You may pin to the exact commit or the version.
-      uses: lhotari/action-upterm@v1
+#     - name: Debugging with ssh
+#      # You may pin to the exact commit or the version.
+#       uses: lhotari/action-upterm@v1
     
-#      - name: Upload artifact
-#        uses: actions/upload-pages-artifact@v1
-#        with:
-#          # Upload entire repository
-#          path: '/home/runner/work/RiotModule/coverage'
+    - name: Upload artifact
+      uses: actions/upload-pages-artifact@v1
+      with:
+        # Upload entire repository
+        path: '~/work/RiotModule/RiotModule/coverage'
