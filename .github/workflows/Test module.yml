@@ -14,8 +14,8 @@ on:
 env:
      Riot_APIDevKey: ${{ secrets.RIOT_APIDEVKEY }}
 
-# permissions:
-#   pull-requests: write
+permissions:
+  pull-requests: write
    
 jobs:
   build:
