@@ -26,6 +26,9 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v3.5.2
+      with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 1000
         
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3
@@ -42,11 +45,16 @@ jobs:
     - name: Run Test Coverage
       run: npm run test:ts_json_coverage 
 
-#     - name: Upload coverage artifact
-#       uses: actions/upload-artifact@v2
-#       with:
-#           name: test-coverage-output
-#           path: coverageJson
+    - name: Upload coverage artifact
+      uses: actions/upload-artifact@v2
+      with:
+          name: test-coverage-output
+          path: coverageJson
+
+    - name: Download coverage artifact
+      uses: actions/download-artifact@v2
+      with:
+          path: artifacts
           
     # https://github.com/marketplace/actions/report-nyc-coverage
     - name: Report NYC coverage
