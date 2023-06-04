@@ -9,11 +9,9 @@
         "_tests_/**/*.*"
     ],
     "reporter": [
-        "html",
-        "json",
+        "json-summary",
         "lcov",
-        "text",
         "text-summary"
     ],
-    "report-dir": "coverage"
+    "report-dir": "coverageJson"
 }
