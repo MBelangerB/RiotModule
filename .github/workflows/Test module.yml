@@ -11,7 +11,7 @@ on:
   # Manual action
   workflow_dispatch:
 env:
-     Riot_APIDevKey: ${{ vars.RIOT_APIDEVKEY }}
+     Riot_APIDevKey: ${{ secrets.RIOT_APIDEVKEY }}
   
 jobs:
   build:
