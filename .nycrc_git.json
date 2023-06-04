@@ -9,6 +9,7 @@
         "_tests_/**/*.*"
     ],
     "reporter": [
+        "json",
         "json-summary",
         "lcov",
         "text-summary"
