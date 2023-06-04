@@ -61,8 +61,8 @@ jobs:
      # You may pin to the exact commit or the version.
       uses: lhotari/action-upterm@v1
     
-#     - name: Upload artifact
-#       uses: actions/upload-pages-artifact@v1
-#       with:
-#         # Upload entire repository
-#         path: '/coverage'
+#      - name: Upload artifact
+#        uses: actions/upload-pages-artifact@v1
+#        with:
+#          # Upload entire repository
+#          path: '/home/runner/work/RiotModule/coverage'
