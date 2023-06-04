@@ -4,6 +4,10 @@
 name: RiotModule test2
 
 on:
+  pull_request:
+    branches:
+    - rework/syncPattern
+    
   # Manual action
   workflow_dispatch:
 env:
