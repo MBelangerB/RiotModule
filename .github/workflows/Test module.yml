@@ -10,6 +10,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      Riot_APIDevKey: ${{ env.RIOT_APIDEVKEY }}
 
     strategy:
       matrix:
@@ -29,6 +31,8 @@ jobs:
     - name: Install Typescript
       run: npm install typescript@4.8.4 -g
       
+    - name: show Token
+      run: echo 'Hi ${{ env.RIOT_APIDEVKEY }}' 
     # - name: node version
     #  run: node -v
       
