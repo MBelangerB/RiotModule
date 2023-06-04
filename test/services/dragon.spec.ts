@@ -39,8 +39,12 @@ describe('===> Test DragonService', () => {
 
   it('1.0 => Get dragon default folder', (done) => {
     let result: string = DragonService.getDragonFullPath();
+    console.info('Get DragonFullPath : ' + result);
+
     let baseString: string | undefined = process.env.dragonBaseFolder?.replace('./', '');
     baseString = replaceAll(baseString!, '/', '\\')
+
+    console.info('Base String : ' + baseString);
 
     assert.ok(result);
     expect(result).to.contain(baseString);
