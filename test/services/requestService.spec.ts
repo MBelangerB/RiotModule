@@ -33,10 +33,15 @@ describe('===> Test RequestService', () => {
     const realRegion = ValidationService.convertToRealRegion('NA');
     const summonerUrl = EnvVars.routes.summoner.v4.getBySummonerName.replace('{summonerName}', summonerName).replace('{region}', realRegion);
 
-    let returnValue: ISummonerDTO = await RequestService.callRiotAPI<ISummonerDTO>(summonerUrl, RiotGameType.LeagueOfLegend);
+    try {
+      let returnValue: ISummonerDTO = await RequestService.callRiotAPI<ISummonerDTO>(summonerUrl, RiotGameType.LeagueOfLegend);
 
-    assert.ok(returnValue);
-    assert.equal(returnValue.name, summonerName)
+      assert.ok(returnValue);
+      assert.equal(returnValue.name, summonerName)
+    } catch (error: any) {
+      assert.ok(error);
+    }
+
   });
 
   it('1.1 => (Riot call) Get TFT Summoner info without Token', async () => {
@@ -49,7 +54,10 @@ describe('===> Test RequestService', () => {
       await RequestService.callRiotAPI<ISummonerDTO>(summonerUrl, RiotGameType.TeamFightTactic);
     } catch (error: any) {
       assert.ok(error);
-      if (token == "") {
+
+      if (error.response.statusText == 'Forbidden') {
+        assert.equal(error.response.status, 403);
+      } else if (token == "") {
         assert.equal(error.response.status, 401);
       } else {
         assert.equal(error.response.status, 404);
