@@ -15,7 +15,11 @@ on:
   pull_request:
     branches:
     - rework/syncPattern
-    
+  release:
+    types: [created, edited]
+    branches:
+    - rework/syncPattern 
+
   # Manual action
   workflow_dispatch:
   
@@ -24,7 +28,9 @@ env:
 
 permissions:
    pull-requests: write
-   
+   packages: write
+    # deployments
+    
 jobs:
   build:
     runs-on: ubuntu-latest
