@@ -96,18 +96,13 @@ jobs:
           name: test-coverage-result
           path: "coverageHtml/**"
           retention-days: 1
-          
-    - name: Debugging with ssh
-      if: ${{ github.event_name == 'workflow_dispatch' }}
-      # You may pin to the exact commit or the version.
-      uses: lhotari/action-upterm@v1         
 
     - name: Download coverage artifact
       if: ${{ github.event_name == 'workflow_dispatch' }}
       uses: actions/download-artifact@v2.1.1
       with:
           name: test-coverage-result
-          path: dist-coverage-files     
+          path: RiotModule     
       
     - name: Publish on SSH
       if: ${{ github.event_name == 'workflow_dispatch' }}
@@ -118,6 +113,6 @@ jobs:
         port: ${{ secrets.PORT }}
         passphrase: ${{ secrets.PASSPHRASE }}
         key: ${{ secrets.KEY }}
-        source: dist-coverage-files/*
+        source: RiotModule/*
        # source: "coverage/*.*"
         target: '/home/bedybot-docker/shared/coverage/www/'
