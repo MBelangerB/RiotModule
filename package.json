@@ -18,6 +18,7 @@
     "test:js_run": "mocha ./build/test/*.spec.js --timeout 10000",
     "test:ts_run": "mocha -r ts-node/register test/**/*.spec.ts",
     "test:ts_coverage": "nyc --nycrc-path=./.nycrc_base.json mocha --timeout=10000",
+    "test:ts_html_coverage": "nyc --nycrc-path=./.nycrc_git_html.json mocha --timeout=10000",
     "test:ts_json_coverage": "nyc --nycrc-path=./.nycrc_git.json mocha --timeout=10000"
   },
   "files": [
