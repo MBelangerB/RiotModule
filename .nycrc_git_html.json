@@ -11,5 +11,5 @@
     "reporter": [
         "html"
     ],
-    "report-dir": "coverageJson"
+    "report-dir": "coverageHtml"
 }

@@ -21,5 +21,6 @@ config.gypi
 CVS
 npm-debug.log
 
-coverage
-coverageJson
+# Coverage directory used by tools like istanbul
+coverage*
+*.lcov
