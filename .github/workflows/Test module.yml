@@ -94,7 +94,7 @@ jobs:
       uses: actions/upload-artifact@v3.1.2
       with:
           name: test-coverage-result
-          path: "coverage/**"
+          path: "coverageHtml/**"
           retention-days: 1
           
     - name: Debugging with ssh
