@@ -87,7 +87,7 @@ jobs:
 # ---------------------------------------
     - name: Run Test Coverage
       if: ${{ github.event_name == 'workflow_dispatch' }}
-      run: npm run test:ts_coverage
+      run: npm run test:ts_html_coverage
       
     - name: Upload coverage artifact
       if: ${{ github.event_name == 'workflow_dispatch' }}
