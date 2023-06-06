@@ -87,6 +87,7 @@ jobs:
 # ---------------------------------------
 
     - name: Upload coverage artifact
+      if: ${{ github.event_name == 'workflow_dispatch' }}
       uses: actions/upload-artifact@v3.1.2
       with:
           name: test-coverage-result
@@ -94,6 +95,7 @@ jobs:
           retention-days: 1
 
     - name: Download coverage artifact
+      if: ${{ github.event_name == 'workflow_dispatch' }}
       uses: actions/download-artifact@v2.1.1
       with:
           name: test-coverage-result
