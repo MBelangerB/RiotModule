@@ -91,8 +91,13 @@ jobs:
       uses: actions/upload-artifact@v3.1.2
       with:
           name: test-coverage-result
-          path: "coverage/*.*"
+          path: "coverage/**"
           retention-days: 1
+          
+    - name: Debugging with ssh
+      if: ${{ github.event_name == 'workflow_dispatch' }}
+      # You may pin to the exact commit or the version.
+      uses: lhotari/action-upterm@v1         
 
     - name: Download coverage artifact
       if: ${{ github.event_name == 'workflow_dispatch' }}
