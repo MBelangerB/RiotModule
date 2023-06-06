@@ -34,8 +34,8 @@ export abstract class DragonService {
      * @returns
      */
     static getMainPath(): string {
-        let returnPath = './';
-        let mainPath: string =  resolve(returnPath);
+        const returnPath = './';
+        const mainPath: string = resolve(returnPath);
 
         console.info('MainPath : %s', mainPath);
         return mainPath;
@@ -231,6 +231,7 @@ export abstract class DragonService {
     static async downloadExternalFileContent<T>(url: string): Promise<ReturnData<T>> {
         console.log('Enter in DragonService.downloadExternalFileContent');
 
+        /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
         return new Promise<ReturnData<T>>((resolve: any, reject: any) => {
             const retData: ReturnData<T> = new ReturnData<T>();
             RequestService.downloadExternalFile<T>(url).then((fileContent: T) => {
@@ -258,6 +259,7 @@ export abstract class DragonService {
     static downloadExternalDragonFile<T>(url: string): Promise<IDragonFile<T>> {
         console.log('Enter in DragonService.downloadExternalDragonFile');
 
+        /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
         const downloadVersionFile = new Promise<IDragonFile<T>>((resolve: any, reject: any) => {
             RequestService.downloadExternalFile<IDragonFile<T>>(url).then((fileContent: IDragonFile<T>) => {
                 resolve(fileContent);

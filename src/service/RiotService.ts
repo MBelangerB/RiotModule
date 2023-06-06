@@ -299,7 +299,7 @@ export class ChampionV3 {
     private async buildRotation(riotRotation: IChampionInfo, options?: ChampionOption | null): Promise<Rotation> {
         /* eslint-disable @typescript-eslint/no-explicit-any */
         /* eslint-disable @typescript-eslint/no-unused-vars */
-        //TODO: Reowrk
+        // TODO: Reowrk
         const prepareRotation = new Promise<Rotation>(async (resolve: any, reject: any) => {
             const returnValue: Rotation = new Rotation();
             returnValue.maxNewPlayerLevel = riotRotation.maxNewPlayerLevel;

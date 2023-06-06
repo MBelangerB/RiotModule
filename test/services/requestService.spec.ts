@@ -8,7 +8,8 @@ process.env.showTraceStack = 'false'
 
 import { assert } from "chai";
 import { RequestService } from '../../src/service/RequestService';
-import { ISummonerDTO, RiotGameType, ValidationService } from "../../src";
+import { ValidationService } from '../../src/service/ValidationService';
+import { ISummonerDTO, RiotGameType } from "../../src";
 import EnvVars from "../../src/declaration/major/EnvVars";
 import { VersionData } from "../../src/model/DragonModel";
 import { join } from "path";

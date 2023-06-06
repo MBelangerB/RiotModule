@@ -4,7 +4,6 @@ import { RegionData } from '../declaration/types';
 
 // Errors
 export const ValidationLocalization = {
-    unauth: 'Unauthorized',
     errParamsIsInvalid: (paramsName: string, region: string) => `The parameters '${paramsName}' with value '${region}' is invalid.`,
     errParamsIsMissing: (params: string) => `The parameter '${params}' is mandatory.`,
 } as const;
@@ -43,21 +42,22 @@ export abstract class ValidationService {
         'TR1': 'TR1',
         // RU
         'RU': 'RU',
-    };
+    } as const;
 
     /**
      * Convert region parameters to riot region
      * @param region
      * @returns
      */
-    static convertToRealRegion(region: string) {
-        const realRegion = this.regionDataMapping[region.toUpperCase()];
+    static convertToRealRegion(region: string): string {
         if (typeof region === 'undefined' || region.trim().length === 0) {
             throw new Error(ValidationLocalization.errParamsIsMissing('region'));
-        } else if (!this.autorizedRegion.includes(realRegion)) {
-            throw new Error(ValidationLocalization.errParamsIsInvalid('region', region));
+
+        } else if (region in this.regionDataMapping) {
+            return this.regionDataMapping[region.toUpperCase()];
+
         } else {
-            return realRegion;
+            throw new Error(ValidationLocalization.errParamsIsInvalid('region', region));
         }
     }
 }
