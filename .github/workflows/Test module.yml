@@ -85,7 +85,10 @@ jobs:
 # On Manual deploy
 # -Commit coverage result on SSH
 # ---------------------------------------
-
+    - name: Run Test Coverage
+      if: ${{ github.event_name == 'workflow_dispatch' }}
+      run: npm run test:ts_coverage
+      
     - name: Upload coverage artifact
       if: ${{ github.event_name == 'workflow_dispatch' }}
       uses: actions/upload-artifact@v3.1.2
@@ -104,11 +107,7 @@ jobs:
       uses: actions/download-artifact@v2.1.1
       with:
           name: test-coverage-result
-          path: dist-coverage-files
-
-    - name: Run Test Coverage
-      if: ${{ github.event_name == 'workflow_dispatch' }}
-      run: npm run test:ts_coverage 
+          path: dist-coverage-files     
       
     - name: Publish on SSH
       if: ${{ github.event_name == 'workflow_dispatch' }}
