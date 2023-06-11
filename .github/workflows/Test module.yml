@@ -26,6 +26,7 @@ on:
   
 env:
      Riot_APIDevKey: ${{ secrets.RIOT_APIDEVKEY }}
+     CacheEnabled: true
 
 permissions:
    pull-requests: write
