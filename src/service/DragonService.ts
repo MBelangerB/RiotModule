@@ -225,6 +225,7 @@ export abstract class DragonService {
 
     /**
      * Call the URL for download/read the content
+     * TODO: Test
      * @param url Download external file
      * @returns
      */
@@ -253,6 +254,7 @@ export abstract class DragonService {
 
     /**
      * Call the Dragon URL for download/read the content.
+     * TODO: test
      * @param url
      * @returns
      */
@@ -318,7 +320,6 @@ export abstract class DragonService {
 
     // #endregion
 
-
     // #region "Champion"
     static async getChampionInfo(championId: number, dragonCulture: DragonCulture | undefined): Promise<DragonChampion> {
         if (!dragonCulture || dragonCulture == null) {
@@ -350,6 +351,7 @@ export abstract class DragonService {
         if (dragonVersion) {
             versionData.data = dragonVersion;
         } else {
+            // Double check, This scenario is not supposed to happen.
             versionData = await DragonService.getDragonVersion();
         }
 

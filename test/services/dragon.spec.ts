@@ -1,7 +1,7 @@
 //During the test the env variable is set to test
 // process.env.NODE_ENV = 'test';
 process.env.dragonBaseFolder = './_result/static/dragon';
-process.env.CacheEnabled = 'false';
+// process.env.CacheEnabled = 'false';
 
 import { DragonService, ReturnData } from '../../src/index';
 import { assert, expect } from "chai";
@@ -9,9 +9,9 @@ import { FileService } from '../../src/service/FileService';
 import { DragonFileName, DragonPath } from '../../src/service/DragonService';
 import { DragonCulture, DragonFileType } from '../../src/declaration/enum';
 import { DragonChampion, DragonVersion, IDragonChampion, IDragonVersion, VersionData } from '../../src/model/DragonModel';
-import { replaceAll } from '../../src/declaration/functions';
 import { join, resolve } from 'path';
-// import EnvVars from '../../src/declaration/major/EnvVars';
+import { CacheService, CacheName } from '../../src/service/CacheService';
+import EnvVars from '../../src/declaration/major/EnvVars';
 
 // let should = chai.should();
 // require('dotenv').config();
@@ -134,7 +134,7 @@ describe('===> Test DragonService', () => {
         assert.isNotNull(result);
         assert.isNotNull(result.data);
 
-      /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+        /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
       }).catch((err: any) => {
         assert.fail(err);
       });
@@ -210,7 +210,8 @@ describe('===> Test DragonService', () => {
     console.log('=== END GET CHAMPION FILE ===\n\n');
   }).timeout(30000);
 
-  it('3.0 => Get champion info in file', async () => {
+
+  it('3.0.0 => Get champion info in file', async () => {
     console.log('=== START GET CHAMPION INFO ===');
 
     const championInfo: DragonChampion = await DragonService.getChampionInfo(99, DragonCulture.fr_fr)
@@ -223,22 +224,47 @@ describe('===> Test DragonService', () => {
     console.log('=== END GET CHAMPION INFO ===');
   }).timeout(30000);
 
-  it('3.1 => Get multi champions info', async () => {
-    console.log('=== START GET CHAMPION INFO ===');
+  it('3.0.1 => Get champion info with default culture', async () => {
+    const championInfo: DragonChampion = await DragonService.getChampionInfo(99, undefined);
+    assert.ok(championInfo);
+    assert.isNotNull(championInfo);
+    assert.equal(championInfo.key, "99");
+    assert.equal(championInfo.id, "Lux");
+    assert.equal(championInfo.name, "Lux");
+  }).timeout(30000);
 
+  it('3.1 => Get multi champions info', async () => {
     const firstChampionInfo: DragonChampion = await DragonService.getChampionInfo(99, DragonCulture.fr_fr);
     assert.ok(firstChampionInfo);
     assert.isNotNull(firstChampionInfo);
 
-    const cacheChampionInfo: DragonChampion = await DragonService.getChampionInfo(69, DragonCulture.fr_fr)
-    assert.ok(cacheChampionInfo);
-    assert.isNotNull(cacheChampionInfo);
-    assert.equal(cacheChampionInfo.key, "69");
-    assert.equal(cacheChampionInfo.id, "Cassiopeia");
-    assert.equal(cacheChampionInfo.name, "Cassiopeia");
-
-    console.log('=== END GET CHAMPION INFO ===');
+    const secondChampionInfo: DragonChampion = await DragonService.getChampionInfo(69, DragonCulture.fr_fr)
+    assert.ok(secondChampionInfo);
+    assert.isNotNull(secondChampionInfo);
+    assert.equal(secondChampionInfo.key, "69");
+    assert.equal(secondChampionInfo.id, "Cassiopeia");
+    assert.equal(secondChampionInfo.name, "Cassiopeia");
   }).timeout(30000);
 
- 
+  it('3.2 => Get champs in cache', async () => {
+    let value: boolean = EnvVars.cache.enabled;
+    if (!value) {
+      assert.fail('Cache is not enabled');
+    }
+    const firstChampionInfo: DragonChampion = await DragonService.getChampionInfo(99, DragonCulture.fr_fr);
+    assert.ok(firstChampionInfo);
+    assert.isNotNull(firstChampionInfo);
+
+    const championsCache = CacheName.DRAGON_CHAMPIONS.replace('{0}', DragonCulture.fr_fr);
+    const cacheValue: Map<number, IDragonChampion> | undefined = CacheService.getInstance().getCache<Map<number, IDragonChampion>>(championsCache);
+    if (cacheValue != undefined) {
+      let data: IDragonChampion = cacheValue.get(99)!;
+      assert.ok(data);
+      assert.equal(data.id, firstChampionInfo.id);
+    } else {
+      assert.fail('Value isn\'t in cache.')
+    }
+  }).timeout(30000);
+
+
 }); // END : 'Test DRAGON'
