@@ -8,7 +8,7 @@ import { assert, expect } from "chai";
 import { FileService } from '../../src/service/FileService';
 import { DragonFileName, DragonPath } from '../../src/service/DragonService';
 import { DragonCulture, DragonFileType } from '../../src/declaration/enum';
-import { DragonChampion, DragonVersion, IDragonChampion, IDragonVersion, VersionData } from '../../src/model/DragonModel';
+import { DragonChampion, DragonVersion, IDragonChampion } from '../../src/model/DragonModel';
 import { join, resolve } from 'path';
 import { CacheService, CacheName } from '../../src/service/CacheService';
 import EnvVars from '../../src/declaration/major/EnvVars';
@@ -21,6 +21,7 @@ import EnvVars from '../../src/declaration/major/EnvVars';
 describe('===> Test DragonService', () => {
 
   const test_Folder: string = './_result/static/test';
+  const versionSourceFile : string = './test/baseFile/versions.json';
   const defaultTestFileName: string = 'text.txt';
   const lastDragonVersion: string = "13.10.1";
 
@@ -39,7 +40,7 @@ describe('===> Test DragonService', () => {
 
   it('1.0 => Get dragon default folder', (done) => {
     let result: string = DragonService.getDragonFullPath();
-    console.info('Get DragonFullPath : ' + result);
+    // console.info('Get DragonFullPath : ' + result);
 
     let baseString: string = resolve(process.env.dragonBaseFolder?.replace('./', '') || '');
     assert.ok(result);
@@ -86,7 +87,7 @@ describe('===> Test DragonService', () => {
     testDragonVersion.onlineVersion = lastDragonVersion;
 
     let result: string = DragonService.getFileUrl(DragonFileType.Champion, DragonCulture.fr_fr, testDragonVersion);
-    console.log('Data : ', result);
+    // console.log('Data : ', result);
 
     assert.ok(result);
     expect(result).to.contain('ddragon.leagueoflegends.com/cdn/');
@@ -119,8 +120,6 @@ describe('===> Test DragonService', () => {
   });
 
   it('2.1 => Download external file', async () => {
-    console.log('=== START GET VERSION FILE ===');
-
     try {
       let textUrl: string = 'https://filesamples.com/samples/document/txt/sample3.txt';
       let fileName: string = 'sample.txt'
@@ -145,9 +144,7 @@ describe('===> Test DragonService', () => {
     };
   });
 
-  it('2.2 => Download version list (Dragon)', async () => {
-    console.log('=== START GET VERSION FILE ===');
-
+  it('2.2.0 => Download version list (Dragon)', async () => {
     let result: ReturnData<DragonVersion> = await DragonService.getDragonVersion();
 
     assert.ok(result);
@@ -172,14 +169,42 @@ describe('===> Test DragonService', () => {
     assert.isNotNull(result.data);
     assert.isNotNull(result.data?.internalVersion);
     assert.notEqual(result.data?.internalVersion, "0");
-    console.log(result.data);
+  }); // .timeout(10000);
 
-    console.log('=== END GET VERSION FILE ===\n\n');
+  it('2.2.1 => Update version list (Dragon)', async () => {
+    // Because cache is enabled, we need to clean the cache created  by lastest tests
+    CacheService.getInstance().cleanCache();
+
+    let sourceFile : string = join(DragonService.getMainPath(), versionSourceFile);
+    let fileDestination : string = DragonPath.dragonFilePath(DragonFileName.version);
+
+    // Check if base version file exists
+    let baseFileExists : boolean = FileService.checkFileExists(sourceFile);
+    assert.isTrue(baseFileExists);
+
+    if (baseFileExists) {
+      // Prepare test tree
+      let result: ReturnData<DragonVersion> = DragonService.prepareTree();
+      assert.ok(resolve);
+
+      // Copy base file
+      FileService.copyFile(sourceFile, fileDestination);
+      let destinationFileExists : boolean = FileService.checkFileExists(fileDestination);
+      assert.isTrue(destinationFileExists);
+
+      // Check for update
+      result = await DragonService.getDragonVersion();
+      assert.ok(result);
+      assert.isTrue(result.data?.requiredUpdate)
+
+    } else {
+      assert.fail('BaseFile doesn\'t exists')
+    }
+
+    // process.env.CacheEnabled = currentCacheValue;
   }); // .timeout(10000);
 
   it('2.3 => Download version and the list of champions (Dragon)', async () => {
-    console.log('=== START GET CHAMPION FILE (with version) ===');
-
     let versionData: ReturnData<DragonVersion> = await DragonService.getDragonVersion();
     assert.ok(versionData);
     assert.isNotNull(versionData.data);
@@ -207,14 +232,10 @@ describe('===> Test DragonService', () => {
       // });
 
     }));
- 
-    console.log('=== END GET CHAMPION FILE ===\n\n');
   }).timeout(35000);
 
 
   it('3.0.0 => Get champion info in file', async () => {
-    console.log('=== START GET CHAMPION INFO ===');
-
     DragonService.getChampionInfo(99, DragonCulture.fr_fr).then((championInfo: DragonChampion) => {
       assert.ok(championInfo);
       assert.isNotNull(championInfo);
@@ -222,8 +243,6 @@ describe('===> Test DragonService', () => {
       assert.equal(championInfo.id, "Lux");
       assert.equal(championInfo.name, "Lux");
     });
-
-    console.log('=== END GET CHAMPION INFO ===');
   }).timeout(20000);
 
   it('3.0.1 => Get champion info with default culture', async () => {
@@ -256,7 +275,7 @@ describe('===> Test DragonService', () => {
 
   }).timeout(30000);
 
-  it('3.2 => Get champs in cache', async () => {
+  it('3.2 => Get champs in cache', async () => { 
     let value: boolean = EnvVars.cache.enabled;
     if (!value) {
       assert.fail('Cache is not enabled');

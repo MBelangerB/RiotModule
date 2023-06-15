@@ -1,4 +1,4 @@
-import { readFileSync, mkdirSync, existsSync, writeFileSync } from 'fs';
+import { readFileSync, mkdirSync, existsSync, writeFileSync, copyFileSync } from 'fs';
 import { removeSync } from 'fs-extra';
 import { castDataToJSON } from '../declaration/functions';
 
@@ -48,15 +48,17 @@ export abstract class FileService {
                 // File not Exists
                 mkdirSync(folderPath, { recursive: true });
 
-                console.info(FileServiceLocalization.msgFolderBeenCreated(folderPath));
+                // console.info(FileServiceLocalization.msgFolderBeenCreated(folderPath));
                 return FileServiceLocalization.msgFolderBeenCreated(folderPath);
             } else {
                 return FileServiceLocalization.msgFolderAlreadyExists(folderPath);
             }
         /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
         } catch (ex: any) {
+            console.error('****************************************')
             console.error(FileServiceLocalization.errInFunction('createFolder'));
-            // console.error(ex);
+            console.error(ex);
+            console.error('****************************************')
             // Dont return « ex ». Return custom exception with own message
             return ex.message;
         }
@@ -79,8 +81,10 @@ export abstract class FileService {
 
             return true;
         } catch (ex) {
+            console.error('****************************************')
             console.error(FileServiceLocalization.errInFunction('writeFile'));
             console.error(ex);
+            console.error('****************************************')
             return false;
         }
     }
@@ -111,6 +115,10 @@ export abstract class FileService {
     /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
     static readInternalTextFile(filePath: string, fileEncoding: BufferEncoding = 'utf8', flag = 'r'): string {
         return readFileSync(filePath, { encoding: fileEncoding, flag: flag });
+    }
+
+    static copyFile(sourcePath: string, destionationPath: string) : void {
+        return copyFileSync(sourcePath, destionationPath);
     }
 }
 
