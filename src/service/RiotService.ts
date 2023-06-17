@@ -187,7 +187,7 @@ export class ChampionMasteryV4 {
             await summonerMasteries.reduce(async (prevMasteries, currentMasteries) => {
                 await prevMasteries;
 
-                const info: DragonChampion = await DragonService.getChampionInfo(currentMasteries.championId, options?.culture);
+                const info: DragonChampion = await DragonService.getChampionInfoById(currentMasteries.championId, options?.culture);
 
                 const masteries: ChampionMastery = new ChampionMastery();
                 masteries.summonerId = currentMasteries.summonerId;
@@ -307,7 +307,7 @@ export class ChampionV3 {
             await riotRotation.freeChampionIds.reduce(async (prevChampionId, currentChampId) => {
                 await prevChampionId;
 
-                const info: DragonChampion = await DragonService.getChampionInfo(currentChampId, options?.culture);
+                const info: DragonChampion = await DragonService.getChampionInfoById(currentChampId, options?.culture);
 
                 const freeChamp: IChampion = {
                     id: parseInt(info.key),
@@ -329,7 +329,7 @@ export class ChampionV3 {
             await riotRotation.freeChampionIdsForNewPlayers.reduce(async (prevChampionId, currentChampId) => {
                 await prevChampionId;
 
-                const info: DragonChampion = await DragonService.getChampionInfo(currentChampId, options?.culture);
+                const info: DragonChampion = await DragonService.getChampionInfoById(currentChampId, options?.culture);
 
                 const freeChamp: IChampion = {
                     id: parseInt(info.key),

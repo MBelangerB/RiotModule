@@ -34,12 +34,18 @@ export const CacheName = {
     // DRAGON_CHAMPION_ID: 'dragonChamp-{0}',
     /**
      * Params {0} = Culture
+     * Contains Map<Number, Champion>
      */
-    DRAGON_CHAMPIONS: 'dragonChampion-{0}',
+    DRAGON_CHAMPIONS_KEY_ID: 'dragonChampion_id-{0}',
+    /**
+    * Params {0} = Culture
+    * Contains Map<String, Champion>
+    */
+    DRAGON_CHAMPIONS_KEY_NAME: 'dragonChampion_name-{0}',
     /**
      * Dragon version cache
      */
-     DRAGON_VERSION: 'dragonVersion',
+    DRAGON_VERSION: 'dragonVersion',
 };
 
 /**
@@ -95,7 +101,7 @@ export class CacheService {
             CacheService._instance = new CacheService(ttlSeconds);
         }
         return CacheService._instance;
-      }
+    }
 
     /**
      * Check if there is any data associated with the KeyName.
@@ -121,7 +127,7 @@ export class CacheService {
      * @param ttlSeconds {optional}
      * @returns
      */
-    setCache<T>(keyName: string, value: T, ttlSeconds = -1) : boolean {
+    setCache<T>(keyName: string, value: T, ttlSeconds = -1): boolean {
         let success = false;
         if (ttlSeconds == null || ttlSeconds >= 0) {
             success = this.myCache.set(keyName, value, ttlSeconds);

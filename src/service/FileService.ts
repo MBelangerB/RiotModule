@@ -55,10 +55,10 @@ export abstract class FileService {
             }
         /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
         } catch (ex: any) {
-            console.error('****************************************')
+            console.error('****************************************');
             console.error(FileServiceLocalization.errInFunction('createFolder'));
             console.error(ex);
-            console.error('****************************************')
+            console.error('****************************************');
             // Dont return « ex ». Return custom exception with own message
             return ex.message;
         }
@@ -81,10 +81,10 @@ export abstract class FileService {
 
             return true;
         } catch (ex) {
-            console.error('****************************************')
+            console.error('****************************************');
             console.error(FileServiceLocalization.errInFunction('writeFile'));
             console.error(ex);
-            console.error('****************************************')
+            console.error('****************************************');
             return false;
         }
     }
