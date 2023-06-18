@@ -50,6 +50,7 @@ export abstract class ValidationService {
      * @returns
      */
     static convertToRealRegion(region: string): string {
+        region = region.trim().toUpperCase();
         if (typeof region === 'undefined' || region.trim().length === 0) {
             throw new Error(ValidationLocalization.errParamsIsMissing('region'));
 
