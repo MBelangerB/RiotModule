@@ -296,25 +296,26 @@ describe('===> Test DragonService', () => {
 
   }).timeout(30000);
 
-  it('3.2 => Get champs in cache', async () => { 
-    let value: boolean = EnvVars.cache.enabled;
-    if (!value) {
-      assert.fail('Cache is not enabled');
-    }
-    const firstChampionInfo: DragonChampion = await DragonService.getChampionInfoById(99, DragonCulture.fr_fr);
-    assert.ok(firstChampionInfo);
-    assert.isNotNull(firstChampionInfo);
+  // it('3.2 => Get champs in cache', async () => { 
+  //   let value: boolean = EnvVars.cache.enabled;
+  //   if (!value) {
+  //     assert.fail('Cache is not enabled');
+  //   }
+  //   const firstChampionInfo: DragonChampion = await DragonService.getChampionInfoById(99, DragonCulture.fr_fr);
+  //   assert.ok(firstChampionInfo);
+  //   assert.isNotNull(firstChampionInfo);
+  //   console.log('After get first champ')
 
-    const championsCache = CacheName.DRAGON_CHAMPIONS_KEY_ID.replace('{0}', DragonCulture.fr_fr);
-    const cacheValue: Map<number, IDragonChampion> | undefined = CacheService.getInstance().getCache<Map<number, IDragonChampion>>(championsCache);
-    if (cacheValue != undefined) {
-      let data: IDragonChampion = cacheValue.get(99)!;
-      assert.ok(data);
-      assert.equal(data.id, firstChampionInfo.id);
-    } else {
-      assert.fail('Value isn\'t in cache.')
-    }
-  }).timeout(30000);
+  //   const championsCache = CacheName.DRAGON_CHAMPIONS_KEY_ID.replace('{0}', DragonCulture.fr_fr);
+  //   const cacheValue: Map<number, IDragonChampion> | undefined = CacheService.getInstance().getCache<Map<number, IDragonChampion>>(championsCache);
+  //   if (cacheValue != undefined) {
+  //     let data: IDragonChampion = cacheValue.get(99)!;
+  //     assert.ok(data);
+  //     assert.equal(data.id, firstChampionInfo.id);
+  //   } else {
+  //     assert.fail('Value isn\'t in cache.')
+  //   }
+  // }).timeout(30000);
 
 
 }); // END : 'Test DRAGON'

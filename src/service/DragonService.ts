@@ -406,6 +406,7 @@ export abstract class DragonService {
         const dragonChampionFileName = DragonPath.dragonCulturePath(DragonCulture.fr_fr, DragonFileName.champion);
 
         if (!FileService.checkFileExists(this.getDragonFullPath()) || !FileService.checkFileExists(fileName)) {
+            console.log('DragonFile doesn\'t exists, we need get it')
             // Get current version for can get filename
             const versionData: ReturnData<IDragonVersion> = await DragonService.getDragonVersion();
 
