@@ -9,8 +9,7 @@
         "_tests_/**/*.*"
     ],
     "reporter": [
-        "html",
-        "text-summary"
+        "html"
     ],
     "report-dir": "coverageHtml"
 }

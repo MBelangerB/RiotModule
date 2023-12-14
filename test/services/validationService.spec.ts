@@ -43,5 +43,22 @@ describe('===> Test ValidationService', () => {
         done();
     });
 
+    it('1.3 => Convert REGION to GLOBAL REGION', (done) => {
+        let testRegion: string[] = ['NA', 'EUW', 'EUNE', 'JP', 'KR', 'LA1', 'LA2', 'OC', 'TR', 'RU'];
+
+        testRegion.forEach(region => {
+            const platformRegion: string = ValidationService.convertToRealRegion(region);
+            const globalRegion: string = ValidationService.convertToGlobalRegion(platformRegion);
+
+            const mappingRegion: string = ValidationService.globalRegionDataMapping[platformRegion.toUpperCase()];
+
+            assert.ok(platformRegion);
+            assert.ok(globalRegion);
+            assert.ok(mappingRegion);
+            assert.equal(globalRegion, mappingRegion);
+        });
+        done();
+    }).timeout(10000);
+
 
 }); // END : 'Test ValidationService'

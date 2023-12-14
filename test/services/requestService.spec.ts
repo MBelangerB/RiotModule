@@ -13,6 +13,7 @@ import { ISummonerDTO, RiotGameType } from "../../src";
 import EnvVars from "../../src/declaration/major/EnvVars";
 import { VersionData } from "../../src/model/DragonModel";
 import { join } from "path";
+import { IAccountDTO } from "../../src/entity/Account-v1/AccountDTO";
 
 describe('===> Test RequestService', () => {
   const test_Folder: string = './_result/static/test';
@@ -20,6 +21,10 @@ describe('===> Test RequestService', () => {
   const test_TextFilePath: string = join(test_Folder, test_FileName);
 
   const summonerName: string = "Bedy90";
+
+  const puuid: string = "CSclTcHvrAgLq5VStnEUCTCiVDY1hhJpcmlCS6gWt3nxwKSwNOSH-tdlSDzDuboeN4-p_RJWp2sGgQ";
+  const gameName: string = "Bedy90";
+  const tagLine: string = "NA1"
 
   beforeEach(() => {
     // runs once before the first test in this block
@@ -31,8 +36,8 @@ describe('===> Test RequestService', () => {
 
   it('1.0 => (Riot call) Get Summoner info', async () => {
     // Call Riot API
-    const realRegion = ValidationService.convertToRealRegion('NA');
-    const summonerUrl = EnvVars.routes.summoner.v4.getBySummonerName.replace('{summonerName}', summonerName).replace('{region}', realRegion);
+    const realRegion : string = ValidationService.convertToRealRegion('NA');
+    const summonerUrl : string = EnvVars.routes.summoner.v4.getBySummonerName.replace('{summonerName}', summonerName).replace('{region}', realRegion);
 
     try {
       let returnValue: ISummonerDTO = await RequestService.callRiotAPI<ISummonerDTO>(summonerUrl, RiotGameType.LeagueOfLegend);
@@ -40,16 +45,37 @@ describe('===> Test RequestService', () => {
       assert.ok(returnValue);
       assert.equal(returnValue.name, summonerName)
     } catch (error: any) {
-      assert.ok(error);
+      // Use case success
+      assert.ok(error, 'In error use case');
     }
 
   });
 
-  it('1.1 => (Riot call) Get TFT Summoner info without Token', async () => {
+  it('1.2 => (Riot call) Get riot account info', async () => {
     // Call Riot API
-    const realRegion = ValidationService.convertToRealRegion('NA'); // ToT0L@pin
-    const summonerUrl = EnvVars.routes.tft_summoner.v1.getBySummonerName.replace('{summonerName}', summonerName).replace('{region}', realRegion);
-    const token = EnvVars.getToken(RiotGameType.TeamFightTactic);
+    const realRegion : string = ValidationService.convertToRealRegion('NA');
+    const globalRegion: string = ValidationService.convertToGlobalRegion(realRegion);
+    const accountUrl = EnvVars.routes.account.v1.getRiotIdByGameNameAndTagLine.replace('{gameName}', gameName)
+                                                                          .replace('{tagLine}',tagLine).replace('{globalRegion}', globalRegion);
+    try {
+      let returnValue: IAccountDTO = await RequestService.callRiotAPI<IAccountDTO>(accountUrl, RiotGameType.LeagueOfLegend);
+      console.log(returnValue.puuid);
+
+      assert.ok(returnValue);
+      assert.equal(returnValue.gameName, gameName);
+      assert.equal(returnValue.tagLine, tagLine);
+    } catch (error: any) {
+       // Use case success
+      assert.ok(error, 'In error use case');
+    }
+
+  });
+
+  it('1.3 => (Riot call) Get TFT Summoner info without Token', async () => {
+    // Call Riot API
+    const realRegion : string = ValidationService.convertToRealRegion('NA'); // ToT0L@pin
+    const summonerUrl : string = EnvVars.routes.tft_summoner.v1.getBySummonerName.replace('{summonerName}', summonerName).replace('{region}', realRegion);
+    const token : string = EnvVars.getToken(RiotGameType.TeamFightTactic);
 
     try {
       await RequestService.callRiotAPI<ISummonerDTO>(summonerUrl, RiotGameType.TeamFightTactic);
@@ -66,14 +92,14 @@ describe('===> Test RequestService', () => {
     }
   });
 
-  it('1.2 => (Riot call) Get text file', async () => {
+  it('1.10 => (Riot call) Get text file', async () => {
     let returnValue: string = await RequestService.callRiotAPI<string>('https://www.dwsamplefiles.com/?dl_id=176', RiotGameType.Valorant);
 
     assert.ok(returnValue);
     assert.isNotNull(returnValue);
   });
 
-  it('1.3 => (Riot call) Get text file - 404', async () => {
+  it('1.11 => (Riot call) Get text file - 404', async () => {
     try {
       await RequestService.callRiotAPI<string>('https://en.wikipedia.org/bedyapi', RiotGameType.Valorant);
     } catch (error: any) {

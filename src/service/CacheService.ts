@@ -7,6 +7,21 @@ import NodeCache = require('node-cache');
 
 export const CacheName = {
     /**
+     * Params 
+     *      {0} = REGION
+     *      {1} = PUUID
+     */
+    RIOT_ACCOUNT_PUUID: 'riotAccount-{0}-{1}',
+
+    /**
+     * Params 
+     *      {0} = REGION
+     *      {1} = GAME NAME
+     *      {2} = GAME TAG
+     */
+    RIOT_ACCOUNT_GAMENAME_TAG: 'riotAccount-{0}-{1}-{2}',
+
+    /**
      * Params {0} = REGION
      */
     LEAGUE_ROTATE: 'leagueRotate-{0}',
@@ -62,6 +77,10 @@ export const CacheTimer = {
      * Default rotate time is 10 min
      */
     ROTATE: 600,
+    /**
+     * Default summoner time is 60 min
+     */
+    ACCOUNT: 3600,
     /**
      * Default summoner time is 60 min
      */
