@@ -4,6 +4,8 @@ process.env.CacheEnabled = 'false';
 process.env.showTraceStack = 'false'
 
 import { assert } from "chai";
+import { describe } from "mocha";
+
 import { FileService } from '../../src/service/FileService';
 import { join } from "path";
 
@@ -37,6 +39,7 @@ describe('===> Test File Service', () => {
     assert.ok(result);
     assert.isNotNull(result);
     assert.isTrue(result);
+
     done();
   });
 
@@ -48,9 +51,12 @@ describe('===> Test File Service', () => {
     let secondReturn : string = FileService.createFolder(test_Folder);
 
     assert.ok(result);
-    assert.ok(secondReturn);
-    assert.isNotNull(result);
     assert.isTrue(result);
+    assert.isNotNull(result);
+
+    assert.ok(secondReturn);
+    assert.include(secondReturn, 'already exists');
+
     done();
   });
 
@@ -58,7 +64,7 @@ describe('===> Test File Service', () => {
     let result: string = FileService.createFolder('');
 
     assert.ok(result);
-    assert.include(result, 'no such file or directory');
+    assert.include(result, 'is null or empty');
 
     done();
   });
@@ -73,25 +79,30 @@ describe('===> Test File Service', () => {
     assert.isFalse(initialCheck);
     assert.notEqual(initialCheck, finalCheck)
     assert.isTrue(finalCheck);
-    done();
 
+    done();
   });
 
   it('1.4 => Create a new text file with content', (done) => {
-    let initialCheck: boolean = FileService.checkFileExists(test_TextFilePath);
+    try {
+      let initialCheck: boolean = FileService.checkFileExists(test_TextFilePath);
 
-    FileService.createFolder(test_Folder);
-    FileService.writeFile(test_TextFilePath, test_FileContent);
-    let finalCheck: boolean = FileService.checkFileExists(test_TextFilePath);
+      FileService.createFolder(test_Folder);
+      FileService.writeFile(test_TextFilePath, test_FileContent);
+      let finalCheck: boolean = FileService.checkFileExists(test_TextFilePath);
+  
+      let content: string = FileService.readInternalTextFile(test_TextFilePath);
+  
+      assert.isFalse(initialCheck);
+      assert.notEqual(initialCheck, finalCheck)
+      assert.isTrue(finalCheck);
+      assert.equal(content, test_FileContent);
 
-    let content: string = FileService.readInternalTextFile(test_TextFilePath);
-
-    assert.isFalse(initialCheck);
-    assert.notEqual(initialCheck, finalCheck)
-    assert.isTrue(finalCheck);
-    assert.equal(content, test_FileContent);
-    done();
-
+      done();
+    } catch (ex) {
+      console.error(ex);
+      assert.fail("Error on 1.4");
+    }   
   });
 
   it('1.5 => Trying to write a new text file without filename', (done) => {
@@ -112,8 +123,10 @@ describe('===> Test File Service', () => {
 
     assert.isFalse(initialCheck);
     assert.notEqual(initialCheck, finalCheck)
+
     assert.isTrue(finalCheck);
     assert.equal(content.msg, JSON.parse(test_JsonFileContent).msg);
+    
     done();
 
   });

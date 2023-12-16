@@ -7,14 +7,14 @@ import NodeCache = require('node-cache');
 
 export const CacheName = {
     /**
-     * Params 
+     * Params
      *      {0} = REGION
      *      {1} = PUUID
      */
     RIOT_ACCOUNT_PUUID: 'riotAccount-{0}-{1}',
 
     /**
-     * Params 
+     * Params
      *      {0} = REGION
      *      {1} = GAME NAME
      *      {2} = GAME TAG
@@ -43,10 +43,12 @@ export const CacheName = {
      *      {1} = SUMMONER NAME (or accountId ??)
      */
     LEAGUE_RANK: 'leagueRank-{0}-{1}',
+
     // /**
     //  * Params {0} = Dragon champion key (Number)
     //  */
     // DRAGON_CHAMPION_ID: 'dragonChamp-{0}',
+
     /**
      * Params {0} = Culture
      * Contains Map<Number, Champion>
@@ -106,7 +108,7 @@ export class CacheService {
 
     private myCache: NodeCache;
 
-    private constructor(ttlSeconds: number = CacheTimer.DEFAULT) {
+    private constructor(ttlSeconds: number) {
         this.myCache = new NodeCache({ stdTTL: ttlSeconds, checkperiod: ttlSeconds * 0.2, useClones: false });
     }
 

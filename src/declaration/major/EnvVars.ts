@@ -37,9 +37,9 @@ export default {
     routes: {
         account: {
             v1: {
-                getRiotIdByGameNameAndTagLine: "https://{globalRegion}.api.riotgames.com/riot/account/v1/accounts/by-riot-id/{gameName}/{tagLine}",
-                getByPuuid: "https://{globalRegion}.api.riotgames.com/riot/account/v1/accounts/by-puuid/{puuid}",
-            }
+                getRiotIdByGameNameAndTagLine: 'https://{globalRegion}.api.riotgames.com/riot/account/v1/accounts/by-riot-id/{gameName}/{tagLine}',
+                getByPuuid: 'https://{globalRegion}.api.riotgames.com/riot/account/v1/accounts/by-puuid/{puuid}',
+            },
         },
         v2: {
             liveGame: {

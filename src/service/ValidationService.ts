@@ -17,7 +17,7 @@ export abstract class ValidationService {
     // Regional region
     static globalRegion: string[] = ['AMERICAS', 'ASIA', 'EUROPE', 'SEA'];
 
-    
+
     static regionDataMapping: RegionData = {
         // BR1
         'BR': 'BR1',
@@ -83,7 +83,7 @@ export abstract class ValidationService {
         // OC1
         'OC': 'sea',
         'OC1': 'sea',
-    }
+    };
 
     /**
      * Convert region parameters to riot region
@@ -119,8 +119,8 @@ export abstract class ValidationService {
         } else {
             throw new Error(ValidationLocalization.errParamsIsInvalid('region', region));
         }
-    
     }
+
 }
 
 // **** Functions **** //

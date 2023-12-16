@@ -42,8 +42,13 @@ export function tick(milliseconds: number): Promise<void> {
   });
 }
 
+/**
+ * Convert any value to a boolean.
+ * @param value
+ * @returns {boolean} False by default
+ */
 /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-export function getBoolean(value: any) {
+export function getBoolean(value: any) : boolean {
   switch (value) {
        case true:
        case 'true':
@@ -53,4 +58,14 @@ export function getBoolean(value: any) {
        default:
            return false;
    }
+}
+
+export function isNullOrEmpty(value: string) : boolean {
+  if (value === null) {
+    return true;
+  }
+  if (value.trim().length === 0) {
+    return true;
+  }
+  return false;
 }

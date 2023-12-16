@@ -1,14 +1,13 @@
 import { readFileSync, mkdirSync, existsSync, writeFileSync, copyFileSync } from 'fs';
-import { removeSync } from 'fs-extra';
-import { castDataToJSON } from '../declaration/functions';
-
+import { rmSync } from 'fs-extra';
+import { castDataToJSON, isNullOrEmpty } from '../declaration/functions';
 
 // **** Variables **** //
 
-
 // Localization
 export const FileServiceLocalization = {
-    errInFunction: (functionName: string) => `An error occured in 'FileService.${functionName}'.`,
+    errInFunction:  /* istanbul ignore next */ (functionName: string) => `An error occured in 'FileService.${functionName}'.`,
+    errEmptyParameters: (paramName: string) => `The parameters '${paramName} is null or empty.`,
     msgFolderBeenCreated: (folderName: string) => `The folder '${folderName}' has been created.`,
     msgFolderAlreadyExists: (folderName: string) => `The folder '${folderName}' already exists.`,
     msgFileCreatedOrUpdate: (fileName: string) => `The file '${fileName}' has been created or updated.`,
@@ -34,7 +33,9 @@ export abstract class FileService {
      * @returns
      */
     static removeFile(filePath: string): void {
-        return removeSync(filePath);
+        if (FileService.checkFileExists(filePath)) {
+            return rmSync(filePath, { recursive: true });
+        }
     }
 
     /**
@@ -44,6 +45,10 @@ export abstract class FileService {
      */
     static createFolder(folderPath: string): string {
         try {
+            if (isNullOrEmpty(folderPath)) {
+                return FileServiceLocalization.errEmptyParameters(folderPath);
+            }
+
             if (!existsSync(folderPath)) {
                 // File not Exists
                 mkdirSync(folderPath, { recursive: true });
@@ -53,8 +58,9 @@ export abstract class FileService {
             } else {
                 return FileServiceLocalization.msgFolderAlreadyExists(folderPath);
             }
+
         /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-        } catch (ex: any) {
+        } catch (ex: any) /* istanbul ignore next */ {
             console.error('****************************************');
             console.error(FileServiceLocalization.errInFunction('createFolder'));
             console.error(ex);
@@ -72,6 +78,10 @@ export abstract class FileService {
      */
     static writeFile(filePath: string, fileContent: string): boolean {
         try {
+            if (isNullOrEmpty(filePath)) {
+                return false;
+            }
+
             if (typeof (fileContent) !== 'string') {
                 writeFileSync(filePath, castDataToJSON(fileContent), { flag: 'w' });
             } else {
@@ -80,7 +90,9 @@ export abstract class FileService {
             console.info(FileServiceLocalization.msgFileCreatedOrUpdate(filePath));
 
             return true;
-        } catch (ex) {
+
+        /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+        } catch (ex: any) /* istanbul ignore next */ {
             console.error('****************************************');
             console.error(FileServiceLocalization.errInFunction('writeFile'));
             console.error(ex);
