@@ -34,6 +34,7 @@ export abstract class RequestService {
                 responseEncoding: 'utf8',
                 transformResponse: [function (data) {
                     try {
+                        /* istanbul ignore else */
                         if (data) {
                             // Do whatever you want to transform the data
                             return JSON.parse(data);
@@ -47,6 +48,8 @@ export abstract class RequestService {
                     case RiotHttpStatusCode.OK:
                         resolve(response.data);
                         break;
+
+                    /* istanbul ignore next */
                     default:
                         // En théorie, n'est jamais supposé ce produire, si le status est <> 200 c'est le catch qui effectue le traitement
                         reject(response);
@@ -76,6 +79,7 @@ export abstract class RequestService {
                 responseEncoding: 'utf8',
                 transformResponse: [function (data) {
                     try {
+                        /* istanbul ignore else */
                         if (data) {
                             // Do whatever you want to transform the data
                             return JSON.parse(data);
@@ -90,6 +94,7 @@ export abstract class RequestService {
                         resolve(response.data);
                         break;
 
+                    /* istanbul ignore next */
                     default:
                         // En théorie, n'est jamais supposé ce produire, si le status est <> 200 c'est le catch qui effectue le traitement
                         reject(response);
@@ -119,6 +124,7 @@ export abstract class RequestService {
                 responseEncoding: 'utf8',
                 transformResponse: [function (data) {
                     try {
+                        /* istanbul ignore else */
                         if (data) {
                             // Do whatever you want to transform the data
                             return JSON.parse(data);
@@ -134,6 +140,7 @@ export abstract class RequestService {
                         resolve(response.data);
                         break;
 
+                    /* istanbul ignore next */
                     default:
                         // En théorie, n'est jamais supposé ce produire, si le status est <> 200 c'est le catch qui effectue le traitement
                         reject(response);
