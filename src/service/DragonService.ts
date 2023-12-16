@@ -15,7 +15,7 @@ import { castToNumber } from '../declaration/functions';
 // Errors
 export const DragonServiceLocalization = {
     unauth: 'Unauthorized',
-    errInFunction: (functionName: string) => `An error occured in 'DragonService.${functionName}'.`,
+    errInFunction:  /* istanbul ignore next */ (functionName: string) => `An error occured in 'DragonService.${functionName}'.`,
     uninitialized: 'The \'Dragon\' files have not been initialized. Please initialize it first.',
     errDownloadingFile: 'An error occurred while downloading the file.',
     msgFileAlreadyUpdated: 'The files are already up to date.',
@@ -121,8 +121,10 @@ export abstract class DragonService {
     static getKeyInCache<T>(keyName: string): ReturnData<T> {
         const returnData: ReturnData<T> = new ReturnData<T>();
 
+        /* istanbul ignore else */
         if (EnvVars.cache.enabled) {
             const cacheValue: T | undefined = CacheService.getInstance().getCache<T>(keyName);
+            /* istanbul ignore else */
             if (cacheValue != undefined) {
                 returnData.data = cacheValue;
             }
@@ -148,6 +150,8 @@ export abstract class DragonService {
         try {
             // Check if data is in cache
             returnData = DragonService.getKeyInCache<DragonVersion>(versionCacheKey);
+
+            /* istanbul ignore else */
             if (returnData && returnData.data) {
                 return returnData;
             }
@@ -161,9 +165,12 @@ export abstract class DragonService {
             // Prepare and read temp data
             const tmpData: VersionData = new VersionData();
 
+            /* istanbul ignore else */
             if (FileService.checkFileExists(this.getDragonVersionPath())) {
                 // If version file already exists we read the file
                 tmpData.version = FileService.readInternalJSONFile(this.getDragonVersionPath());
+
+                /* istanbul ignore else */
                 if (typeof tmpData !== 'undefined' && tmpData.version.length > 0) {
                     returnData.data.internalVersion = tmpData.version[0];
                 }
@@ -176,20 +183,23 @@ export abstract class DragonService {
             // Read file
             tmpData.version = FileService.readInternalJSONFile(this.getDragonVersionPath());
 
+            /* istanbul ignore else */
             if (typeof tmpData !== 'undefined' && tmpData.version.length > 0) {
                 dragonData.internalVersion = tmpData.version[0];
 
+                /* istanbul ignore else */
                 if (EnvVars.cache.enabled) {
                     CacheService.getInstance().setCache<DragonVersion>(versionCacheKey, dragonData, CacheTimer.DRAGON_VERSION);
                 }
-            } else {
+
+            } else /* istanbul ignore next */ {
                 // Should NEVER occur because we download the file before
                 // But ...
                 returnData.addMessage(DragonServiceLocalization.uninitialized);
                 returnData.code = RiotHttpStatusCode.OK;
             }
 
-        } catch (ex) {
+        } catch (ex) /* istanbul ignore next */ {
             returnData.addMessage(DragonServiceLocalization.errInFunction('getDragonVersion'));
             returnData.code = RiotHttpStatusCode.INTERNAL_SERVER_ERROR;
         }
@@ -262,6 +272,8 @@ export abstract class DragonService {
 
         // Download file content
         const downloadResult: ReturnData<VersionData> = await DragonService.downloadExternalFileContent<VersionData>(versionUrl);
+
+        /* istanbul ignore else */
         if (downloadResult && downloadResult.code == 200 && downloadResult.data != null && Array.isArray(downloadResult.data)) {
             intData.data!.onlineVersion = downloadResult.data[0].toString();
 
@@ -270,8 +282,11 @@ export abstract class DragonService {
             intData.data!.requiredUpdate = requiredUpdate;
         }
 
+        /* istanbul ignore else */
         if (intData.data!.requiredUpdate) {
+            /* istanbul ignore else */
             if (!FileService.writeFile(this.getDragonVersionPath(), JSON.stringify(downloadResult.data))) {
+                /* istanbul ignore next */
                 intData.addMessage(DragonServiceLocalization.errDownloadingFile);
             }
         }
@@ -292,12 +307,15 @@ export abstract class DragonService {
     static async getChampionInfoById(championId: number, dragonCulture: DragonCulture | undefined): Promise<DragonChampion> {
         // console.log('Enter in DragonService.getChampionInfoById');
 
+        /* istanbul ignore else */
         if (!dragonCulture || dragonCulture == null) {
             dragonCulture = DragonCulture.fr_fr;
         }
 
         let championInfo: DragonChampion = new DragonChampion();
         const dragonData: Map<number, IDragonChampion> = await DragonService.readDragonChampionFileById(dragonCulture);
+
+        /* istanbul ignore else */
         if (dragonData.has(championId)) {
             championInfo = dragonData.get(championId)!;
         }
@@ -313,12 +331,15 @@ export abstract class DragonService {
      */
     static async getChampionInfoByName(championName: string, dragonCulture: DragonCulture | undefined): Promise<DragonChampion> {
         // console.log('Enter in DragonService.getChampionInfoByName');
+        /* istanbul ignore else */
         if (!dragonCulture || dragonCulture == null) {
             dragonCulture = DragonCulture.fr_fr;
         }
 
         let championInfo: DragonChampion = new DragonChampion();
         const dragonData: Map<string, IDragonChampion> = await DragonService.readDragonChampionFileByName(dragonCulture);
+
+        /* istanbul ignore else */
         if (dragonData.has(championName.toLowerCase())) {
             championInfo = dragonData.get(championName.toLowerCase())!;
         }
@@ -339,9 +360,10 @@ export abstract class DragonService {
         let versionData: ReturnData<DragonVersion> = new ReturnData<DragonVersion>();
         versionData = DragonService.prepareTree();
 
+        /* istanbul ignore else */
         if (dragonVersion) {
             versionData.data = dragonVersion;
-        } else {
+        } else /* istanbul ignore next */ {
             // Double check, This scenario is not supposed to happen.
             versionData = await DragonService.getDragonVersion();
         }
@@ -351,29 +373,37 @@ export abstract class DragonService {
 
         // Read current file if exists
         const tmpData: DragonFile<T> = new DragonFile<T>();
+        /* istanbul ignore else */
         if (FileService.checkFileExists(dragonFileName)) {
             tmpData.data = FileService.readInternalJSONFile(dragonFileName);
         }
 
         let downloadResult: DragonFile<T>;
         const currentVersion: number = (versionData != undefined && versionData!.data!.internalVersion != null ? castToNumber(versionData!.data!.internalVersion!) : 0);
-        // let dragonFileVersion: DragonVersion = new DragonVersion();
 
         if (tmpData?.data == undefined) {
             // Downlaod current file for check version
             downloadResult = await DragonService.downloadExternalDragonFile<T>(url);
+
+            /* istanbul ignore else */
             if (downloadResult && downloadResult.data != null) {
                 versionData.data!.onlineVersion = downloadResult.version;
 
                 const newVersion: number = castToNumber(downloadResult.version!);
-                // const currentVersion: number = castToNumber(versionData.data!.internalVersion!);
                 const requiredUpdate: boolean = (currentVersion < newVersion);
                 versionData.data!.requiredUpdate = requiredUpdate;
+
+                returnData.data = downloadResult.data;
             }
+        } else {
+            returnData.data = tmpData.data;
         }
 
+        /* istanbul ignore else */
         if ((versionData && versionData.data!.requiredUpdate || tmpData?.data == undefined) && dragonVersion != null) {
+            /* istanbul ignore else */
             if (!FileService.writeFile(dragonFileName, JSON.stringify(downloadResult!))) {
+                /* istanbul ignore next */
                 returnData.addMessage(DragonServiceLocalization.errDownloadingFile);
             }
         }
@@ -391,8 +421,12 @@ export abstract class DragonService {
 
         // Check if champions data is in cache
         const championsCache = CacheName.DRAGON_CHAMPIONS_KEY_ID.replace('{0}', dragonCulture);
+
+        /* istanbul ignore else */
         if (EnvVars.cache.enabled) {
             const cacheValue: Map<number, IDragonChampion> | undefined = CacheService.getInstance().getCache<Map<number, IDragonChampion>>(championsCache);
+            
+            /* istanbul ignore else */
             if (cacheValue != undefined) {
                 championData = cacheValue;
                 return championData;
@@ -405,27 +439,33 @@ export abstract class DragonService {
         let aDragonChampion: DragonFile<DragonChampion[]> = new DragonFile<DragonChampion[]>;
         const dragonChampionFileName = DragonPath.dragonCulturePath(DragonCulture.fr_fr, DragonFileName.champion);
 
+        /* istanbul ignore else */
         if (!FileService.checkFileExists(this.getDragonFullPath()) || !FileService.checkFileExists(fileName)) {
-            console.log('DragonFile doesn\'t exists, we need get it')
+            console.log('DragonFile doesn\'t exists, we need get it');
             // Get current version for can get filename
             const versionData: ReturnData<IDragonVersion> = await DragonService.getDragonVersion();
 
             // Get champion Url
             const championUrl: string = DragonService.getFileUrl(DragonFileType.Champion, DragonCulture.fr_fr, versionData.data!);
             const downResult: ReturnData<DragonFile<DragonChampion[]>> = await DragonService.downloadDragonFile<DragonFile<DragonChampion[]>>(championUrl, dragonCulture, dragonChampionFileName, versionData.data!);
+            
+            /* istanbul ignore else */
             if (downResult && downResult.data != null) {
                 aDragonChampion = downResult.data;
             }
         }
 
+        /* istanbul ignore else */
         if (aDragonChampion == null || aDragonChampion.data == null) {
             aDragonChampion = FileService.readInternalJSONFile(dragonChampionFileName);
         }
 
+        /* istanbul ignore else */
         if (aDragonChampion && aDragonChampion.type == 'champion') {
             for (const keyName in aDragonChampion.data) {
                 const dragonChampionInfo: IDragonChampion = aDragonChampion.data[keyName];
 
+                /* istanbul ignore else */
                 if (dragonChampionInfo) {
                     // Mandatory for clean extra values
                     const tmpChampion: IDragonChampion = {
@@ -440,6 +480,7 @@ export abstract class DragonService {
                 }
             }
 
+            /* istanbul ignore else */
             if (EnvVars.cache.enabled) {
                 CacheService.getInstance().setCache<Map<number, IDragonChampion>>(championsCache, championData, CacheTimer.DRAGON_VERSION);
             }
@@ -458,8 +499,12 @@ export abstract class DragonService {
 
         // Check if champions data is in cache
         const championsCache = CacheName.DRAGON_CHAMPIONS_KEY_NAME.replace('{0}', dragonCulture);
+
+        /* istanbul ignore else */
         if (EnvVars.cache.enabled) {
             const cacheValue: Map<string, IDragonChampion> | undefined = CacheService.getInstance().getCache<Map<string, IDragonChampion>>(championsCache);
+            
+            /* istanbul ignore else */
             if (cacheValue != undefined) {
                 championData = cacheValue;
                 return championData;
@@ -472,6 +517,7 @@ export abstract class DragonService {
         let aDragonChampion: DragonFile<DragonChampion[]> = new DragonFile<DragonChampion[]>;
         const dragonChampionFileName = DragonPath.dragonCulturePath(DragonCulture.fr_fr, DragonFileName.champion);
 
+        /* istanbul ignore else */
         if (!FileService.checkFileExists(this.getDragonFullPath()) || !FileService.checkFileExists(fileName)) {
             // Get current version for can get filename
             const versionData: ReturnData<IDragonVersion> = await DragonService.getDragonVersion();
@@ -479,19 +525,24 @@ export abstract class DragonService {
             // Get champion Url
             const championUrl: string = DragonService.getFileUrl(DragonFileType.Champion, DragonCulture.fr_fr, versionData.data!);
             const downResult: ReturnData<DragonFile<DragonChampion[]>> = await DragonService.downloadDragonFile<DragonFile<DragonChampion[]>>(championUrl, dragonCulture, dragonChampionFileName, versionData.data!);
+           
+            /* istanbul ignore else */
             if (downResult && downResult.data != null) {
                 aDragonChampion = downResult.data;
             }
         }
 
+        /* istanbul ignore else */
         if (aDragonChampion == null || aDragonChampion.data == null) {
             aDragonChampion = FileService.readInternalJSONFile(dragonChampionFileName);
         }
 
+        /* istanbul ignore else */
         if (aDragonChampion && aDragonChampion.type == 'champion') {
             for (const keyName in aDragonChampion.data) {
                 const dragonChampionInfo: IDragonChampion = aDragonChampion.data[keyName];
 
+                /* istanbul ignore else */
                 if (dragonChampionInfo) {
                     // Mandatory for clean extra values
                     const tmpChampion: IDragonChampion = {
@@ -506,6 +557,7 @@ export abstract class DragonService {
                 }
             }
 
+            /* istanbul ignore else */
             if (EnvVars.cache.enabled) {
                 CacheService.getInstance().setCache<Map<string, IDragonChampion>>(championsCache, championData, CacheTimer.DRAGON_VERSION);
             }

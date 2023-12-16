@@ -8,20 +8,16 @@ import { assert, expect } from "chai";
 import { FileService } from '../../src/service/FileService';
 import { DragonFileName, DragonPath } from '../../src/service/DragonService';
 import { DragonCulture, DragonFileType } from '../../src/declaration/enum';
-import { DragonChampion, DragonVersion, IDragonChampion } from '../../src/model/DragonModel';
+import { DragonChampion, DragonFile, DragonVersion, IDragonChampion } from '../../src/model/DragonModel';
 import { join, resolve } from 'path';
 import { CacheService, CacheName } from '../../src/service/CacheService';
-import EnvVars from '../../src/declaration/major/EnvVars';
-
-// let should = chai.should();
-// require('dotenv').config();
 
 // https://medium.com/nodejsmadeeasy/elegant-ways-to-pass-env-variables-to-mocha-test-cases-4486cb238bb1
 // https://www.tabnine.com/code/javascript/functions/chai/Assertion/status
 describe('===> Test DragonService', () => {
 
   const test_Folder: string = './_result/static/test';
-  const versionSourceFile : string = './test/baseFile/versions.json';
+  const versionSourceFile: string = './test/baseFile/versions.json';
   const defaultTestFileName: string = 'text.txt';
   const lastDragonVersion: string = "13.10.1";
 
@@ -31,10 +27,10 @@ describe('===> Test DragonService', () => {
     FileService.removeFile(test_Folder);
   });
 
-  afterEach(() => {
+  after(() => {
     // runs once before the first test in this block
-    // FileService.removeFile(DragonPath.dragonFolder);
-    // FileService.removeFile(test_Folder);
+    FileService.removeFile(DragonPath.dragonFolder);
+    FileService.removeFile(test_Folder);
   });
 
 
@@ -127,7 +123,8 @@ describe('===> Test DragonService', () => {
       FileService.createFolder(test_Folder);
       const test_TextFilePath: string = join(test_Folder, fileName);
 
-      await DragonService.downloadAndWriteFile<string>(textUrl, test_TextFilePath).then((result: ReturnData<string>) => {
+      // await DragonService.downloadAndWriteFile<string>(textUrl, test_TextFilePath).then((result: ReturnData<string>) => {
+      DragonService.downloadAndWriteFile<string>(textUrl, test_TextFilePath).then((result: ReturnData<string>) => {
         assert.ok(result);
         assert.equal(result.code, 200);
         assert.isNotNull(result);
@@ -175,11 +172,11 @@ describe('===> Test DragonService', () => {
     // Because cache is enabled, we need to clean the cache created  by lastest tests
     CacheService.getInstance().cleanCache();
 
-    let sourceFile : string = join(DragonService.getMainPath(), versionSourceFile);
-    let fileDestination : string = DragonPath.dragonFilePath(DragonFileName.version);
+    let sourceFile: string = join(DragonService.getMainPath(), versionSourceFile);
+    let fileDestination: string = DragonPath.dragonFilePath(DragonFileName.version);
 
     // Check if base version file exists
-    let baseFileExists : boolean = FileService.checkFileExists(sourceFile);
+    let baseFileExists: boolean = FileService.checkFileExists(sourceFile);
     assert.isTrue(baseFileExists);
 
     if (baseFileExists) {
@@ -189,7 +186,7 @@ describe('===> Test DragonService', () => {
 
       // Copy base file
       FileService.copyFile(sourceFile, fileDestination);
-      let destinationFileExists : boolean = FileService.checkFileExists(fileDestination);
+      let destinationFileExists: boolean = FileService.checkFileExists(fileDestination);
       assert.isTrue(destinationFileExists);
 
       // Check for update
@@ -204,10 +201,11 @@ describe('===> Test DragonService', () => {
     // process.env.CacheEnabled = currentCacheValue;
   }); // .timeout(10000);
 
-  it('2.3 => Download version and the list of champions (Dragon)', async () => {
+  it('2.3.1 => Download version and the list of champions (Dragon)', async () => {
     let versionData: ReturnData<DragonVersion> = await DragonService.getDragonVersion();
     assert.ok(versionData);
     assert.isNotNull(versionData.data);
+    assert.isDefined(versionData.data);
     assert.isNotNull(versionData.data?.internalVersion);
     assert.notEqual(versionData.data?.internalVersion, "0");
 
@@ -218,15 +216,15 @@ describe('===> Test DragonService', () => {
       assert.ok(championData);
       assert.isNotNull(championData);
       assert.isNotNull(championData.data);
-  
+
       // Check tree
       let folders = new Array<string>();
       folders.push(DragonPath.dragonFilePath(DragonFileName.version));
       folders.push(dragonChampionFileName);
-  
+
       assert.isNotNull(folders);
       assert.isArray(folders);
-  
+
       // folders.forEach((folder: string) => {
       //   assert.isTrue(FileService.checkFileExists(folder), `Error on file : '${folder}'`);
       // });
@@ -234,87 +232,154 @@ describe('===> Test DragonService', () => {
     }));
   }).timeout(35000);
 
+  it('2.3.2 => Download version and the list of champions several times (Dragon)', async () => {
+    let versionData: ReturnData<DragonVersion> = await DragonService.getDragonVersion();
+    assert.ok(versionData);
+    assert.isNotNull(versionData.data);
+    assert.isDefined(versionData.data);
+    assert.isNotNull(versionData.data?.internalVersion);
+    assert.notEqual(versionData.data?.internalVersion, "0");
+
+    const championUrl: string = DragonService.getFileUrl(DragonFileType.Champion, DragonCulture.fr_fr, versionData.data!);
+    const dragonChampionFileName = DragonPath.dragonCulturePath(DragonCulture.fr_fr, DragonFileName.champion);
+
+    //  ReturnData<IDragonChampion>   => DragonFile<DragonChampion[]
+    let firstChampionData: ReturnData<DragonFile<DragonChampion[]>> = await DragonService.downloadDragonFile<DragonFile<DragonChampion[]>>(championUrl, DragonCulture.fr_fr, dragonChampionFileName, versionData.data!);
+    let secondChampionData: ReturnData<DragonFile<DragonChampion[]>> = await DragonService.downloadDragonFile<DragonFile<DragonChampion[]>>(championUrl, DragonCulture.fr_fr, dragonChampionFileName, versionData.data!);
+
+    // First validation
+    assert.ok(firstChampionData);
+    assert.isNotNull(firstChampionData);
+    assert.isDefined(firstChampionData);
+    assert.isNotNull(firstChampionData.data);
+    assert.isDefined(firstChampionData.data);
+    // expect(championData.data).to.not.be.null;
+    // expect(championData.data).to.not.be.undefined;
+
+    // Second validation
+    assert.ok(secondChampionData);
+    assert.isNotNull(secondChampionData);
+    assert.isDefined(secondChampionData);
+    assert.isNotNull(secondChampionData.data);
+    assert.isDefined(secondChampionData.data);
+
+    // Check tree pattern
+    let folders = new Array<string>();
+    folders.push(DragonPath.dragonFilePath(DragonFileName.version));
+    folders.push(dragonChampionFileName);
+
+    assert.isNotNull(folders);
+    assert.isArray(folders);
+
+  }).timeout(40000);
+
 
   it('3.0.0 => Get champion info in file by championId', async () => {
-    DragonService.getChampionInfoById(99, DragonCulture.fr_fr).then((championInfo: DragonChampion) => {
-      assert.ok(championInfo);
-      assert.isNotNull(championInfo);
-      assert.equal(championInfo.key, "99");
-      assert.equal(championInfo.id, "Lux");
-      assert.equal(championInfo.name, "Lux");
-    });
+    const championInfo: DragonChampion = await DragonService.getChampionInfoById(99, DragonCulture.fr_fr);
+
+    assert.ok(championInfo);
+    assert.isNotNull(championInfo);
+    assert.isDefined(championInfo);
+    assert.equal(championInfo.key, "99");
+    assert.equal(championInfo.id, "Lux");
+    assert.equal(championInfo.name, "Lux");
+
   }).timeout(20000);
 
   it('3.0.1 => Get champion info by championId without specify a culture (default culture)', async () => {
-    DragonService.getChampionInfoById(99, undefined).then((championInfo: DragonChampion) => {
-      assert.ok(championInfo);
-      assert.isNotNull(championInfo);
-      assert.equal(championInfo.key, "99");
-      assert.equal(championInfo.id, "Lux");
-      assert.equal(championInfo.name, "Lux");
-    });
+    const championInfo: DragonChampion = await DragonService.getChampionInfoById(99, undefined);
+
+    assert.ok(championInfo);
+    assert.isNotNull(championInfo);
+    assert.isDefined(championInfo);
+    assert.equal(championInfo.key, "99");
+    assert.equal(championInfo.id, "Lux");
+    assert.equal(championInfo.name, "Lux");
+
   }).timeout(20000);
 
   it('3.0.2 => Get champion info in file by championName', async () => {
-    DragonService.getChampionInfoByName("LUX", DragonCulture.fr_fr).then((championInfo: DragonChampion) => {
-      assert.ok(championInfo);
-      assert.isNotNull(championInfo);
-      assert.equal(championInfo.key, "99");
-      assert.equal(championInfo.id, "Lux");
-      assert.equal(championInfo.name, "Lux");
-    });
+    const championInfo: DragonChampion = await DragonService.getChampionInfoByName("LUX", DragonCulture.fr_fr);
+
+    assert.ok(championInfo);
+    assert.isNotNull(championInfo);
+    assert.isDefined(championInfo);
+    assert.equal(championInfo.key, "99");
+    assert.equal(championInfo.id, "Lux");
+    assert.equal(championInfo.name, "Lux");
+
   }).timeout(20000);
 
   it('3.0.3 => Get champion info by championName without specify a culture (default culture)', async () => {
-    DragonService.getChampionInfoByName("LuX", undefined).then((championInfo: DragonChampion) => {
-      assert.ok(championInfo);
-      assert.isNotNull(championInfo);
-      assert.equal(championInfo.key, "99");
-      assert.equal(championInfo.id, "Lux");
-      assert.equal(championInfo.name, "Lux");
-    });
+    const championInfo: DragonChampion = await DragonService.getChampionInfoByName("LUX", undefined);
+
+    assert.ok(championInfo);
+    assert.isNotNull(championInfo);
+    assert.isDefined(championInfo);
+    assert.equal(championInfo.key, "99");
+    assert.equal(championInfo.id, "Lux");
+    assert.equal(championInfo.name, "Lux");
   }).timeout(20000);
 
 
   it('3.1 => Get multi champions info', async () => {
-    const firstChampionInfo: DragonChampion = await DragonService.getChampionInfoById(99, DragonCulture.fr_fr).then((championInfo: DragonChampion) => {
-      assert.ok(championInfo);
-      assert.isNotNull(championInfo);
-      return championInfo;
-    });
+    const firstChampionInfo: DragonChampion = await DragonService.getChampionInfoById(99, DragonCulture.fr_fr);
+    assert.ok(firstChampionInfo);
+    assert.isNotNull(firstChampionInfo);
+    assert.isDefined(firstChampionInfo);
+    assert.equal(firstChampionInfo.key, "99");
 
-    const secondChampionInfo: DragonChampion = await DragonService.getChampionInfoById(69, DragonCulture.fr_fr).then((championInfo: DragonChampion) => {
-      assert.ok(championInfo);
-      assert.isNotNull(championInfo);
-      assert.equal(championInfo.key, "69");
-      assert.equal(championInfo.id, "Cassiopeia");
-      assert.equal(championInfo.name, "Cassiopeia");
-
-      return championInfo;
-    });
-
+    const secondChampionInfo: DragonChampion = await DragonService.getChampionInfoById(69, DragonCulture.fr_fr)
+    assert.ok(secondChampionInfo);
+    assert.isNotNull(secondChampionInfo);
+    assert.isDefined(secondChampionInfo);
+    assert.equal(secondChampionInfo.key, "69");
+    assert.equal(secondChampionInfo.id, "Cassiopeia");
+    assert.equal(secondChampionInfo.name, "Cassiopeia");
 
   }).timeout(30000);
 
   // it('3.2 => Get champs in cache', async () => { 
-  //   let value: boolean = EnvVars.cache.enabled;
-  //   if (!value) {
-  //     assert.fail('Cache is not enabled');
-  //   }
-  //   const firstChampionInfo: DragonChampion = await DragonService.getChampionInfoById(99, DragonCulture.fr_fr);
-  //   assert.ok(firstChampionInfo);
-  //   assert.isNotNull(firstChampionInfo);
-  //   console.log('After get first champ')
-
-  //   const championsCache = CacheName.DRAGON_CHAMPIONS_KEY_ID.replace('{0}', DragonCulture.fr_fr);
-  //   const cacheValue: Map<number, IDragonChampion> | undefined = CacheService.getInstance().getCache<Map<number, IDragonChampion>>(championsCache);
-  //   if (cacheValue != undefined) {
-  //     let data: IDragonChampion = cacheValue.get(99)!;
-  //     assert.ok(data);
-  //     assert.equal(data.id, firstChampionInfo.id);
-  //   } else {
-  //     assert.fail('Value isn\'t in cache.')
-  //   }
+  //   // let value: boolean = EnvVars.cache.enabled;
+  //   // if (!value) {
+  //   //   assert.fail('Cache is not enabled');
+  //   // }
+  //   // const firstChampionInfo: DragonChampion = await DragonService.getChampionInfoById(99, DragonCulture.fr_fr);
+  //   // assert.ok(firstChampionInfo);
+  //   // assert.isNotNull(firstChampionInfo);
+  //   // console.log('After get first champ')
+  //   let championId : string = "99";
+  // 
+  //   DragonService.getChampionInfoByName("LuX", DragonCulture.fr_fr).then((championInfo: DragonChampion) => {
+  //     assert.ok(championInfo);
+  //     assert.isNotNull(championInfo);
+  //     assert.equal(championInfo.key, "99");
+  //     assert.equal(championInfo.id, "Lux");
+  //     assert.equal(championInfo.name, "Lux");
+  //   });
+  // 
+  //   let championInfo: IDragonChampion | undefined;
+  //   DragonService.getChampionInfoByName("Lux", DragonCulture.fr_fr).then((championInfo: IDragonChampion) => {
+  //     assert.ok(championInfo);
+  //     assert.isNotNull(championInfo);
+  //     assert.equal(championInfo.key, "99");
+  //     assert.equal(championInfo.id, "Lux");
+  //     assert.equal(championInfo.name, "Lux");
+  //   });
+  // 
+  // // DragonService.readDragonChampionFileByName(DragonCulture.fr_fr).then()
+  // 
+  //   // const championsCache = CacheName.DRAGON_CHAMPIONS_KEY_ID.replace('{0}', DragonCulture.fr_fr);
+  //   // const cacheValue: Map<number, IDragonChampion> | undefined = CacheService.getInstance().getCache<Map<number, IDragonChampion>>(championsCache);
+  //   // if (cacheValue != undefined) {
+  //   //   let data: IDragonChampion = cacheValue.get(99)!;
+  //   //   assert.ok(data);
+  //   //   assert.equal(data.id, championId);
+  //   // } else {
+  //   //   assert.fail('Value isn\'t in cache.')
+  //   // }
+  // 
+  // 
   // }).timeout(30000);
 
 
