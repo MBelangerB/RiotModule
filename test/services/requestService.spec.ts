@@ -43,6 +43,7 @@ describe('===> Test RequestService', () => {
       let returnValue: ISummonerDTO = await RequestService.callRiotAPI<ISummonerDTO>(summonerUrl, RiotGameType.LeagueOfLegend);
 
       assert.ok(returnValue);
+      assert.isDefined(returnValue);
       assert.equal(returnValue.name, summonerName)
     } catch (error: any) {
       // Use case success
@@ -62,6 +63,7 @@ describe('===> Test RequestService', () => {
       console.log(returnValue.puuid);
 
       assert.ok(returnValue);
+      assert.isDefined(returnValue);
       assert.equal(returnValue.gameName, gameName);
       assert.equal(returnValue.tagLine, tagLine);
     } catch (error: any) {
@@ -113,6 +115,7 @@ describe('===> Test RequestService', () => {
     returnValue.version = await RequestService.downloadExternalFile<string[]>(EnvVars.dragon.url.version);
 
     assert.ok(returnValue);
+    assert.isDefined(returnValue);
     assert.isArray(returnValue.version);
   });
 
@@ -125,17 +128,21 @@ describe('===> Test RequestService', () => {
     }
   });
 
-  it('2.2 => Get text file', async () => {
+  it('2.2 => Download the contents of a file via a remote URL.', async () => {
     let returnValue: string = await RequestService.downloadExternalFile<string>('https://www.dwsamplefiles.com/?dl_id=176');
 
     assert.ok(returnValue);
     assert.isNotNull(returnValue);
+    assert.isDefined(returnValue);
   });
 
-  it('3.0 => Downlaod and write error', async () => {
+  it('3.0 => Try downlaod and write a file with a invalid URL. - 403', async () => {
     try {
       let invalidFileUrl: string = EnvVars.dragon.url.championIcon;
       let returnValue: string = await RequestService.downloadAndWriteFile<string>(invalidFileUrl, test_TextFilePath);
+
+      assert.fail(returnValue);
+
     } catch (error: any) {
       assert.ok(error);
       assert.equal(error.response.status, 403);

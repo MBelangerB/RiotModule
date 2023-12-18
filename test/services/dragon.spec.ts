@@ -21,12 +21,14 @@ describe('===> Test DragonService', () => {
   const defaultTestFileName: string = 'text.txt';
   const lastDragonVersion: string = "13.10.1";
 
-  beforeEach(() => {
+  // beforeEach
+  before(() => {
     // runs once before the first test in this block
     FileService.removeFile(DragonPath.dragonFolder);
     FileService.removeFile(test_Folder);
   });
 
+  // afterEach
   after(() => {
     // runs once before the first test in this block
     FileService.removeFile(DragonPath.dragonFolder);
@@ -123,7 +125,6 @@ describe('===> Test DragonService', () => {
       FileService.createFolder(test_Folder);
       const test_TextFilePath: string = join(test_Folder, fileName);
 
-      // await DragonService.downloadAndWriteFile<string>(textUrl, test_TextFilePath).then((result: ReturnData<string>) => {
       DragonService.downloadAndWriteFile<string>(textUrl, test_TextFilePath).then((result: ReturnData<string>) => {
         assert.ok(result);
         assert.equal(result.code, 200);
@@ -139,7 +140,8 @@ describe('===> Test DragonService', () => {
     catch (ex) {
       console.error(ex);
     };
-  });
+
+  }).timeout(5000);
 
   it('2.2.0 => Download version list (Dragon)', async () => {
     let result: ReturnData<DragonVersion> = await DragonService.getDragonVersion();
@@ -182,7 +184,7 @@ describe('===> Test DragonService', () => {
     if (baseFileExists) {
       // Prepare test tree
       let result: ReturnData<DragonVersion> = DragonService.prepareTree();
-      assert.ok(resolve);
+      assert.ok(result);
 
       // Copy base file
       FileService.copyFile(sourceFile, fileDestination);
@@ -192,13 +194,12 @@ describe('===> Test DragonService', () => {
       // Check for update
       result = await DragonService.getDragonVersion();
       assert.ok(result);
+      assert.isDefined(result.data);
       assert.isTrue(result.data?.requiredUpdate)
 
     } else {
       assert.fail('BaseFile doesn\'t exists')
     }
-
-    // process.env.CacheEnabled = currentCacheValue;
   }); // .timeout(10000);
 
   it('2.3.1 => Download version and the list of champions (Dragon)', async () => {

@@ -115,7 +115,7 @@ export abstract class RequestService {
      * @returns
      */
     static async downloadAndWriteFile<T>(requestUrl: string, filePath: string, responseType: ResponseType = 'json'): Promise<T> {
-        console.info(`Downloading the '${requestUrl}' file and writing in '${filePath}'.`);
+        console.info(`Attempt to download file '${requestUrl}' and write content to file '${filePath}'.`);
         // ---------------
         const axiosQuery = new Promise<T>(function (resolve, reject) {
             axios(encodeURI(requestUrl), {
