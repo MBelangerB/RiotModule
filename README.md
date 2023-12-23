@@ -27,7 +27,7 @@ If this is a brand new project, make sure to create a package.json first with th
 Installation is done using the npm install command:
 
 ```bash
-npm install BedyRiot
+npm install @bedybot/bedyriot
 ```
 
 ## Environment Variables
@@ -54,7 +54,7 @@ Riot_APIDevKey='RGAPI-'
 ## Exemple
 
 ```ts
-import { RiotService, ValidationService, RiotHttpStatusCode} from 'bedyriot';
+import { RiotService, ValidationService, RiotHttpStatusCode } from '@bedybot/bedyriot';
 
 # Initialize 'RiotService'
 const service: RiotService = new RiotService();
@@ -63,12 +63,12 @@ const service: RiotService = new RiotService();
 let valideRegion: string = ValidationService.convertToRealRegion(region);
 
 # Get SummonerDTO
-import { ISummonerDTO } from 'bedyriot';
+import { ISummonerDTO } from '@bedybot/bedyriot';
 const apiSummoner: ISummonerDTO = await service.SummonerV4.getBySummonerName(summonerName, region);
 ```
 
 
 ## Authors
 
-- [@MBelangerB](https://www.github.com/MBelangerB)
+- [@MBelangerB] (https://www.github.com/MBelangerB)
 

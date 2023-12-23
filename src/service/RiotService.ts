@@ -47,9 +47,9 @@ export class AccountV1 {
 
     /**
      * Get Riot Account info by user PUUID and region
-     * @param puuid 
-     * @param region 
-     * @returns 
+     * @param puuid
+     * @param region
+     * @returns
      */
     async getByPuuid(puuid: string, region: string): Promise<IAccountDTO> {
         const realRegion = ValidationService.convertToRealRegion(region);
@@ -89,16 +89,16 @@ export class AccountV1 {
 
     /**
      * Get Riot Account info by user gameName, tagLine and region
-     * @param gameName 
-     * @param tagLine 
-     * @param region 
-     * @returns 
+     * @param gameName
+     * @param tagLine
+     * @param region
+     * @returns
      */
     async getByGameNameTagLine(gameName: string, tagLine: string, region: string): Promise<IAccountDTO> {
         const realRegion = ValidationService.convertToRealRegion(region);
         const globalRegion = ValidationService.convertToGlobalRegion(realRegion);
         const accountUrl = EnvVars.routes.account.v1.getRiotIdByGameNameAndTagLine.replace('{gameName}', gameName)
-                                                                            .replace('{tagLine}',tagLine).replace('{globalRegion}', globalRegion);
+                                                                            .replace('{tagLine}', tagLine).replace('{globalRegion}', globalRegion);
         let returnValue!: IAccountDTO;
 
         const cacheName = CacheName.RIOT_ACCOUNT_GAMENAME_TAG.replace('{0}', globalRegion).replace('{1}', gameName).replace('{2}', tagLine);
@@ -136,7 +136,7 @@ export class SummonerV4 {
 
     /**
     * @deprecated  October 2023 : https://developer.riotgames.com/docs/summoner-name-to-riot-id-faq
-    * 
+    *
     * Return a summoner
     * @param summonerName SummonerName
     * @param region Region
