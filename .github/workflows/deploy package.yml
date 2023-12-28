@@ -9,11 +9,9 @@
 #       uses: lhotari/action-upterm@v1
 # --------------------------------------
 
-name: RiotModule Deploy coverage
+name: Riot module - NPM deploy
 
-on:
-  pull_request:
-    
+on:   
   release:
     types: [created, edited, published]
 
