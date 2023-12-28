@@ -17,7 +17,7 @@ on:
     - rework/syncPattern
     
   release:
-    types: [created, edited]
+    types: [created, edited, published]
     branches:
     - rework/syncPattern 
 
@@ -29,10 +29,10 @@ env:
      CacheEnabled: true
 
 permissions:
-   pull-requests: write
-   packages: write
    contents: read
-    # deployments
+   pull-requests: write
+   packages: write  
+   # deployments
     
 jobs:
   build:
@@ -54,19 +54,28 @@ jobs:
    #  - name: Fetch base
    #   run: git fetch origin ${{ github.event.pull_request.base.ref }} --depth=1000
         
+   # Setup .npmrc file to publish to npm
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
         # Test
         registry-url: https://npm.pkg.github.com/
-        cache: 'npm'
+         # Defaults to the user or organization that owns the workflow file
+        scope: '@MBelangerB'
+        # cache: 'npm'
         
     - name: Install Typescript
       run: npm install typescript@4.8.4 -g
       
     - name: Install dependencies
       run: npm ci
+
+      # Test Deploy package
+    - run: Publish on Github NPM package
+      env:
+        NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # End Test Deploy package
 
 # ---------------------------------------
 # On Pull request
@@ -117,14 +126,8 @@ jobs:
           
     # - name: Debugging with ssh
     #  uses: lhotari/action-upterm@v1
-
-    # Test Deploy package
-    - run: npm publish
-      env:
-        NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
-    # End Test Deploy package
       
-    - name: Publish on SSH
+    - name: Publish coverage result on SSH
       if: ${{ github.event_name == 'workflow_dispatch' }}
       uses: appleboy/scp-action@v0.1.4
       with:

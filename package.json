@@ -1,5 +1,5 @@
 {
-  "name": "@bedybot/riotmodule",
+  "name": "@mbelangerb/riotmodule",
   "version": "1.1.0",
   "description": "Bedy Riot module - Module for call Riot service and obtains information",
   "main": "build/index.js",
