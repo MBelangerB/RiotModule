@@ -72,7 +72,8 @@ jobs:
       run: npm ci
 
       # Test Deploy package
-    - run: Publish on Github NPM package
+    - name: Publish on Github NPM package
+      run: npm publish
       env:
         NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       # End Test Deploy package
