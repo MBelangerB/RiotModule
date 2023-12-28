@@ -24,10 +24,16 @@ Node.js 16.0 or higher is required.
 
 If this is a brand new project, make sure to create a package.json first with the `npm init` command.
 
+### Login to Github registry package
+Require PAT for install the package
+```bash
+npm login --scope=@mbelangerb --auth-type=legacy --registry=https://npm.pkg.github.com
+```
+
 Installation is done using the npm install command:
 
 ```bash
-npm install @bedybot/bedyriot
+npm install @mbelangerb/riotmodule@1.1.0
 ```
 
 ## Environment Variables
