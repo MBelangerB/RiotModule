@@ -1,0 +1,62 @@
+# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
+        
+# --------------------------------------
+# Debugging
+# --------------------------------------
+#     - name: Debugging with ssh
+#      # You may pin to the exact commit or the version.
+#       uses: lhotari/action-upterm@v1
+# --------------------------------------
+
+name: RiotModule Deploy coverage
+
+on:
+  pull_request:
+    
+  release:
+    types: [created, edited, published]
+
+    # Manual action
+  workflow_dispatch:
+
+permissions:
+   contents: read
+   pull-requests: write
+   packages: write  
+    
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [16.x]
+        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+        
+    # Setup .npmrc file to publish to npm
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+        registry-url: https://npm.pkg.github.com/
+         # Defaults to the user or organization that owns the workflow file
+        scope: '@MBelangerB'
+        
+    - name: Install Typescript
+      run: npm install typescript@4.8.4 -g
+      
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Build
+      run: npm compile:npx
+
+    - name: Publish on Github NPM package
+      run: npm publish
+      env:
+        NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
