@@ -1,4 +1,4 @@
-# BedyRiot
+# Bedy Riot module
 
 A simple library to communicate with Riot's League of Legend API.
 

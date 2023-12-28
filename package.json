@@ -1,7 +1,7 @@
 {
-  "name": "@bedybot/bedyriot",
+  "name": "@bedybot/riotmodule",
   "version": "1.1.0",
-  "description": "Bedy - Module for call Riot service and obtains information",
+  "description": "Bedy Riot module - Module for call Riot service and obtains information",
   "main": "build/index.js",
   "types": "./build/index.d.ts",
   "scripts": {
@@ -34,6 +34,9 @@
   "bugs": {
     "url": "https://github.com/MBelangerB/RiotModule/issues"
   },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
   "homepage": "https://github.com/MBelangerB/RiotModule#readme",
   "dependencies": {
     "axios": "^1.4.0",
@@ -48,11 +51,11 @@
     "@types/mocha": "^10.0.6",
     "@types/node": "^20.10.5",
     "@types/sinon": "^17.0.2",
-    "@typescript-eslint/eslint-plugin": "^6.14.0",
+    "@typescript-eslint/eslint-plugin": "^6.16.0",
     "chai": "^4.3.10",
     "dotenv": "^16.3.1",
     "eslint": "^8.56.0",
-    "faker": "^6.6.6",
+    "faker": "^5.5.3",
     "mocha": "^10.2.0",
     "nodemon": "^3.0.2",
     "nyc": "^15.1.0",
