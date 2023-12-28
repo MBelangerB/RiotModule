@@ -3,6 +3,7 @@ import EnvVars from '../declaration/major/EnvVars';
 import { RiotGameType } from '../declaration/enum';
 import { ValidationService } from './ValidationService';
 import { RequestService } from './RequestService';
+import { IAccountDTO } from '../entity/Account-v1/AccountDTO';
 import { ISummonerDTO } from '../entity/Summoner-v4/SummonerDTO';
 import { IChampionInfo } from '../entity/Champion-v3/ChampionInfo';
 import { IChampionMasteryDTO } from '../entity/ChampionMasteries-v4/ChampionMasteryDTO';
@@ -23,6 +24,7 @@ export const RiotLocalization = {
 } as const;
 
 export interface IRiotService {
+    AccountV1: AccountV1;
     SummonerV4: SummonerV4;
     ChampionMasteryV4: ChampionMasteryV4;
     ChampionV3: ChampionV3;
@@ -33,6 +35,7 @@ export interface IRiotService {
 
 // **** Class  **** //
 export class RiotService implements IRiotService {
+    AccountV1: AccountV1 = new AccountV1;
     SummonerV4: SummonerV4 = new SummonerV4;
     ChampionMasteryV4: ChampionMasteryV4 = new ChampionMasteryV4;
     ChampionV3: ChampionV3 = new ChampionV3;
@@ -40,10 +43,100 @@ export class RiotService implements IRiotService {
 }
 // TODO: Replace AWAIT RequestService.callRiotAPI by Promise < resolve, reject >
 
+export class AccountV1 {
+
+    /**
+     * Get Riot Account info by user PUUID and region
+     * @param puuid
+     * @param region
+     * @returns
+     */
+    async getByPuuid(puuid: string, region: string): Promise<IAccountDTO> {
+        const realRegion = ValidationService.convertToRealRegion(region);
+        const globalRegion = ValidationService.convertToGlobalRegion(realRegion);
+        const accountUrl = EnvVars.routes.account.v1.getByPuuid.replace('{puuid}', puuid).replace('{globalRegion}', globalRegion);
+
+        let returnValue!: IAccountDTO;
+
+        const cacheName = CacheName.RIOT_ACCOUNT_PUUID.replace('{0}', globalRegion).replace('{1}', puuid);
+        if (EnvVars.cache.enabled) {
+            const cacheValue: IAccountDTO | undefined = CacheService.getInstance().getCache<IAccountDTO>(cacheName);
+            if (cacheValue != undefined) {
+                return cacheValue;
+            }
+        }
+
+        await RequestService.callRiotAPI<IAccountDTO>(accountUrl, RiotGameType.LeagueOfLegend).then((result) => {
+            returnValue = result;
+        }).catch((err) => {
+            console.error(exports.RiotLocalization.errInFunction('getByGameNameTagLine'));
+            if (err instanceof AxiosError) {
+                console.error(err.message);
+            } else if (err.response && err.response.data) {
+                console.error(err.response.data);
+            } else {
+                console.error(err);
+            }
+            throw err;
+        });
+
+        if (EnvVars.cache.enabled) {
+            CacheService.getInstance().setCache<IAccountDTO>(cacheName, returnValue, CacheTimer.ACCOUNT);
+        }
+
+        return returnValue;
+    }
+
+    /**
+     * Get Riot Account info by user gameName, tagLine and region
+     * @param gameName
+     * @param tagLine
+     * @param region
+     * @returns
+     */
+    async getByGameNameTagLine(gameName: string, tagLine: string, region: string): Promise<IAccountDTO> {
+        const realRegion = ValidationService.convertToRealRegion(region);
+        const globalRegion = ValidationService.convertToGlobalRegion(realRegion);
+        const accountUrl = EnvVars.routes.account.v1.getRiotIdByGameNameAndTagLine.replace('{gameName}', gameName)
+                                                                            .replace('{tagLine}', tagLine).replace('{globalRegion}', globalRegion);
+        let returnValue!: IAccountDTO;
+
+        const cacheName = CacheName.RIOT_ACCOUNT_GAMENAME_TAG.replace('{0}', globalRegion).replace('{1}', gameName).replace('{2}', tagLine);
+        if (EnvVars.cache.enabled) {
+            const cacheValue: IAccountDTO | undefined = CacheService.getInstance().getCache<IAccountDTO>(cacheName);
+            if (cacheValue != undefined) {
+                return cacheValue;
+            }
+        }
+
+        await RequestService.callRiotAPI<IAccountDTO>(accountUrl, RiotGameType.LeagueOfLegend).then((result) => {
+            returnValue = result;
+        }).catch((err) => {
+            console.error(exports.RiotLocalization.errInFunction('getByGameNameTagLine'));
+            if (err instanceof AxiosError) {
+                console.error(err.message);
+            } else if (err.response && err.response.data) {
+                console.error(err.response.data);
+            } else {
+                console.error(err);
+            }
+            throw err;
+        });
+
+        if (EnvVars.cache.enabled) {
+            CacheService.getInstance().setCache<IAccountDTO>(cacheName, returnValue, CacheTimer.ACCOUNT);
+        }
+
+        return returnValue;
+    }
+
+}
 
 export class SummonerV4 {
 
     /**
+    * @deprecated  October 2023 : https://developer.riotgames.com/docs/summoner-name-to-riot-id-faq
+    *
     * Return a summoner
     * @param summonerName SummonerName
     * @param region Region
@@ -179,6 +272,7 @@ export class ChampionMasteryV4 {
   */
     private async buildChampionMasteries(summonerMasteries: Array<IChampionMasteryDTO>, options?: ChampionOption | null): Promise<ChampionMasteries> {
         /* eslint-disable @typescript-eslint/no-explicit-any */
+        // TODO: Rework
         const prepareMasteries = new Promise<ChampionMasteries>(async (resolve: any) => {
             const returnValue: ChampionMasteries = new ChampionMasteries();
 
@@ -186,7 +280,7 @@ export class ChampionMasteryV4 {
             await summonerMasteries.reduce(async (prevMasteries, currentMasteries) => {
                 await prevMasteries;
 
-                const info: DragonChampion = await DragonService.getChampionInfo(currentMasteries.championId, options?.culture);
+                const info: DragonChampion = await DragonService.getChampionInfoById(currentMasteries.championId, options?.culture);
 
                 const masteries: ChampionMastery = new ChampionMastery();
                 masteries.summonerId = currentMasteries.summonerId;
@@ -298,6 +392,7 @@ export class ChampionV3 {
     private async buildRotation(riotRotation: IChampionInfo, options?: ChampionOption | null): Promise<Rotation> {
         /* eslint-disable @typescript-eslint/no-explicit-any */
         /* eslint-disable @typescript-eslint/no-unused-vars */
+        // TODO: Reowrk
         const prepareRotation = new Promise<Rotation>(async (resolve: any, reject: any) => {
             const returnValue: Rotation = new Rotation();
             returnValue.maxNewPlayerLevel = riotRotation.maxNewPlayerLevel;
@@ -305,7 +400,7 @@ export class ChampionV3 {
             await riotRotation.freeChampionIds.reduce(async (prevChampionId, currentChampId) => {
                 await prevChampionId;
 
-                const info: DragonChampion = await DragonService.getChampionInfo(currentChampId, options?.culture);
+                const info: DragonChampion = await DragonService.getChampionInfoById(currentChampId, options?.culture);
 
                 const freeChamp: IChampion = {
                     id: parseInt(info.key),
@@ -327,7 +422,7 @@ export class ChampionV3 {
             await riotRotation.freeChampionIdsForNewPlayers.reduce(async (prevChampionId, currentChampId) => {
                 await prevChampionId;
 
-                const info: DragonChampion = await DragonService.getChampionInfo(currentChampId, options?.culture);
+                const info: DragonChampion = await DragonService.getChampionInfoById(currentChampId, options?.culture);
 
                 const freeChamp: IChampion = {
                     id: parseInt(info.key),

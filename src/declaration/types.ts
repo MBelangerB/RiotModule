@@ -1,7 +1,7 @@
 import { DragonCulture } from './enum';
 
 export type RegionData = {
-    [region: string]: string
+    [key: string]: string
 }
 
 /**

@@ -1,7 +1,8 @@
 import { RiotGameType } from '../enum';
+import { getBoolean } from '../functions';
 
-// import dotenv from 'dotenv';
-// dotenv.config();
+import * as dotenv from 'dotenv';
+dotenv.config();
 
 export default {
     nodeEnv: (process.env.NODE_ENV ?? 'development'),
@@ -12,7 +13,7 @@ export default {
         apiToken: (process.env.Riot_APIDevKey ?? ''),
     },
     cache: {
-        enabled: (process.env.CacheEnabled ?? true),
+        enabled: (getBoolean(process.env.CacheEnabled) ?? true),
     },
     dragon: {
         folder: (process.env.dragonBaseFolder ?? '/dragon'),
@@ -34,6 +35,12 @@ export default {
         },
     },
     routes: {
+        account: {
+            v1: {
+                getRiotIdByGameNameAndTagLine: 'https://{globalRegion}.api.riotgames.com/riot/account/v1/accounts/by-riot-id/{gameName}/{tagLine}',
+                getByPuuid: 'https://{globalRegion}.api.riotgames.com/riot/account/v1/accounts/by-puuid/{puuid}',
+            },
+        },
         v2: {
             liveGame: {
                 getCurrentGameInfoBySummoner: 'https://{region}.api.riotgames.com/lol/spectator/v4/active-games/by-summoner/{encryptedSummonerId}',

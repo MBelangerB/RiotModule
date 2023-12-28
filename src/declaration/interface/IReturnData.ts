@@ -9,7 +9,12 @@ export class ReturnData<T> implements IReturnData<T> {
     messages?: string[];
     data?: T | undefined;
 
-    addMessage(message:string) {
+    /* eslint-disable-next-line @typescript-eslint/no-empty-function */
+    constructor() {
+        /* Do nothing */
+    }
+
+    addMessage(message: string) {
         if (!this.messages) {
             this.messages = [];
         }

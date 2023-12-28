@@ -7,6 +7,21 @@ import NodeCache = require('node-cache');
 
 export const CacheName = {
     /**
+     * Params
+     *      {0} = REGION
+     *      {1} = PUUID
+     */
+    RIOT_ACCOUNT_PUUID: 'riotAccount-{0}-{1}',
+
+    /**
+     * Params
+     *      {0} = REGION
+     *      {1} = GAME NAME
+     *      {2} = GAME TAG
+     */
+    RIOT_ACCOUNT_GAMENAME_TAG: 'riotAccount-{0}-{1}-{2}',
+
+    /**
      * Params {0} = REGION
      */
     LEAGUE_ROTATE: 'leagueRotate-{0}',
@@ -28,18 +43,26 @@ export const CacheName = {
      *      {1} = SUMMONER NAME (or accountId ??)
      */
     LEAGUE_RANK: 'leagueRank-{0}-{1}',
+
     // /**
     //  * Params {0} = Dragon champion key (Number)
     //  */
     // DRAGON_CHAMPION_ID: 'dragonChamp-{0}',
+
     /**
      * Params {0} = Culture
+     * Contains Map<Number, Champion>
      */
-    DRAGON_CHAMPIONS: 'dragonChampion-{0}',
+    DRAGON_CHAMPIONS_KEY_ID: 'dragonChampion_id-{0}',
+    /**
+    * Params {0} = Culture
+    * Contains Map<String, Champion>
+    */
+    DRAGON_CHAMPIONS_KEY_NAME: 'dragonChampion_name-{0}',
     /**
      * Dragon version cache
      */
-     DRAGON_VERSION: 'dragonVersion',
+    DRAGON_VERSION: 'dragonVersion',
 };
 
 /**
@@ -56,6 +79,10 @@ export const CacheTimer = {
      * Default rotate time is 10 min
      */
     ROTATE: 600,
+    /**
+     * Default summoner time is 60 min
+     */
+    ACCOUNT: 3600,
     /**
      * Default summoner time is 60 min
      */
@@ -81,7 +108,7 @@ export class CacheService {
 
     private myCache: NodeCache;
 
-    private constructor(ttlSeconds: number = CacheTimer.DEFAULT) {
+    private constructor(ttlSeconds: number) {
         this.myCache = new NodeCache({ stdTTL: ttlSeconds, checkperiod: ttlSeconds * 0.2, useClones: false });
     }
 
@@ -95,7 +122,7 @@ export class CacheService {
             CacheService._instance = new CacheService(ttlSeconds);
         }
         return CacheService._instance;
-      }
+    }
 
     /**
      * Check if there is any data associated with the KeyName.
@@ -121,7 +148,7 @@ export class CacheService {
      * @param ttlSeconds {optional}
      * @returns
      */
-    setCache<T>(keyName: string, value: T, ttlSeconds = -1) : boolean {
+    setCache<T>(keyName: string, value: T, ttlSeconds = -1): boolean {
         let success = false;
         if (ttlSeconds == null || ttlSeconds >= 0) {
             success = this.myCache.set(keyName, value, ttlSeconds);

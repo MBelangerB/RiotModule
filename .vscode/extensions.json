@@ -1,0 +1,11 @@
+{
+    "recommendations": [
+        "github.vscode-github-actions",
+        "github.vscode-pull-request-github",
+        "hbenl.vscode-mocha-test-adapter",
+        "hbenl.vscode-test-explorer",
+        "ms-vscode.test-adapter-converter",
+        "felipecaputo.git-project-manager",
+        "donjayamanne.githistory"
+    ]
+}

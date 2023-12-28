@@ -29,3 +29,22 @@ Bedy npm Riot Module
 https://readme.so/fr
 https://www.makeareadme.com/
     https://readme.shaankhan.dev/
+
+
+// -----------------------------------
+Connection a Gitlab pour npm
+
+npm config set @MBelangerB:bedy https://gitlab.com/MBelangerB/bedy
+
+--- npm publish on NPM registry
+
+
+npm publish --access public
+
+
+
+package.json
+ -  
+ "publishConfig": {
+    "@MBelangerB:registry": "https://npm.pkg.github.com"
+  },
