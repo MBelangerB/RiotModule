@@ -1,5 +1,6 @@
 ![GitHub last commit (branch)](https://img.shields.io/github/last-commit/MBelangerB/RiotModule/dev)
 ![GitHub (Pre-)Release Date](https://img.shields.io/github/release-date-pre/MBelangerB/RiotModule?label=Last%20Release)
+[![codecov](https://codecov.io/gh/MBelangerB/RiotModule/graph/badge.svg?token=VZ7R9KTH4M)](https://codecov.io/gh/MBelangerB/RiotModule)
 
 # Bedy Riot module
 

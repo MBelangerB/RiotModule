@@ -6,7 +6,8 @@
         "src/service/**.[tj]s?(x)"
     ],
     "exclude": [
-        "_tests_/**/*.*"
+        "_tests_/**/*.*",
+        "src/service/RiotService.[tj]s?(x)"
     ],
     "reporter": [
         "html"
