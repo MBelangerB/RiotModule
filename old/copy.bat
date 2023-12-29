@@ -1,0 +1,1 @@
+copy bedyriot-1.0.0.tgz D:\Source\BedyAPI\BedyLeagueAPI\lib

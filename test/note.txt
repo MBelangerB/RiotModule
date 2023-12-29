@@ -1,0 +1,9 @@
+https://github.com/gotwarlost/istanbul/blob/master/ignoring-code-for-coverage.md
+
+/* istanbul ignore else */
+if {
+    {...}
+}
+
+
+    /* istanbul ignore next */ 

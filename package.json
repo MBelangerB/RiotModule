@@ -1,21 +1,33 @@
 {
-  "name": "bedyriot",
-  "version": "1.0.0",
-  "description": "Bedy - Module for call Riot service and obtains information",
+  "name": "@mbelangerb/riotmodule",
+  "version": "2023.12.1",
+  "description": "Bedy Riot module - Module for call Riot service and obtains information",
   "main": "build/index.js",
   "types": "./build/index.d.ts",
   "scripts": {
-    "compile": "npx tsc",
+    "compile:npx": "npx tsc",
+    "compile:rim": "rimraf ./build && tsc",
     "start:dev": "npx nodemon",
-    "start:prod": "npm run build && node build/index.js",
-    "build": "rimraf ./build && tsc",
-    "pack": "npm run build && npm pack",
+    "start:prod": "npm run compile:npx && node build/index.js",
+    "local:pack": "npm run compile:npx && npm pack",
+    "local:packCopy": "npm run compile:npx && npm pack && copy.bat",
+    "npm:refreshLock": "npm i --package-lock-only",
     "preview": "npx npm-packlist",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "eslint": "npx eslint .",
+    "eslintFix": "npx eslint . --fix",
+    "test:js_build": "rimraf ./build && tsc -p tsconfig-test.json",
+    "test:js_run": "mocha ./build/test/*.spec.js --timeout 10000",
+    "test:ts_run": "mocha -r ts-node/register test/**/*.spec.ts",
+    "test:ts_coverage": "nyc --nycrc-path=./nycConfig/.nycrc_base.json mocha --timeout=10000",
+    "test:ts_html_coverage": "nyc --nycrc-path=./nycConfig/.nycrc_git_html.json mocha --timeout=10000",
+    "test:ts_json_coverage": "nyc --nycrc-path=./nycConfig/.nycrc_git.json mocha --timeout=10000"
   },
   "files": [
     "/build"
   ],
+  "engines": {
+    "node": ">=18.0.0"
+  }, 
   "repository": {
     "type": "git",
     "url": "git+https://github.com/MBelangerB/RiotModule.git"
@@ -25,16 +37,34 @@
   "bugs": {
     "url": "https://github.com/MBelangerB/RiotModule/issues"
   },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
   "homepage": "https://github.com/MBelangerB/RiotModule#readme",
   "dependencies": {
-    "axios": "^1.2.5"
+    "axios": "^1.4.0",
+    "fs-extra": "^11.2.0",
+    "node-cache": "^5.1.2",
+    "path": "^0.12.7"
   },
   "devDependencies": {
-    "@types/node": "^18.11.18",
-    "dotenv": "^16.0.3",
-    "nodemon": "^2.0.20",
-    "rimraf": "^4.1.2",
-    "ts-node": "^10.9.1",
-    "typescript": "^4.9.4"
+    "@istanbuljs/nyc-config-typescript": "^1.0.2",
+    "@types/chai": "^4.3.11",
+    "@types/fs-extra": "^11.0.4",
+    "@types/mocha": "^10.0.6",
+    "@types/node": "^20.10.5",
+    "@types/sinon": "^17.0.2",
+    "@typescript-eslint/eslint-plugin": "^6.16.0",
+    "chai": "^4.3.10",
+    "dotenv": "^16.3.1",
+    "eslint": "^8.56.0",
+    "faker": "^5.5.3",
+    "mocha": "^10.2.0",
+    "nodemon": "^3.0.2",
+    "nyc": "^15.1.0",
+    "rimraf": "^5.0.5",
+    "sinon": "^17.0.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
   }
 }

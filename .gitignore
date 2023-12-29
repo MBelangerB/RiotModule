@@ -6,6 +6,9 @@ yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
 
+# Test
+_result
+
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
@@ -19,7 +22,7 @@ pids
 lib-cov
 
 # Coverage directory used by tools like istanbul
-coverage
+coverage*
 *.lcov
 
 # nyc test coverage
@@ -104,12 +107,5 @@ dist
 # TernJS port file
 .tern-port
 
-# Temp
-_package.json
-info.txt
-src/service/bck
-
-_build/
-_package.json
-
-package copy**.json
+build/
+.npmrc

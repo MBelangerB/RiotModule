@@ -1,0 +1,21 @@
+# require: 'test/'
+ui: 'bdd'
+# require: '@babel/register'
+parallel: false
+recursive: false
+node-option:
+  - 'unhandled-rejections=strict' # without leading "--", also V8 flags
+package: './package.json'
+watch-ignore:
+  - '.*'
+  - 'src/**'
+  - 'node_modules'
+  - 'coverage'
+timeout: 5000 # same as "timeout: '5s'"
+slow: 75
+spec:
+  - 'build/test/**/*.spec.js' # the positional arguments!
+color: true
+# delay: false
+diff: true
+# extension: ['spec.js', 'spec.ts']
