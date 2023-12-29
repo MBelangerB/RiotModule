@@ -1,12 +1,13 @@
 {
     "extends": "@istanbuljs/nyc-config-typescript",
-    "check-coverage": false,
+    "check-coverage": true,
     "all": true,
     "include": [
         "src/service/**.[tj]s?(x)"
     ],
     "exclude": [
-        "_tests_/**/*.*"
+        "_tests_/**/*.*",
+        "src/service/RiotService.[tj]s?(x)"
     ],
     "reporter": [
         "json",

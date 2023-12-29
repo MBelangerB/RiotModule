@@ -425,7 +425,7 @@ export abstract class DragonService {
         /* istanbul ignore else */
         if (EnvVars.cache.enabled) {
             const cacheValue: Map<number, IDragonChampion> | undefined = CacheService.getInstance().getCache<Map<number, IDragonChampion>>(championsCache);
-            
+
             /* istanbul ignore else */
             if (cacheValue != undefined) {
                 championData = cacheValue;
@@ -448,7 +448,7 @@ export abstract class DragonService {
             // Get champion Url
             const championUrl: string = DragonService.getFileUrl(DragonFileType.Champion, DragonCulture.fr_fr, versionData.data!);
             const downResult: ReturnData<DragonFile<DragonChampion[]>> = await DragonService.downloadDragonFile<DragonFile<DragonChampion[]>>(championUrl, dragonCulture, dragonChampionFileName, versionData.data!);
-            
+
             /* istanbul ignore else */
             if (downResult && downResult.data != null) {
                 aDragonChampion = downResult.data;
@@ -503,7 +503,7 @@ export abstract class DragonService {
         /* istanbul ignore else */
         if (EnvVars.cache.enabled) {
             const cacheValue: Map<string, IDragonChampion> | undefined = CacheService.getInstance().getCache<Map<string, IDragonChampion>>(championsCache);
-            
+
             /* istanbul ignore else */
             if (cacheValue != undefined) {
                 championData = cacheValue;
@@ -525,7 +525,7 @@ export abstract class DragonService {
             // Get champion Url
             const championUrl: string = DragonService.getFileUrl(DragonFileType.Champion, DragonCulture.fr_fr, versionData.data!);
             const downResult: ReturnData<DragonFile<DragonChampion[]>> = await DragonService.downloadDragonFile<DragonFile<DragonChampion[]>>(championUrl, dragonCulture, dragonChampionFileName, versionData.data!);
-           
+
             /* istanbul ignore else */
             if (downResult && downResult.data != null) {
                 aDragonChampion = downResult.data;
