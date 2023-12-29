@@ -14,9 +14,6 @@
             - dev
             - prod
 
-      # Manual action
-      workflow_dispatch:
-      
     env:
         Riot_APIDevKey: ${{ secrets.RIOT_APIDEVKEY }}
         CacheEnabled: true
