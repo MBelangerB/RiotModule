@@ -9,7 +9,7 @@
 #       uses: lhotari/action-upterm@v1
 # --------------------------------------
 
-name: RiotModule Test Coverage on PR
+name: RiotModule Test Coverage on PR and Codecov
 
 on:
   pull_request:
@@ -32,7 +32,6 @@ permissions:
    contents: read
    pull-requests: write
    packages: write  
-   # deployments
     
 jobs:
   build:
@@ -59,24 +58,12 @@ jobs:
       uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
-        # Test
-        # registry-url: https://npm.pkg.github.com/
-        # Defaults to the user or organization that owns the workflow file
-        # scope: '@MBelangerB'
-        # cache: 'npm'
         
     - name: Install Typescript
       run: npm install typescript@4.8.4 -g
       
     - name: Install dependencies
       run: npm ci
-
-    # Test Deploy package
-    # - name: Publish on Github NPM package
-    #   run: npm publish
-    #   env:
-    #     NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    #   # End Test Deploy package
 
   # ---------------------------------------
   # On Pull request
