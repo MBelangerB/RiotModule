@@ -1,0 +1,63 @@
+# --------------------------------------
+# Debugging
+# --------------------------------------
+#     - name: Debugging with ssh
+#      # You may pin to the exact commit or the version.
+#       uses: lhotari/action-upterm@v1
+# --------------------------------------
+
+    name: RiotModule - Publish coverage on 
+
+    on:
+        push:
+          branches:
+            - dev
+            - prod
+
+      # Manual action
+      workflow_dispatch:
+      
+    env:
+        Riot_APIDevKey: ${{ secrets.RIOT_APIDEVKEY }}
+        CacheEnabled: true
+    
+    permissions:
+       contents: read
+        
+    jobs:
+      build:
+        runs-on: ubuntu-latest
+        environment: TestEnv
+    
+        strategy:
+          matrix:
+            node-version: [18.x]
+    
+        steps:
+        - name: Checkout
+          uses: actions/checkout@v4
+            
+       # Setup .npmrc file to publish to npm
+        - name: Use Node.js ${{ matrix.node-version }}
+          uses: actions/setup-node@v3
+          with:
+            node-version: ${{ matrix.node-version }}
+            
+        - name: Install Typescript
+          run: npm install typescript@4.8.4 -g
+          
+        - name: Install dependencies
+          run: npm ci
+    
+      # ---------------------------------------
+      # On Pull request
+      # - Add comment test coverage in PR
+      # ---------------------------------------
+        - name: Run Test Coverage
+          run: npm run test:ts_json_coverage 
+            
+        - name: Upload coverage reports to Codecov
+          uses: codecov/codecov-action@v3
+          with:
+            token: ${{ secrets.CODECOV_TOKEN }}
+            directory: "coverageJson"
