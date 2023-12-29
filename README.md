@@ -2,7 +2,7 @@
 ![GitHub (Pre-)Release Date](https://img.shields.io/github/release-date-pre/MBelangerB/RiotModule?label=Last%20Release)
 [![codecov](https://codecov.io/gh/MBelangerB/RiotModule/graph/badge.svg?token=VZ7R9KTH4M)](https://codecov.io/gh/MBelangerB/RiotModule)
 
-# Bedy Riot module
+# Bedy Riot module - 2023.12.1
 
 A simple library to communicate with Riot's League of Legend API.
 
@@ -24,7 +24,7 @@ To get this key you need to make a request to Riot.
 This is a **Node.js** module available through the npm registry.
 
 Before installing, download and install **Node.js**. 
-Node.js 16.0 or higher is required.
+Node.js 18.0 or higher is required.
 
 If this is a brand new project, make sure to create a package.json first with the `npm init` command.
 
@@ -37,7 +37,7 @@ npm login --scope=@mbelangerb --auth-type=legacy --registry=https://npm.pkg.gith
 Installation is done using the npm install command:
 
 ```bash
-npm install @mbelangerb/riotmodule@1.1.0
+npm install @mbelangerb/riotmodule
 ```
 
 ## Environment Variables
@@ -64,7 +64,7 @@ Riot_APIDevKey='RGAPI-'
 ## Exemple
 
 ```ts
-import { RiotService, ValidationService, RiotHttpStatusCode } from '@bedybot/bedyriot';
+import { RiotService, ValidationService, RiotHttpStatusCode } from '@mbelangerb/riotmodule';
 
 # Initialize 'RiotService'
 const service: RiotService = new RiotService();
@@ -73,12 +73,12 @@ const service: RiotService = new RiotService();
 let valideRegion: string = ValidationService.convertToRealRegion(region);
 
 # Get SummonerDTO
-import { ISummonerDTO } from '@bedybot/bedyriot';
+import { ISummonerDTO } from '@mbelangerb/riotmodule';
 const apiSummoner: ISummonerDTO = await service.SummonerV4.getBySummonerName(summonerName, region);
 ```
 
 
 ## Authors
 
-- [@MBelangerB] (https://www.github.com/MBelangerB)
+- [@MBelangerB](https://www.github.com/MBelangerB)
 
