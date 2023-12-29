@@ -1,3 +1,6 @@
+![GitHub last commit (branch)](https://img.shields.io/github/last-commit/MBelangerB/RiotModule/dev)
+![GitHub (Pre-)Release Date](https://img.shields.io/github/release-date-pre/MBelangerB/RiotModule?label=Last%20Release)
+
 # Bedy Riot module
 
 A simple library to communicate with Riot's League of Legend API.

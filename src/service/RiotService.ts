@@ -264,8 +264,9 @@ export class ChampionMasteryV4 {
         return await this.buildChampionMasteries(riotData, options);
     }
 
-    /**
-  * Use [IChampionInfo] for build Rotation with option
+/**
+  * Use [IChampionInfo] for build Rotation with option.
+  * [TODO: Review]
   * @param riotRotation
   * @param options
   * @returns

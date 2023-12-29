@@ -9,17 +9,17 @@
 #       uses: lhotari/action-upterm@v1
 # --------------------------------------
 
-name: RiotModule Test Coverage
+name: RiotModule Test Coverage on PR
 
 on:
   pull_request:
-    branches:
-    - rework/syncPattern
+    # branches:
+    # - rework/syncPattern
     
-  release:
-    types: [created, edited, published]
-    branches:
-    - rework/syncPattern 
+  # release:
+  #   types: [created, edited, published]
+  #   # branches:
+  #   # - rework/syncPattern 
 
   # Manual action
   workflow_dispatch:
@@ -41,7 +41,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [16.x]
+        node-version: [18.x]
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
@@ -78,10 +78,10 @@ jobs:
     #     NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     #   # End Test Deploy package
 
-# ---------------------------------------
-# On Pull request
-# - Add comment test coverage in PR
-# ---------------------------------------
+  # ---------------------------------------
+  # On Pull request
+  # - Add comment test coverage in PR
+  # ---------------------------------------
     - name: Run Test Coverage
       if: ${{ github.event_name == 'pull_request' }}
       run: npm run test:ts_json_coverage 
@@ -106,37 +106,37 @@ jobs:
 # On Manual deploy
 # -Commit coverage result on SSH
 # ---------------------------------------
-    - name: Run Test Coverage
-      if: ${{ github.event_name == 'workflow_dispatch' }}
-      run: npm run test:ts_html_coverage
-      
-    - name: Upload coverage artifact
-      if: ${{ github.event_name == 'workflow_dispatch' }}
-      uses: actions/upload-artifact@v4 # actions/upload-artifact@v3.1.2
-      with:
-          name: test-coverage-result
-          path: "coverageHtml/**"
-          retention-days: 1
-
-    - name: Download coverage artifact
-      if: ${{ github.event_name == 'workflow_dispatch' }}
-      uses: actions/download-artifact@v4 # actions/download-artifact@v2.1.1
-      with:
-          name: test-coverage-result
-          path: RiotModule    
-          
-    # - name: Debugging with ssh
-    #  uses: lhotari/action-upterm@v1
-      
-    - name: Publish coverage result on SSH
-      if: ${{ github.event_name == 'workflow_dispatch' }}
-      uses: appleboy/scp-action@v0.1.4
-      with:
-        host: ${{ secrets.HOST }}
-        username: ${{ secrets.USERNAME }}
-        port: ${{ secrets.PORT }}
-        passphrase: ${{ secrets.PASSPHRASE }}
-        key: ${{ secrets.KEY }}
-        source: RiotModule/*
-       # source: "coverage/*.*"
-        target: '/home/bedybot-docker/shared/coverage/www/'
+#    - name: Run Test Coverage
+#      if: ${{ github.event_name == 'workflow_dispatch' }}
+#      run: npm run test:ts_html_coverage
+#      
+#    - name: Upload coverage artifact
+#      if: ${{ github.event_name == 'workflow_dispatch' }}
+#      uses: actions/upload-artifact@v4 # actions/upload-artifact@v3.1.2
+#      with:
+#          name: test-coverage-result
+#          path: "coverageHtml/**"
+#          retention-days: 1
+#
+#    - name: Download coverage artifact
+#      if: ${{ github.event_name == 'workflow_dispatch' }}
+#      uses: actions/download-artifact@v4 # actions/download-artifact@v2.1.1
+#      with:
+#          name: test-coverage-result
+#          path: RiotModule    
+#          
+#    # - name: Debugging with ssh
+#    #  uses: lhotari/action-upterm@v1
+#      
+#    - name: Publish coverage result on SSH
+#      if: ${{ github.event_name == 'workflow_dispatch' }}
+#      uses: appleboy/scp-action@v0.1.4
+#      with:
+#        host: ${{ secrets.HOST }}
+#        username: ${{ secrets.USERNAME }}
+#        port: ${{ secrets.PORT }}
+#        passphrase: ${{ secrets.PASSPHRASE }}
+#        key: ${{ secrets.KEY }}
+#        source: RiotModule/*
+#       # source: "coverage/*.*"
+#        target: '/home/bedybot-docker/shared/coverage/www/'
