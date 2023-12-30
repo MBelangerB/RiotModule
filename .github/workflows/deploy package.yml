@@ -15,6 +15,10 @@ on:
   release:
     types: [created, edited, published]
 
+  # push:
+  #     branches:
+  #       - prod
+
     # Manual action
   workflow_dispatch:
 
@@ -51,7 +55,7 @@ jobs:
       run: npm ci
 
     - name: Build
-      run: npm compile:npx
+      run: npm run compile:npx
 
     - name: Publish on Github NPM package
       run: npm publish
