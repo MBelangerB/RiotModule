@@ -25,7 +25,7 @@ export { ValidationService } from './service/ValidationService';
 // Export DragonService for import with { }
 // Ex. : import { DragonService } from './service/DragonService';
 export { DragonService } from './service/DragonService';
-export { IDragonVersion, DragonVersion } from './model/DragonModel';
+export { IDragonVersion, DragonVersion, IDragonChampion, IDragonFile, IChampDataImage, IVersionData } from './model/DragonModel';
 
 // Generic return pattern
 export { ReturnData } from './declaration/interface/IReturnData';
