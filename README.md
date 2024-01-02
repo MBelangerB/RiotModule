@@ -2,7 +2,7 @@
 ![GitHub (Pre-)Release Date](https://img.shields.io/github/release-date-pre/MBelangerB/RiotModule?label=Last%20Release)
 [![codecov](https://codecov.io/gh/MBelangerB/RiotModule/graph/badge.svg?token=VZ7R9KTH4M)](https://codecov.io/gh/MBelangerB/RiotModule)
 
-# Bedy Riot module - 2023.12.1
+# Bedy Riot module - 2023.12.3
 
 A simple library to communicate with Riot's League of Legend API.
 
@@ -57,7 +57,7 @@ If you want enabled the cache system you need to add key `CacheEnabled=true`
 Riot_LolToken='RGAPI-'
 Riot_TftToken='RGAPI-'
 
-# Developper Mode
+# Developper Mode (24 hours tokens)
 Riot_APIDevKey='RGAPI-'
 ```
 
