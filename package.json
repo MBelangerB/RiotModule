@@ -1,22 +1,25 @@
 {
   "name": "@mbelangerb/riotmodule",
-  "version": "2023.12.2",
+  "version": "2023.12.3",
   "description": "Bedy Riot module - Module for call Riot service and obtains information",
   "main": "build/index.js",
   "types": "./build/index.d.ts",
   "scripts": {
+    "== Compile ==": "",
     "compile:npx": "npx tsc",
     "compile:rim": "rimraf ./build && tsc",
+    "== DEV ==": "",
     "start:dev": "npx nodemon",
     "start:prod": "npm run compile:npx && node build/index.js",
     "local:pack": "npm run compile:npx && npm pack",
-    "local:packCopy": "npm run compile:npx && npm pack && copy.bat",
     "npm:refreshLock": "npm i --package-lock-only",
-    "preview": "npx npm-packlist",
+    "== Eslint ==": "",
     "eslint": "npx eslint .",
     "eslintFix": "npx eslint . --fix",
+    "== JS ==": "",
     "test:js_build": "rimraf ./build && tsc -p tsconfig-test.json",
     "test:js_run": "mocha ./build/test/*.spec.js --timeout 10000",
+    "== TS ==": "",
     "test:ts_run": "mocha -r ts-node/register test/**/*.spec.ts",
     "test:ts_coverage": "nyc --nycrc-path=./nycConfig/.nycrc_base.json mocha --timeout=10000",
     "test:ts_html_coverage": "nyc --nycrc-path=./nycConfig/.nycrc_git_html.json mocha --timeout=10000",
@@ -27,7 +30,7 @@
   ],
   "engines": {
     "node": ">=18.0.0"
-  }, 
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/MBelangerB/RiotModule.git"
@@ -42,7 +45,7 @@
   },
   "homepage": "https://github.com/MBelangerB/RiotModule#readme",
   "dependencies": {
-    "axios": "^1.4.0",
+    "axios": "^1.6.3",
     "fs-extra": "^11.2.0",
     "node-cache": "^5.1.2",
     "path": "^0.12.7"
@@ -52,7 +55,7 @@
     "@types/chai": "^4.3.11",
     "@types/fs-extra": "^11.0.4",
     "@types/mocha": "^10.0.6",
-    "@types/node": "^20.10.5",
+    "@types/node": "^20.10.6",
     "@types/sinon": "^17.0.2",
     "@typescript-eslint/eslint-plugin": "^6.16.0",
     "chai": "^4.3.10",
