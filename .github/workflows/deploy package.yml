@@ -13,7 +13,7 @@ name: Riot module - NPM deploy
 
 on:   
   release:
-    types: [created, edited, published]
+    types: [published]
 
   # push:
   #     branches:
