@@ -437,7 +437,7 @@ export abstract class DragonService {
         const fileName: string = DragonPath.dragonCulturePath(dragonCulture, DragonFileName.champion);
 
         let aDragonChampion: DragonFile<DragonChampion[]> = new DragonFile<DragonChampion[]>;
-        const dragonChampionFileName = DragonPath.dragonCulturePath(DragonCulture.fr_fr, DragonFileName.champion);
+        const dragonChampionFileName = DragonPath.dragonCulturePath(dragonCulture, DragonFileName.champion);
 
         /* istanbul ignore else */
         if (!FileService.checkFileExists(this.getDragonFullPath()) || !FileService.checkFileExists(fileName)) {
@@ -446,7 +446,7 @@ export abstract class DragonService {
             const versionData: ReturnData<IDragonVersion> = await DragonService.getDragonVersion();
 
             // Get champion Url
-            const championUrl: string = DragonService.getFileUrl(DragonFileType.Champion, DragonCulture.fr_fr, versionData.data!);
+            const championUrl: string = DragonService.getFileUrl(DragonFileType.Champion, dragonCulture, versionData.data!);
             const downResult: ReturnData<DragonFile<DragonChampion[]>> = await DragonService.downloadDragonFile<DragonFile<DragonChampion[]>>(championUrl, dragonCulture, dragonChampionFileName, versionData.data!);
 
             /* istanbul ignore else */
@@ -515,7 +515,7 @@ export abstract class DragonService {
         const fileName: string = DragonPath.dragonCulturePath(dragonCulture, DragonFileName.champion);
 
         let aDragonChampion: DragonFile<DragonChampion[]> = new DragonFile<DragonChampion[]>;
-        const dragonChampionFileName = DragonPath.dragonCulturePath(DragonCulture.fr_fr, DragonFileName.champion);
+        const dragonChampionFileName = DragonPath.dragonCulturePath(dragonCulture, DragonFileName.champion);
 
         /* istanbul ignore else */
         if (!FileService.checkFileExists(this.getDragonFullPath()) || !FileService.checkFileExists(fileName)) {
@@ -523,7 +523,7 @@ export abstract class DragonService {
             const versionData: ReturnData<IDragonVersion> = await DragonService.getDragonVersion();
 
             // Get champion Url
-            const championUrl: string = DragonService.getFileUrl(DragonFileType.Champion, DragonCulture.fr_fr, versionData.data!);
+            const championUrl: string = DragonService.getFileUrl(DragonFileType.Champion, dragonCulture, versionData.data!);
             const downResult: ReturnData<DragonFile<DragonChampion[]>> = await DragonService.downloadDragonFile<DragonFile<DragonChampion[]>>(championUrl, dragonCulture, dragonChampionFileName, versionData.data!);
 
             /* istanbul ignore else */

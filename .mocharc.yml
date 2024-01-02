@@ -1,17 +1,25 @@
 # require: 'test/'
 ui: 'bdd'
-require: 'ts-node/register'
+require: 
+  - 'ts-node/register'
 parallel: false
-recursive: false
+recursive: false # Parcourir tout les répertoire
 node-option:
   - 'unhandled-rejections=strict' # without leading "--", also V8 flags
 package: './package.json'
+
+env:
+  NODE_ENV: 'test'
+  CacheEnabled: 'false'
+
 watch-ignore:
   - '.*'
   - 'src/**'
   - 'build/**'
   - 'node_modules'
   - 'coverage'
+
+# reporter: 'spec'
 timeout: 5000 # same as "timeout: '5s'"
 slow: 75
 spec:
@@ -19,4 +27,5 @@ spec:
 color: true
 # delay: false
 diff: true
+exit: true # ?
 # extension: ['spec.js', 'spec.ts']
