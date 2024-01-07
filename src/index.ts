@@ -9,6 +9,7 @@ import { RiotHttpStatusCode } from './declaration/RiotHttpStatusCode';
 // Export Declaraions pour import via { }
 export { RiotHttpStatusCode } from './declaration/RiotHttpStatusCode';
 export { RiotGameType, DragonCulture, DragonFileType } from './declaration/enum';
+export { RegionData, ChampionOption } from './declaration/types';
 
 // Export DTO pour import via { }
 export { IAccountDTO } from './entity/Account-v1/AccountDTO';
@@ -21,6 +22,7 @@ export { ILeagueEntryDTO } from './entity/League-v4/LeagueEntryDTO';
 // Ex. : import { DragonService } from './service/DragonService';
 export { RiotService, AccountV1, SummonerV4, ChampionV3, ChampionMasteryV4, LeagueV4 } from './service/RiotService';
 export { ValidationService } from './service/ValidationService';
+export { Rotation, ChampionMasteries } from './model/RiotModel';
 
 // Export DragonService for import with { }
 // Ex. : import { DragonService } from './service/DragonService';

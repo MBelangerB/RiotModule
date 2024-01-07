@@ -1,6 +1,6 @@
 {
   "name": "@mbelangerb/riotmodule",
-  "version": "2023.12.3",
+  "version": "2024.1.0",
   "description": "Bedy Riot module - Module for call Riot service and obtains information",
   "main": "build/index.js",
   "types": "./build/index.d.ts",
@@ -21,6 +21,7 @@
     "test:js_run": "mocha ./build/test/*.spec.js --timeout 10000",
     "== TS ==": "",
     "test:ts_run": "mocha -r ts-node/register test/**/*.spec.ts",
+    "test:local_coverage": "nyc --nycrc-path=./nycConfig/.nycrc_local.json mocha --timeout=10000",
     "test:ts_coverage": "nyc --nycrc-path=./nycConfig/.nycrc_base.json mocha --timeout=10000",
     "test:ts_html_coverage": "nyc --nycrc-path=./nycConfig/.nycrc_git_html.json mocha --timeout=10000",
     "test:ts_json_coverage": "nyc --nycrc-path=./nycConfig/.nycrc_git.json mocha --timeout=10000"

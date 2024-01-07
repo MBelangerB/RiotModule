@@ -29,6 +29,7 @@ export enum DragonCulture {
 
 export enum DragonFileType {
     Champion,
+    ChampionDetail,
 }
 
 

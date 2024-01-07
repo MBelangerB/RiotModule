@@ -33,12 +33,6 @@ export class DragonFile<T> implements IDragonFile<T> {
     data!: T;
 }
 
-
-// export type VersionData = {
-//     [versions: string] : string[];
-//     // version: string[];
-// }
-
 // -----------------------------
 // Dragon Version
 // -----------------------------
@@ -60,6 +54,7 @@ export interface IDragonChampion {
     name: string;
     title: string;
     image: IChampDataImage;
+    skins?: IChampSkinData[];
 }
 
 export interface IChampDataImage {
@@ -72,10 +67,18 @@ export interface IChampDataImage {
     h: number;
 }
 
+export interface IChampSkinData {
+    id: string;
+    num: number;
+    name: string;
+    chromas: boolean;
+}
+
 export class DragonChampion implements IDragonChampion {
     id = '';
     key = '';
     name = '';
     title = '';
     image!: IChampDataImage;
+    skins?: IChampSkinData[];
 }

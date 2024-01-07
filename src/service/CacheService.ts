@@ -59,6 +59,15 @@ export const CacheName = {
     * Contains Map<String, Champion>
     */
     DRAGON_CHAMPIONS_KEY_NAME: 'dragonChampion_name-{0}',
+
+    /**
+    * Params 
+    *   {0} = Culture
+    *   {1} = Name
+    * Contains IDragonChampion
+    */
+    DRAGON_CHAMPION_DETAIL_BY_NAME: 'dragonChampionDetails_name-{0}-{1}',
+
     /**
      * Dragon version cache
      */
