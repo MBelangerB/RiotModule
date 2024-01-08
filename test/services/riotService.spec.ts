@@ -8,6 +8,8 @@ import EnvVars from "../../src/declaration/major/EnvVars";
 import { DragonCulture, RiotService, Rotation, ValidationService } from "../../src";
 import { IAccountDTO } from "../../src/entity/Account-v1/AccountDTO";
 import { MockRiotRequest } from "../mock/MockRiotRequest";
+import { FileService } from '../../src/service/FileService';
+import { DragonPath } from '../../src/service/DragonService';
 
 // import * from "sinon";
 // export { RiotService, ChampionV3, ChampionMasteryV4, LeagueV4, SummonerV4 } from '../../src/service/RiotService';
@@ -24,10 +26,12 @@ describe('===> Test RiotService', () => {
     // Each call
     beforeEach(() => {
         // runs once before the first test in this block
+        FileService.removeFile(DragonPath.dragonFolder);
     });
 
     afterEach(() => {
         // runs once before the first test in this block
+        FileService.removeFile(DragonPath.dragonFolder);
     });
 
     // Scenario
