@@ -416,6 +416,10 @@ export class ChampionV3 {
                 if (options && options.showLoadingScreen == true) {
                     freeChamp.loadingScreenUrl = EnvVars.dragon.imageUrl.loadingScreenByChampion.replace('{championName}', info.id).replace('{skinId}', '0');
                 }
+                if (options && options.getSkins == true) {
+                    const detailInfo: DragonChampion = await DragonService.getDetailedChampionInfoByName(info.id, options?.culture);
+                    freeChamp.skins = detailInfo.skins;
+                }
 
                 returnValue.freeChampionIds.push(freeChamp);
             }, Promise.resolve());
@@ -437,6 +441,10 @@ export class ChampionV3 {
                 }
                 if (options && options.showLoadingScreen == true) {
                     freeChamp.loadingScreenUrl = EnvVars.dragon.imageUrl.loadingScreenByChampion.replace('{championName}', info.id).replace('{skinId}', '0');
+                }
+                if (options && options.getSkins == true) {
+                    const detailInfo: DragonChampion = await DragonService.getDetailedChampionInfoByName(info.id, options?.culture);
+                    freeChamp.skins = detailInfo.skins;
                 }
 
                 returnValue.freeChampionIdsForNewPlayers.push(freeChamp);

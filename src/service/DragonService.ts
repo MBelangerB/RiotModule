@@ -31,7 +31,7 @@ export abstract class DragonService {
     // #region "Path Area"
     /**
      * Read « Require Main » for get the default app path
-     * @returns
+     * @returns Current folder path
      */
     static getMainPath(): string {
         const returnPath = './';
@@ -45,7 +45,8 @@ export abstract class DragonService {
      * Return the dragon file path folder with culture
      * @param {string} culture Culture @default DragonCulture.fr_fr
      * @param fileName file to open
-     * @returns File path
+     * @param subFolder subfolder name
+     * @returns Get full File path ({culture}/{subFolder}/{filename})
      */
     static getDragonFullPath(culture?: DragonCulture, fileName = '', subFolder = ''): string {
         if (!culture) {
@@ -141,9 +142,9 @@ export abstract class DragonService {
     // #endregion
 
     // #region  "Cache"
+
     /**
      * Get cache value if keyName exists
-     * TODO: Unit test
      * @param keyName
      * @returns
      */
@@ -167,12 +168,11 @@ export abstract class DragonService {
     // #region "Version"
 
     /**
-     * [OK] Get the current version of the Dragon files
+     * Get the current version of the Dragon files
      * @returns {ReturnData<DragonVersion>}
      */
     static async getDragonVersion(): Promise<ReturnData<DragonVersion>> {
         // console.log('Enter in DragonService.getDragonVersion');
-
         let returnData: ReturnData<DragonVersion> = new ReturnData<DragonVersion>();
 
         const versionCacheKey = CacheName.DRAGON_VERSION;
@@ -224,7 +224,7 @@ export abstract class DragonService {
 
     /**
     * [OK] Download the dragon version file and update it if necessary
-    * @param dataDragon
+    * @param dataDragon Current DragonVersion
     * @returns {ReturnData<DragonVersion>}
     */
     private static async downloadDragonVersionFile(dataDragon: DragonVersion): Promise<ReturnData<DragonVersion>> {
@@ -269,9 +269,10 @@ export abstract class DragonService {
 
     /**
      * Get DragonChampion info by championId
-     * @param championId
-     * @param dragonCulture
-     * @returns
+     * @param championId League of Legend champion id
+     * @param dragonCulture Dragon culture
+     * @returns {DragonChampion}
+     * TODO: ReturnData<DragonChampion> ?
      */
     static async getChampionInfoById(championId: number, dragonCulture: DragonCulture | undefined): Promise<DragonChampion> {
         // console.log('Enter in DragonService.getChampionInfoById');
@@ -294,9 +295,10 @@ export abstract class DragonService {
 
     /**
      * Get DragonChampion info by championName
-     * @param championName
-     * @param dragonCulture
-     * @returns
+     * @param championName League of Legend champion name
+     * @param dragonCulture  Dragon culture
+     * @returns {DragonChampion}
+     * TODO: ReturnData<DragonChampion> ?
      */
     static async getChampionInfoByName(championName: string, dragonCulture: DragonCulture | undefined): Promise<DragonChampion> {
         // console.log('Enter in DragonService.getChampionInfoByName');
@@ -322,9 +324,10 @@ export abstract class DragonService {
 
     /**
      * Get DragonChampion info by championName
-     * @param championName
-     * @param dragonCulture
+     * @param championName League of Legend champion name
+     * @param dragonCulture  Dragon culture
      * @returns
+     * TODO: ReturnData<DragonChampion> ?
      */
     static async getDetailedChampionInfoByName(championName: string, dragonCulture: DragonCulture | undefined): Promise<DragonChampion> {
         // console.log('Enter in DragonService.getDetailedChampionInfoByName');
@@ -343,7 +346,13 @@ export abstract class DragonService {
     // #endregion
 
     //#region "Read Dragon file"
-    static async readDetailedDragonChampionFileByName(championName: string, dragonCulture: DragonCulture): Promise<IDragonChampion> {
+    /**
+     * Read dragon champion details file. The detail file content all information for a specific champion.
+     * @param championName League of Legend champion name
+     * @param dragonCulture Dragon culture
+     * @returns  {IDragonChampion}
+     */
+    private static async readDetailedDragonChampionFileByName(championName: string, dragonCulture: DragonCulture): Promise<IDragonChampion> {
         let championData!: IDragonChampion; // = new IDragonChampion;
 
         // Check if data is cached
@@ -397,11 +406,11 @@ export abstract class DragonService {
     }
 
     /**
-     * [TO REWORK] Reads the dragon file associated with the champions.
-     * @param culture
-     * @returns Map<string, IDragonChampion> (key is champion id)
+     * Reads the dragon champion file.  Mapped by ChampionId
+     * @param dragonCulture Dragon culture
+     * @returns {Map<number, IDragonChampion>}
      */
-    static async readDragonChampionsFileById(dragonCulture: DragonCulture): Promise<Map<number, IDragonChampion>> {
+    private static async readDragonChampionsFileById(dragonCulture: DragonCulture): Promise<Map<number, IDragonChampion>> {
         let championData: Map<number, IDragonChampion> = new Map<number, IDragonChampion>();
 
         // Check if champions data is cached
@@ -458,11 +467,11 @@ export abstract class DragonService {
     }
 
     /**
-    * Reads the dragon file associated with the champions.
-    * @param culture
-    * @returns Map<string, IDragonChampion> (key is lower champion name)
+     * Reads the dragon champion file. Mapped by ChampionName
+     * @param dragonCulture Dragon culture
+     * @returns {Map<string, IDragonChampion>}
     */
-    static async readDragonChampionFileByName(dragonCulture: DragonCulture): Promise<Map<string, IDragonChampion>> {
+    private static async readDragonChampionFileByName(dragonCulture: DragonCulture): Promise<Map<string, IDragonChampion>> {
         let championData: Map<string, IDragonChampion> = new Map<string, IDragonChampion>();
 
         // Check if champions data is in cache
@@ -480,13 +489,11 @@ export abstract class DragonService {
         }
 
         // If cache isn't enabled we check if we can read it. If we can't we download it
-        const fileName: string = DragonPath.dragonCulturePath(dragonCulture, DragonFileName.champion);
-
         let aDragonChampion: DragonFile<DragonChampion[]> = new DragonFile<DragonChampion[]>;
         const dragonChampionFileName = DragonPath.dragonCulturePath(dragonCulture, DragonFileName.champion);
 
         /* istanbul ignore else */
-        if (!FileService.checkFileExists(this.getDragonFullPath()) || !FileService.checkFileExists(fileName)) {
+        if (!FileService.checkFileExists(this.getDragonFullPath()) || !FileService.checkFileExists(dragonChampionFileName)) {
             const downResult: ReturnData<DragonFile<DragonChampion[]>> = await DragonService.downloadAndReadDragonFile<DragonChampion[]>('', DragonFileType.Champion, dragonChampionFileName, dragonCulture);
 
             /* istanbul ignore else */
@@ -548,6 +555,12 @@ export abstract class DragonService {
         return retData;
     }
 
+    /**
+     * Download a specific dragon champion file and write the file in server
+     * @param championName 
+     * @param dragonCulture 
+     * @returns 
+     */
     private static async downloadAndReadDetailedChampionFile<T>(championName: string, dragonCulture: DragonCulture): Promise<ReturnData<DragonFile<DragonChampion[]>>> {
         // console.log('Enter in DragonService.downloadAndReadDetailedChampionFile');
 
@@ -570,7 +583,7 @@ export abstract class DragonService {
     }
 
     /**
-     * [OK] Download a dragon file (not for version.json)
+     * Download a dragon file (not for version.json)
      * @param url
      * @param dragonCulture
      * @returns
@@ -625,11 +638,10 @@ export abstract class DragonService {
     }
 
     /**
-        * Call the URL for download/read the content
-        * TODO: Test
-        * @param url Download external file
-        * @returns
-        */
+    * Call the URL for download/read the content
+    * @param url Download external file
+    * @returns
+    */
     private static async downloadExternalFileContent<T>(url: string): Promise<ReturnData<T>> {
         // console.log('Enter in DragonService.downloadExternalFileContent');
 
@@ -640,7 +652,6 @@ export abstract class DragonService {
 
     /**
      * Call the Dragon URL for download/read the content.
-     * TODO: test
      * @param url
      * @returns
      */
