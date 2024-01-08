@@ -668,11 +668,13 @@ export abstract class DragonService {
 
 
 // Dragon file path
+// TODO: Fix and use dragonChampionFolder
 export const DragonPath = {
     basePath: DragonService.getMainPath(),
     dragonFolder: join(DragonService.getMainPath(), EnvVars.dragon.folder),
     dragonFilePath: (filename: string) => join(DragonPath.dragonFolder, filename),
     dragonCulturePath: (culture: string, fileName: string) => join(DragonPath.dragonFolder, culture, fileName),
+    dragonChampionFolder: (culture: string) =>  join(DragonPath.dragonFolder, culture, 'champion'),
 } as const;
 
 export const DragonFileName = {

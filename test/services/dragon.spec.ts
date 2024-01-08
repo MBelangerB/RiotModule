@@ -25,13 +25,19 @@ describe('===> Test DragonService', () => {
   // beforeEach
   before(() => {
     // runs once before the first test in this block
-    FileService.removeFile(DragonPath.dragonFolder);
-    FileService.removeFile(test_Folder);
+    // FileService.removeFile(DragonPath.dragonChampionFolder(DragonCulture.fr_fr));
+    try {
+      FileService.removeFile(DragonPath.dragonFolder);
+      FileService.removeFile(test_Folder);
+    } catch (err) {
+      console.error(err)
+    }
   });
 
   // afterEach
   after(() => {
     // runs once before the first test in this block
+    FileService.removeFile(DragonPath.dragonChampionFolder(DragonCulture.fr_fr));
     FileService.removeFile(DragonPath.dragonFolder);
     FileService.removeFile(test_Folder);
   });
