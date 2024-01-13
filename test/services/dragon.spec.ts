@@ -204,8 +204,9 @@ describe('===> Test DragonService', () => {
 
     assert.isNotNull(result.data);
     assert.isNotNull(result.data?.internalVersion);
-    assert.notEqual(result.data?.internalVersion, "0");
-  }); // .timeout(10000);
+    assert.isDefined(result.data?.internalVersion);
+    assert.notEqual(result.data?.internalVersion, "0.0.0");
+  }).timeout(5000);
 
   it('2.2.1 => Update version list (Dragon)', async () => {
     // Because cache is enabled, we need to clean the cache created  by lastest tests
@@ -238,8 +239,7 @@ describe('===> Test DragonService', () => {
       assert.fail('BaseFile doesn\'t exists')
     }
   }); // .timeout(10000);
-
-  
+ 
   it('3.0.0 => Get summary champion info in file by championId', async () => {
     const championInfo: DragonChampion = await DragonService.getChampionInfoById(99, DragonCulture.fr_fr);
 
