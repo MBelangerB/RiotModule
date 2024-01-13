@@ -129,6 +129,20 @@ export abstract class FileService {
         return readFileSync(filePath, { encoding: fileEncoding, flag: flag });
     }
 
+    /**
+     * Read the content on a static file (if file exists)
+     * @param filePath {string} 
+     * @returns {any | undefined}
+     */
+    static readStaticFileContent<T>(filePath: string) : any | undefined {
+        /* istanbul ignore else */
+        if (FileService.checkFileExists(filePath)) {
+            // If version file already exists we read the file
+            return FileService.readInternalJSONFile(filePath);
+        }
+        return undefined;
+    }
+
     static copyFile(sourcePath: string, destionationPath: string) : void {
         return copyFileSync(sourcePath, destionationPath);
     }

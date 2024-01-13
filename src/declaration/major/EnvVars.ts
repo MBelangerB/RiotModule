@@ -19,20 +19,28 @@ export default {
         folder: (process.env.dragonBaseFolder ?? '/dragon'),
         endPoint: 'https://cdn.communitydragon.org/endpoints',
         url: {
+            languages: 'https://ddragon.leagueoflegends.com/cdn/languages.json',
             version: 'https://ddragon.leagueoflegends.com/api/versions.json',
-            queues: 'http://static.developer.riotgames.com/docs/lol/queues.json',
+            queues: 'https://static.developer.riotgames.com/docs/lol/queues.json',
             champions: 'http://ddragon.leagueoflegends.com/cdn/{version}/data/{lang}/champion.json',
             profileIcons: 'http://ddragon.leagueoflegends.com/cdn/{version}/data/{lang}/profileicon.json',
             summonerSpells: 'http://ddragon.leagueoflegends.com/cdn/{version}/data/{lang}/summoner.json',
             runesReforged: 'http://ddragon.leagueoflegends.com/cdn/{version}/data/{lang}/runesReforged.json',
             championIcon: 'http://ddragon.leagueoflegends.com/cdn/{version}/img/champion/{name}.png',
-            realmInfo: 'https://ddragon.leagueoflegends.com/realms/na.json',
-            championName: 'http://ddragon.leagueoflegends.com/cdn/13.3.1/data/fr_FR/champion/Aatrox.json',
+            realmInfo: 'https://ddragon.leagueoflegends.com/realms/{region}.json',
+            championName: 'http://ddragon.leagueoflegends.com/cdn/{version}/data/{lang}/champion/{championName}.json',
         },
         imageUrl: {
-            squareByChampionId: 'https://cdn.communitydragon.org/latest/champion/{championId}/square',
-            loadingScreenByChampion: 'http://ddragon.leagueoflegends.com/cdn/img/champion/loading/{championName}_{skinId}.jpg',
+            squareByChampionId: 'https://cdn.communitydragon.org/latest/champion/{championId}/square.png',
+            loadingScreenByChampion: 'https://ddragon.leagueoflegends.com/cdn/img/champion/loading/{championName}_{skinId}.jpg',
+            splashArtByChampionId: 'https://cdn.communitydragon.org/latest/champion/{championId}/splash-art/centered.jpg',
+            skinSplashArtByChampionId: 'https://cdn.communitydragon.org/latest/champion/{championId}/splash-art/centered/skin/{skinId}.jpg',
+            tilesByChampionId: 'https://cdn.communitydragon.org/latest/champion/{championId}/tile.jpg',    
+            skinTilesByChampionId: 'https://cdn.communitydragon.org/latest/champion/{championId}/tile/skin/{skinId}.jpg',         
         },
+        rawUrl: {
+            champion_tiles: 'https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/champion-tiles/{championId}/{skinId}.jpg'
+        }
     },
     routes: {
         account: {
@@ -41,14 +49,18 @@ export default {
                 getByPuuid: 'https://{globalRegion}.api.riotgames.com/riot/account/v1/accounts/by-puuid/{puuid}',
             },
         },
-        v2: {
-            liveGame: {
-                getCurrentGameInfoBySummoner: 'https://{region}.api.riotgames.com/lol/spectator/v4/active-games/by-summoner/{encryptedSummonerId}',
-            },
-            matchHistory: {
+        spectator: {
+            v4: {
+                getCurrentGameInfoBySummoner: 'https://{region}.api.riotgames.com/lol/spectator/v4/active-games/by-summoner/{encryptedSummonerId}',    
+            }
+        },
+        match: {
+            v4: {
                 getMatchListByChampionAndQueue: 'https://{region}.api.riotgames.com/lol/match/v4/matchlists/by-account/{encryptedAccountId}?champion={championId}&queue={queueId}&season={seasonId}',
                 getMatchlist: 'https://{region}.api.riotgames.com/lol/match/v4/matchlists/by-account/{encryptedAccountId}?endIndex={end}&beginIndex={begin}',
             },
+            v5: {
+            }
         },
         league: {
             v4: {

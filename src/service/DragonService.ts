@@ -31,7 +31,7 @@ export abstract class DragonService {
     // #region "Path Area"
     /**
      * Read « Require Main » for get the default app path
-     * @returns
+     * @returns Current folder path
      */
     static getMainPath(): string {
         const returnPath = './';
@@ -45,15 +45,27 @@ export abstract class DragonService {
      * Return the dragon file path folder with culture
      * @param {string} culture Culture @default DragonCulture.fr_fr
      * @param fileName file to open
-     * @returns File path
+     * @param subFolder subfolder name
+     * @returns Get full File path ({culture}/{subFolder}/{filename})
      */
-    static getDragonFullPath(culture?: DragonCulture, fileName = ''): string {
+    static getDragonFullPath(culture?: DragonCulture, fileName = '', subFolder = ''): string {
         if (!culture) {
+            // Base folder
             return DragonPath.dragonFolder;
 
         } else if (!fileName || fileName.length == 0) {
+            // Create folder without filename
+            if (subFolder || subFolder.length > 0) {
+                return join(DragonPath.dragonFolder, culture, subFolder);
+            }
             return join(DragonPath.dragonFolder, culture);
+
         } else {
+            // Create folder with subFolder
+            if (subFolder || subFolder.length > 0) {
+                return join(DragonPath.dragonFolder, culture, subFolder, fileName);
+            }
+
             return DragonPath.dragonCulturePath(culture, fileName);
         }
     }
@@ -70,20 +82,33 @@ export abstract class DragonService {
      * Prepare the directory tree for the dragon files
      */
     static prepareTree(): ReturnData<DragonVersion> {
+        // TODO : For each availabled CULTURE. Add params (culture ?)
         const returnData: ReturnData<DragonVersion> = new ReturnData<DragonVersion>();
 
         if (!FileService.checkFileExists(DragonPath.dragonFolder)) {
             returnData.addMessage(FileService.createFolder(DragonPath.dragonFolder));
         }
 
+        // French
         let cultureFolder: string = DragonService.getDragonFullPath(DragonCulture.fr_fr);
         if (!FileService.checkFileExists(cultureFolder)) {
             returnData.addMessage(FileService.createFolder(cultureFolder));
         }
 
+        let championCulture: string = DragonService.getDragonFullPath(DragonCulture.fr_fr, '', 'champion');
+        if (!FileService.checkFileExists(championCulture)) {
+            returnData.addMessage(FileService.createFolder(championCulture));
+        }
+
+        // English
         cultureFolder = DragonService.getDragonFullPath(DragonCulture.en_us);
         if (!FileService.checkFileExists(cultureFolder)) {
             returnData.addMessage(FileService.createFolder(cultureFolder));
+        }
+
+        championCulture = DragonService.getDragonFullPath(DragonCulture.en_us, '', 'champion');
+        if (!FileService.checkFileExists(championCulture)) {
+            returnData.addMessage(FileService.createFolder(championCulture));
         }
 
         return returnData;
@@ -105,6 +130,11 @@ export abstract class DragonService {
                 returnUrl = EnvVars.dragon.url.champions.replace('{version}', dataVersion.internalVersion!)
                     .replace('{lang}', dragonCulture);
                 break;
+
+            case DragonFileType.ChampionDetail:
+                returnUrl = EnvVars.dragon.url.championName.replace('{version}', dataVersion.internalVersion!)
+                    .replace('{lang}', dragonCulture);
+                break;
         }
 
         return returnUrl;
@@ -112,9 +142,9 @@ export abstract class DragonService {
     // #endregion
 
     // #region  "Cache"
+
     /**
      * Get cache value if keyName exists
-     * TODO: Unit test
      * @param keyName
      * @returns
      */
@@ -139,24 +169,25 @@ export abstract class DragonService {
 
     /**
      * Get the current version of the Dragon files
-     * @returns
+     * @returns {ReturnData<DragonVersion>}
      */
     static async getDragonVersion(): Promise<ReturnData<DragonVersion>> {
         // console.log('Enter in DragonService.getDragonVersion');
-
         let returnData: ReturnData<DragonVersion> = new ReturnData<DragonVersion>();
 
         const versionCacheKey = CacheName.DRAGON_VERSION;
         try {
             // Check if data is in cache
             returnData = DragonService.getKeyInCache<DragonVersion>(versionCacheKey);
-
             /* istanbul ignore else */
             if (returnData && returnData.data) {
                 return returnData;
             }
 
-            // No cache or no data, we prepare the data
+            // -----------------------------------------
+            // No cache or no data, we prepare the data amd read static file (if exists)
+            // We also download current version file (on URL) for validate the version
+            // -----------------------------------------
             const dragonData: DragonVersion = {
                 internalVersion: null,
             };
@@ -164,39 +195,23 @@ export abstract class DragonService {
 
             // Prepare and read temp data
             const tmpData: VersionData = new VersionData();
-
+            tmpData.version = FileService.readStaticFileContent(this.getDragonVersionPath());
             /* istanbul ignore else */
-            if (FileService.checkFileExists(this.getDragonVersionPath())) {
-                // If version file already exists we read the file
-                tmpData.version = FileService.readInternalJSONFile(this.getDragonVersionPath());
-
-                /* istanbul ignore else */
-                if (typeof tmpData !== 'undefined' && tmpData.version.length > 0) {
-                    returnData.data.internalVersion = tmpData.version[0];
-                }
+            if (typeof tmpData !== 'undefined' && tmpData.version?.length > 0) {
+                returnData.data.internalVersion = tmpData.version[0];
             }
 
             // We check for download the newest version
             // We need to set current IDragonVersion for the update
             returnData = await DragonService.downloadDragonVersionFile(returnData.data!);
-
-            // Read file
-            tmpData.version = FileService.readInternalJSONFile(this.getDragonVersionPath());
+            /* istanbul ignore else */
+            if (returnData.data!.requiredUpdate) {
+                dragonData.internalVersion = returnData.data?.onlineVersion?.toString() ?? '';
+            }
 
             /* istanbul ignore else */
-            if (typeof tmpData !== 'undefined' && tmpData.version.length > 0) {
-                dragonData.internalVersion = tmpData.version[0];
-
-                /* istanbul ignore else */
-                if (EnvVars.cache.enabled) {
-                    CacheService.getInstance().setCache<DragonVersion>(versionCacheKey, dragonData, CacheTimer.DRAGON_VERSION);
-                }
-
-            } else /* istanbul ignore next */ {
-                // Should NEVER occur because we download the file before
-                // But ...
-                returnData.addMessage(DragonServiceLocalization.uninitialized);
-                returnData.code = RiotHttpStatusCode.OK;
+            if (EnvVars.cache.enabled) {
+                CacheService.getInstance().setCache<DragonVersion>(versionCacheKey, dragonData, CacheTimer.DRAGON_VERSION);
             }
 
         } catch (ex) /* istanbul ignore next */ {
@@ -208,57 +223,11 @@ export abstract class DragonService {
     }
 
     /**
-     * Call the URL for download/read the content
-     * TODO: Test
-     * @param url Download external file
-     * @returns
-     */
-    static async downloadExternalFileContent<T>(url: string): Promise<ReturnData<T>> {
-        // console.log('Enter in DragonService.downloadExternalFileContent');
-
-        const retData: ReturnData<T> = new ReturnData<T>();
-        retData.data = await RequestService.downloadExternalFile<T>(url);
-        return retData;
-    }
-
-    /**
-     * Call the URL for download/read the file content and write it.
-     * @param url
-     * @param filePath
-     * @returns
-     * TODO: Move to another service (RequestService) ?
-     */
-    static async downloadAndWriteFile<T>(url: string, filePath: string): Promise<ReturnData<T>> {
-        // console.log('Enter in DragonService.downloadAndWriteFile');
-
-        const retData: ReturnData<T> = new ReturnData<T>();
-        retData.data = await RequestService.downloadAndWriteFile<T>(url, filePath);
-        return retData;
-    }
-
-    /**
-     * Call the Dragon URL for download/read the content.
-     * TODO: test
-     * @param url
-     * @returns
-     */
-    static async downloadExternalDragonFile<T>(url: string): Promise<DragonFile<T>> {
-        // console.log('Enter in DragonService.downloadExternalDragonFile');
-
-        let retData: DragonFile<T> = new DragonFile<T>();
-        retData = await RequestService.downloadExternalFile<DragonFile<T>>(url);
-
-        return retData;
-    }
-
-    /**
     * [OK] Download the dragon version file and update it if necessary
-    * @param dataDragon
-    * @returns
-    * TODO: Est-ce bien de retourner le DragonVersion (qui pourrait être le param dataDragon)
-    *       ou est-ce que ça serait mieux de retourne « downloadResult » pour éviter de faire une lecture après
+    * @param dataDragon Current DragonVersion
+    * @returns {ReturnData<DragonVersion>}
     */
-    static async downloadDragonVersionFile(dataDragon: DragonVersion): Promise<ReturnData<DragonVersion>> {
+    private static async downloadDragonVersionFile(dataDragon: DragonVersion): Promise<ReturnData<DragonVersion>> {
         // console.log('Enter in DragonService.downloadDragonVersionFile');
 
         // Create tree if doesn't exist
@@ -266,11 +235,11 @@ export abstract class DragonService {
         intData = DragonService.prepareTree();
         intData.data = dataDragon;
 
-        // TODO: Gérer a nouveau le « CurrentVersion » pour ne pas toujours mettre à jour le fichier de Version a chaque call.
+        // Convert FULL version to string version
         const currentVersion: number = (intData.data!.internalVersion != null ? castToNumber(intData.data!.internalVersion!) : 0);
-        const versionUrl = EnvVars.dragon.url.version;
 
         // Download file content
+        const versionUrl = EnvVars.dragon.url.version;
         const downloadResult: ReturnData<VersionData> = await DragonService.downloadExternalFileContent<VersionData>(versionUrl);
 
         /* istanbul ignore else */
@@ -296,13 +265,14 @@ export abstract class DragonService {
 
     // #endregion
 
-    // #region "Champion"
+    // #region "Get Champion Summary/Detailed"
 
     /**
      * Get DragonChampion info by championId
-     * @param championId
-     * @param dragonCulture
-     * @returns
+     * @param championId League of Legend champion id
+     * @param dragonCulture Dragon culture
+     * @returns {DragonChampion}
+     * TODO: ReturnData<DragonChampion> ?
      */
     static async getChampionInfoById(championId: number, dragonCulture: DragonCulture | undefined): Promise<DragonChampion> {
         // console.log('Enter in DragonService.getChampionInfoById');
@@ -313,7 +283,7 @@ export abstract class DragonService {
         }
 
         let championInfo: DragonChampion = new DragonChampion();
-        const dragonData: Map<number, IDragonChampion> = await DragonService.readDragonChampionFileById(dragonCulture);
+        const dragonData: Map<number, IDragonChampion> = await DragonService.readDragonChampionsFileById(dragonCulture);
 
         /* istanbul ignore else */
         if (dragonData.has(championId)) {
@@ -325,9 +295,10 @@ export abstract class DragonService {
 
     /**
      * Get DragonChampion info by championName
-     * @param championName
-     * @param dragonCulture
-     * @returns
+     * @param championName League of Legend champion name
+     * @param dragonCulture  Dragon culture
+     * @returns {DragonChampion}
+     * TODO: ReturnData<DragonChampion> ?
      */
     static async getChampionInfoByName(championName: string, dragonCulture: DragonCulture | undefined): Promise<DragonChampion> {
         // console.log('Enter in DragonService.getChampionInfoByName');
@@ -347,81 +318,103 @@ export abstract class DragonService {
         return championInfo;
     }
 
+    // #endregion
+
+    // #region "Champion detailled"
+
     /**
-     * Download a dragon file (not for version.json)
-     * @param url
-     * @param dragonCulture
+     * Get DragonChampion info by championName
+     * @param championName League of Legend champion name
+     * @param dragonCulture  Dragon culture
      * @returns
-    */
-    static async downloadDragonFile<T>(url: string, dragonCulture: DragonCulture, dragonFileName: string, dragonVersion: DragonVersion): Promise<ReturnData<T>> {
-        // console.log('Enter in DragonService.downloadDragonFile');
-
-        // We check the version
-        let versionData: ReturnData<DragonVersion> = new ReturnData<DragonVersion>();
-        versionData = DragonService.prepareTree();
+     * TODO: ReturnData<DragonChampion> ?
+     */
+    static async getDetailedChampionInfoByName(championName: string, dragonCulture: DragonCulture | undefined): Promise<DragonChampion> {
+        // console.log('Enter in DragonService.getDetailedChampionInfoByName');
 
         /* istanbul ignore else */
-        if (dragonVersion) {
-            versionData.data = dragonVersion;
-        } else /* istanbul ignore next */ {
-            // Double check, This scenario is not supposed to happen.
-            versionData = await DragonService.getDragonVersion();
+        if (!dragonCulture || dragonCulture == null) {
+            dragonCulture = DragonCulture.fr_fr;
         }
 
-        // Prepare return data
-        const returnData: ReturnData<T> = new ReturnData<T>;
+        let championInfo: DragonChampion = new DragonChampion();
+        championInfo = await DragonService.readDetailedDragonChampionFileByName(championName, dragonCulture);
 
-        // Read current file if exists
-        const tmpData: DragonFile<T> = new DragonFile<T>();
+        return championInfo;
+    }
+
+    // #endregion
+
+    //#region "Read Dragon file"
+    /**
+     * Read dragon champion details file. The detail file content all information for a specific champion.
+     * @param championName League of Legend champion name
+     * @param dragonCulture Dragon culture
+     * @returns  {IDragonChampion}
+     */
+    private static async readDetailedDragonChampionFileByName(championName: string, dragonCulture: DragonCulture): Promise<IDragonChampion> {
+        let championData!: IDragonChampion; // = new IDragonChampion;
+
+        // Check if data is cached
+        const championsCache = CacheName.DRAGON_CHAMPION_DETAIL_BY_NAME.replace('{0}', dragonCulture).replace('{1}', championName);
         /* istanbul ignore else */
-        if (FileService.checkFileExists(dragonFileName)) {
-            tmpData.data = FileService.readInternalJSONFile(dragonFileName);
-        }
-
-        let downloadResult: DragonFile<T>;
-        const currentVersion: number = (versionData != undefined && versionData!.data!.internalVersion != null ? castToNumber(versionData!.data!.internalVersion!) : 0);
-
-        if (tmpData?.data == undefined) {
-            // Downlaod current file for check version
-            downloadResult = await DragonService.downloadExternalDragonFile<T>(url);
-
+        if (EnvVars.cache.enabled) {
+            const cacheValue: IDragonChampion | undefined = CacheService.getInstance().getCache<IDragonChampion>(championsCache);
             /* istanbul ignore else */
-            if (downloadResult && downloadResult.data != null) {
-                versionData.data!.onlineVersion = downloadResult.version;
-
-                const newVersion: number = castToNumber(downloadResult.version!);
-                const requiredUpdate: boolean = (currentVersion < newVersion);
-                versionData.data!.requiredUpdate = requiredUpdate;
-
-                returnData.data = downloadResult.data;
-            }
-        } else {
-            returnData.data = tmpData.data;
-        }
-
-        /* istanbul ignore else */
-        if ((versionData && versionData.data!.requiredUpdate || tmpData?.data == undefined) && dragonVersion != null) {
-            /* istanbul ignore else */
-            if (!FileService.writeFile(dragonFileName, JSON.stringify(downloadResult!))) {
-                /* istanbul ignore next */
-                returnData.addMessage(DragonServiceLocalization.errDownloadingFile);
+            if (cacheValue != undefined) {
+                championData = cacheValue;
+                return championData;
             }
         }
 
-        return returnData;
+        // If cache isn't enabled we check if we can read it. If we can't we download it
+        let aDragonChampion: DragonFile<DragonChampion[]> = new DragonFile<DragonChampion[]>;
+
+        const downResult: ReturnData<DragonFile<DragonChampion[]>> = await DragonService.downloadAndReadDetailedChampionFile(championName, dragonCulture);
+        /* istanbul ignore else */
+        if (downResult && downResult.data != null) {
+            aDragonChampion = downResult.data;
+        }
+
+        // let aDragonChampion: ChampionData = {};
+
+        if (aDragonChampion && aDragonChampion.type == 'champion') {
+            for (const keyName in aDragonChampion.data) {
+                const dragonChampionInfo: IDragonChampion = aDragonChampion.data[keyName];
+
+                /* istanbul ignore else */
+                if (dragonChampionInfo) {
+                    // Mandatory for clean extra values
+                    championData = {
+                        id: dragonChampionInfo.id,
+                        key: dragonChampionInfo.key,
+                        name: dragonChampionInfo.name,
+                        title: dragonChampionInfo.title,
+                        image: dragonChampionInfo.image,
+                        skins: dragonChampionInfo.skins
+                    }
+                }
+            }
+
+            /* istanbul ignore else */
+            if (EnvVars.cache.enabled) {
+                CacheService.getInstance().setCache<IDragonChampion>(championsCache, championData, CacheTimer.DRAGON_CHAMPION);
+            }
+        }
+
+        return championData;
     }
 
     /**
-     * Reads the dragon file associated with the champions.
-     * @param culture
-     * @returns Map<string, IDragonChampion> (key is champion id)
+     * Reads the dragon champion file.  Mapped by ChampionId
+     * @param dragonCulture Dragon culture
+     * @returns {Map<number, IDragonChampion>}
      */
-    static async readDragonChampionFileById(dragonCulture: DragonCulture): Promise<Map<number, IDragonChampion>> {
+    private static async readDragonChampionsFileById(dragonCulture: DragonCulture): Promise<Map<number, IDragonChampion>> {
         let championData: Map<number, IDragonChampion> = new Map<number, IDragonChampion>();
 
-        // Check if champions data is in cache
+        // Check if champions data is cached
         const championsCache = CacheName.DRAGON_CHAMPIONS_KEY_ID.replace('{0}', dragonCulture);
-
         /* istanbul ignore else */
         if (EnvVars.cache.enabled) {
             const cacheValue: Map<number, IDragonChampion> | undefined = CacheService.getInstance().getCache<Map<number, IDragonChampion>>(championsCache);
@@ -434,30 +427,13 @@ export abstract class DragonService {
         }
 
         // If cache isn't enabled we check if we can read it. If we can't we download it
-        const fileName: string = DragonPath.dragonCulturePath(dragonCulture, DragonFileName.champion);
-
         let aDragonChampion: DragonFile<DragonChampion[]> = new DragonFile<DragonChampion[]>;
         const dragonChampionFileName = DragonPath.dragonCulturePath(dragonCulture, DragonFileName.champion);
 
+        const downResult: ReturnData<DragonFile<DragonChampion[]>> = await DragonService.downloadAndReadDragonFile<DragonChampion[]>('', DragonFileType.Champion, dragonChampionFileName, dragonCulture);
         /* istanbul ignore else */
-        if (!FileService.checkFileExists(this.getDragonFullPath()) || !FileService.checkFileExists(fileName)) {
-            console.log('DragonFile doesn\'t exists, we need get it');
-            // Get current version for can get filename
-            const versionData: ReturnData<IDragonVersion> = await DragonService.getDragonVersion();
-
-            // Get champion Url
-            const championUrl: string = DragonService.getFileUrl(DragonFileType.Champion, dragonCulture, versionData.data!);
-            const downResult: ReturnData<DragonFile<DragonChampion[]>> = await DragonService.downloadDragonFile<DragonFile<DragonChampion[]>>(championUrl, dragonCulture, dragonChampionFileName, versionData.data!);
-
-            /* istanbul ignore else */
-            if (downResult && downResult.data != null) {
-                aDragonChampion = downResult.data;
-            }
-        }
-
-        /* istanbul ignore else */
-        if (aDragonChampion == null || aDragonChampion.data == null) {
-            aDragonChampion = FileService.readInternalJSONFile(dragonChampionFileName);
+        if (downResult && downResult.data != null) {
+            aDragonChampion = downResult.data;
         }
 
         /* istanbul ignore else */
@@ -474,6 +450,7 @@ export abstract class DragonService {
                         name: dragonChampionInfo.name,
                         title: dragonChampionInfo.title,
                         image: dragonChampionInfo.image,
+                        skins: undefined,
                     };
 
                     championData.set(Number(dragonChampionInfo.key), tmpChampion);
@@ -482,7 +459,7 @@ export abstract class DragonService {
 
             /* istanbul ignore else */
             if (EnvVars.cache.enabled) {
-                CacheService.getInstance().setCache<Map<number, IDragonChampion>>(championsCache, championData, CacheTimer.DRAGON_VERSION);
+                CacheService.getInstance().setCache<Map<number, IDragonChampion>>(championsCache, championData, CacheTimer.DRAGON_CHAMPION);
             }
         }
 
@@ -490,11 +467,11 @@ export abstract class DragonService {
     }
 
     /**
-    * Reads the dragon file associated with the champions.
-    * @param culture
-    * @returns Map<string, IDragonChampion> (key is lower champion name)
+     * Reads the dragon champion file. Mapped by ChampionName
+     * @param dragonCulture Dragon culture
+     * @returns {Map<string, IDragonChampion>}
     */
-    static async readDragonChampionFileByName(dragonCulture: DragonCulture): Promise<Map<string, IDragonChampion>> {
+    private static async readDragonChampionFileByName(dragonCulture: DragonCulture): Promise<Map<string, IDragonChampion>> {
         let championData: Map<string, IDragonChampion> = new Map<string, IDragonChampion>();
 
         // Check if champions data is in cache
@@ -512,19 +489,12 @@ export abstract class DragonService {
         }
 
         // If cache isn't enabled we check if we can read it. If we can't we download it
-        const fileName: string = DragonPath.dragonCulturePath(dragonCulture, DragonFileName.champion);
-
         let aDragonChampion: DragonFile<DragonChampion[]> = new DragonFile<DragonChampion[]>;
         const dragonChampionFileName = DragonPath.dragonCulturePath(dragonCulture, DragonFileName.champion);
 
         /* istanbul ignore else */
-        if (!FileService.checkFileExists(this.getDragonFullPath()) || !FileService.checkFileExists(fileName)) {
-            // Get current version for can get filename
-            const versionData: ReturnData<IDragonVersion> = await DragonService.getDragonVersion();
-
-            // Get champion Url
-            const championUrl: string = DragonService.getFileUrl(DragonFileType.Champion, dragonCulture, versionData.data!);
-            const downResult: ReturnData<DragonFile<DragonChampion[]>> = await DragonService.downloadDragonFile<DragonFile<DragonChampion[]>>(championUrl, dragonCulture, dragonChampionFileName, versionData.data!);
+        if (!FileService.checkFileExists(this.getDragonFullPath()) || !FileService.checkFileExists(dragonChampionFileName)) {
+            const downResult: ReturnData<DragonFile<DragonChampion[]>> = await DragonService.downloadAndReadDragonFile<DragonChampion[]>('', DragonFileType.Champion, dragonChampionFileName, dragonCulture);
 
             /* istanbul ignore else */
             if (downResult && downResult.data != null) {
@@ -551,6 +521,7 @@ export abstract class DragonService {
                         name: dragonChampionInfo.name,
                         title: dragonChampionInfo.title,
                         image: dragonChampionInfo.image,
+                        skins: dragonChampionInfo.skins,
                     };
 
                     championData.set(String(dragonChampionInfo.id.toLowerCase()), tmpChampion);
@@ -565,21 +536,151 @@ export abstract class DragonService {
 
         return championData;
     }
+    //#endregion
+
+    // #region "Download/Write dragon file"
+
+    /**
+    * Call the URL for download/read the file content and write it.
+    * @param url Target URL
+    * @param filePath Destination file
+    * @returns {ReturnData<T>}
+    * TODO: Move to another service (RequestService) ?
+    */
+    static async downloadAndWriteFile<T>(url: string, filePath: string): Promise<ReturnData<T>> {
+        // console.log('Enter in DragonService.downloadAndWriteFile');
+
+        const retData: ReturnData<T> = new ReturnData<T>();
+        retData.data = await RequestService.downloadAndWriteFile<T>(url, filePath);
+        return retData;
+    }
+
+    /**
+     * Download a specific dragon champion file and write the file in server
+     * @param championName 
+     * @param dragonCulture 
+     * @returns 
+     */
+    private static async downloadAndReadDetailedChampionFile<T>(championName: string, dragonCulture: DragonCulture): Promise<ReturnData<DragonFile<DragonChampion[]>>> {
+        // console.log('Enter in DragonService.downloadAndReadDetailedChampionFile');
+
+        // We check the version
+        let versionData: ReturnData<DragonVersion> = new ReturnData<DragonVersion>();
+        versionData = DragonService.prepareTree();
+        versionData = await DragonService.getDragonVersion();
+
+        // Generate detailed URL
+        let detailChampionUrl: string = DragonService.getFileUrl(DragonFileType.ChampionDetail, DragonCulture.fr_fr, versionData.data!);
+        detailChampionUrl = detailChampionUrl.replace('{championName}', championName);
+
+        const dragonChampionFileName = DragonPath.dragonCulturePath(DragonCulture.fr_fr, DragonFileName.detailChampion.replace('{championName}', championName));
+
+        const returnData: ReturnData<DragonFile<DragonChampion[]>> = await DragonService.downloadAndReadDragonFile<DragonChampion[]>(detailChampionUrl,
+            DragonFileType.ChampionDetail,
+            dragonChampionFileName, dragonCulture);
+
+        return returnData;
+    }
+
+    /**
+     * Download a dragon file (not for version.json)
+     * @param url
+     * @param dragonCulture
+     * @returns
+    */
+    private static async downloadAndReadDragonFile<T>(url: string, dragonFileType: DragonFileType,
+                                                        dragonFilePath: string, dragonCulture: DragonCulture): Promise<ReturnData<DragonFile<T>>> {
+        // console.log('Enter in DragonService.downloadAndReadDragonFile');
+
+        // We check the version
+        let versionData: ReturnData<DragonVersion> = new ReturnData<DragonVersion>();
+        versionData = DragonService.prepareTree();
+        versionData = await DragonService.getDragonVersion();
+
+        // Use Func StringIsNulLorEmpty (BedyAPI exemple)
+        if (url == undefined || url.length == 0) {
+            url = DragonService.getFileUrl(dragonFileType, dragonCulture, versionData.data!);
+        }
+
+        // ---------------------
+        // Prepare return data
+        let returnData: ReturnData<DragonFile<T>> = new ReturnData<DragonFile<T>>;
+        let tmpData: DragonFile<T> = new DragonFile<T>();
+
+        /* istanbul ignore else */
+        if (FileService.checkFileExists(dragonFilePath)) {
+            tmpData = FileService.readInternalJSONFile(dragonFilePath);
+
+            // Check if current dragon file required a update
+            const currentDragonFileVersion: number = castToNumber(tmpData.version);
+            const currentOnlineVersion: number = castToNumber(versionData.data?.onlineVersion!);
+
+            const requiredUpdate: boolean = (currentDragonFileVersion < currentOnlineVersion);
+            versionData.data!.requiredUpdate = requiredUpdate;
+        }
+
+        // If required, download and write new dragon file data
+        if (tmpData?.data == undefined || versionData.data?.requiredUpdate) {
+            tmpData = await DragonService.downloadExternalDragonFile<T>(url);
+            returnData.data = tmpData;
+
+            /* istanbul ignore else */
+            if (!FileService.writeFile(dragonFilePath, JSON.stringify(tmpData!))) {
+                /* istanbul ignore next */
+                returnData.addMessage(DragonServiceLocalization.errDownloadingFile);
+            }
+
+        } else {
+            returnData.data = tmpData;
+        }
+
+        return returnData;
+    }
+
+    /**
+    * Call the URL for download/read the content
+    * @param url Download external file
+    * @returns
+    */
+    private static async downloadExternalFileContent<T>(url: string): Promise<ReturnData<T>> {
+        // console.log('Enter in DragonService.downloadExternalFileContent');
+
+        const retData: ReturnData<T> = new ReturnData<T>();
+        retData.data = await RequestService.downloadExternalFile<T>(url);
+        return retData;
+    }
+
+    /**
+     * Call the Dragon URL for download/read the content.
+     * @param url
+     * @returns
+     */
+    private static async downloadExternalDragonFile<T>(url: string): Promise<DragonFile<T>> {
+        // console.log('Enter in DragonService.downloadExternalDragonFile');
+
+        let retData: DragonFile<T> = new DragonFile<T>();
+        retData = await RequestService.downloadExternalFile<DragonFile<T>>(url);
+
+        return retData;
+    }
     // #endregion
 }
 
 
 // Dragon file path
+// TODO: Fix and use dragonChampionFolder
 export const DragonPath = {
     basePath: DragonService.getMainPath(),
     dragonFolder: join(DragonService.getMainPath(), EnvVars.dragon.folder),
     dragonFilePath: (filename: string) => join(DragonPath.dragonFolder, filename),
     dragonCulturePath: (culture: string, fileName: string) => join(DragonPath.dragonFolder, culture, fileName),
+    dragonChampionFolder: (culture: string) =>  join(DragonPath.dragonFolder, culture, 'champion'),
 } as const;
 
 export const DragonFileName = {
     champion: 'champion.json',
     version: 'version.json',
+    detailChampion: 'champion/{championName}.json',
 };
 
 

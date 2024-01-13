@@ -17,6 +17,7 @@ import { CacheService, CacheName } from '../../src/service/CacheService';
 describe('===> Test DragonService', () => {
 
   const test_Folder: string = './_result/static/test';
+  const test_subFolder: string = 'champion'
   const versionSourceFile: string = './test/baseFile/versions.json';
   const defaultTestFileName: string = 'text.txt';
   const lastDragonVersion: string = "13.10.1";
@@ -24,19 +25,25 @@ describe('===> Test DragonService', () => {
   // beforeEach
   before(() => {
     // runs once before the first test in this block
-    FileService.removeFile(DragonPath.dragonFolder);
-    FileService.removeFile(test_Folder);
+    // FileService.removeFile(DragonPath.dragonChampionFolder(DragonCulture.fr_fr));
+    try {
+      FileService.removeFile(DragonPath.dragonFolder);
+      FileService.removeFile(test_Folder);
+    } catch (err) {
+      console.error(err)
+    }
   });
 
   // afterEach
   after(() => {
     // runs once before the first test in this block
+    FileService.removeFile(DragonPath.dragonChampionFolder(DragonCulture.fr_fr));
     FileService.removeFile(DragonPath.dragonFolder);
     FileService.removeFile(test_Folder);
   });
 
 
-  it('1.0 => Get dragon default folder', (done) => {
+  it('1.0.0 => Get dragon default folder', (done) => {
     let result: string = DragonService.getDragonFullPath();
     // console.info('Get DragonFullPath : ' + result);
 
@@ -46,7 +53,7 @@ describe('===> Test DragonService', () => {
     done();
   });
 
-  it('1.1 => Get dragon default folder with culture', (done) => {
+  it('1.0.1 => Get dragon default folder with culture', (done) => {
     let frenchResult: string = DragonService.getDragonFullPath(DragonCulture.fr_fr);
     let englishResult: string = DragonService.getDragonFullPath(DragonCulture.en_us);
 
@@ -61,7 +68,7 @@ describe('===> Test DragonService', () => {
     done();
   });
 
-  it('1.2 => Get dragon default folder with culture and filename', (done) => {
+  it('1.0.2 => Get dragon default folder with culture and filename', (done) => {
     let frenchResult: string = DragonService.getDragonFullPath(DragonCulture.fr_fr, defaultTestFileName);
     let englishResult: string = DragonService.getDragonFullPath(DragonCulture.en_us, defaultTestFileName);
 
@@ -76,7 +83,37 @@ describe('===> Test DragonService', () => {
     done();
   });
 
-  it('1.3 => Get dragon champion file url path', (done) => {
+  it('1.0.3 => Get dragon default folder with culture, filename and subfolder', (done) => {
+    let frenchResult: string = DragonService.getDragonFullPath(DragonCulture.fr_fr, defaultTestFileName, test_subFolder);
+    let englishResult: string = DragonService.getDragonFullPath(DragonCulture.en_us, defaultTestFileName, test_subFolder);
+
+    let baseString: string | undefined = process.env.dragonBaseFolder?.replace('./', '');
+    let frenchBaseString = join(baseString!, DragonCulture.fr_fr, test_subFolder, defaultTestFileName);
+    let englishBaseString = join(baseString!, DragonCulture.en_us, test_subFolder, defaultTestFileName);
+
+    assert.ok(frenchResult);
+    expect(frenchResult).to.contain(frenchBaseString);
+    assert.ok(englishResult);
+    expect(englishResult).to.contain(englishBaseString);
+    done();
+  });
+
+  it('1.0.4 => Get dragon default folder with culture and subfolder', (done) => {
+    let frenchResult: string = DragonService.getDragonFullPath(DragonCulture.fr_fr, '', test_subFolder);
+    let englishResult: string = DragonService.getDragonFullPath(DragonCulture.en_us, '', test_subFolder);
+
+    let baseString: string | undefined = process.env.dragonBaseFolder?.replace('./', '');
+    let frenchBaseString = join(baseString!, DragonCulture.fr_fr, test_subFolder);
+    let englishBaseString = join(baseString!, DragonCulture.en_us, test_subFolder);
+
+    assert.ok(frenchResult);
+    expect(frenchResult).to.contain(frenchBaseString);
+    assert.ok(englishResult);
+    expect(englishResult).to.contain(englishBaseString);
+    done();
+  });
+
+  it('1.0.5 => Get dragon champion file url path', (done) => {
     let testDragonVersion: DragonVersion = {
       internalVersion: null,
       onlineVersion: undefined,
@@ -202,80 +239,8 @@ describe('===> Test DragonService', () => {
     }
   }); // .timeout(10000);
 
-  it('2.3.1 => Download version and the list of champions (Dragon)', async () => {
-    let versionData: ReturnData<DragonVersion> = await DragonService.getDragonVersion();
-    assert.ok(versionData);
-    assert.isNotNull(versionData.data);
-    assert.isDefined(versionData.data);
-    assert.isNotNull(versionData.data?.internalVersion);
-    assert.notEqual(versionData.data?.internalVersion, "0");
-
-    const championUrl: string = DragonService.getFileUrl(DragonFileType.Champion, DragonCulture.fr_fr, versionData.data!);
-    const dragonChampionFileName = DragonPath.dragonCulturePath(DragonCulture.fr_fr, DragonFileName.champion);
-
-    DragonService.downloadDragonFile<IDragonChampion>(championUrl, DragonCulture.fr_fr, dragonChampionFileName, versionData.data!).then((championData => {
-      assert.ok(championData);
-      assert.isNotNull(championData);
-      assert.isNotNull(championData.data);
-
-      // Check tree
-      let folders = new Array<string>();
-      folders.push(DragonPath.dragonFilePath(DragonFileName.version));
-      folders.push(dragonChampionFileName);
-
-      assert.isNotNull(folders);
-      assert.isArray(folders);
-
-      // folders.forEach((folder: string) => {
-      //   assert.isTrue(FileService.checkFileExists(folder), `Error on file : '${folder}'`);
-      // });
-
-    }));
-  }).timeout(35000);
-
-  it('2.3.2 => Download version and the list of champions several times (Dragon)', async () => {
-    let versionData: ReturnData<DragonVersion> = await DragonService.getDragonVersion();
-    assert.ok(versionData);
-    assert.isNotNull(versionData.data);
-    assert.isDefined(versionData.data);
-    assert.isNotNull(versionData.data?.internalVersion);
-    assert.notEqual(versionData.data?.internalVersion, "0");
-
-    const championUrl: string = DragonService.getFileUrl(DragonFileType.Champion, DragonCulture.fr_fr, versionData.data!);
-    const dragonChampionFileName = DragonPath.dragonCulturePath(DragonCulture.fr_fr, DragonFileName.champion);
-
-    //  ReturnData<IDragonChampion>   => DragonFile<DragonChampion[]
-    let firstChampionData: ReturnData<DragonFile<DragonChampion[]>> = await DragonService.downloadDragonFile<DragonFile<DragonChampion[]>>(championUrl, DragonCulture.fr_fr, dragonChampionFileName, versionData.data!);
-    let secondChampionData: ReturnData<DragonFile<DragonChampion[]>> = await DragonService.downloadDragonFile<DragonFile<DragonChampion[]>>(championUrl, DragonCulture.fr_fr, dragonChampionFileName, versionData.data!);
-
-    // First validation
-    assert.ok(firstChampionData);
-    assert.isNotNull(firstChampionData);
-    assert.isDefined(firstChampionData);
-    assert.isNotNull(firstChampionData.data);
-    assert.isDefined(firstChampionData.data);
-    // expect(championData.data).to.not.be.null;
-    // expect(championData.data).to.not.be.undefined;
-
-    // Second validation
-    assert.ok(secondChampionData);
-    assert.isNotNull(secondChampionData);
-    assert.isDefined(secondChampionData);
-    assert.isNotNull(secondChampionData.data);
-    assert.isDefined(secondChampionData.data);
-
-    // Check tree pattern
-    let folders = new Array<string>();
-    folders.push(DragonPath.dragonFilePath(DragonFileName.version));
-    folders.push(dragonChampionFileName);
-
-    assert.isNotNull(folders);
-    assert.isArray(folders);
-
-  }).timeout(40000);
-
-
-  it('3.0.0 => Get champion info in file by championId', async () => {
+  
+  it('3.0.0 => Get summary champion info in file by championId', async () => {
     const championInfo: DragonChampion = await DragonService.getChampionInfoById(99, DragonCulture.fr_fr);
 
     assert.ok(championInfo);
@@ -284,10 +249,11 @@ describe('===> Test DragonService', () => {
     assert.equal(championInfo.key, "99");
     assert.equal(championInfo.id, "Lux");
     assert.equal(championInfo.name, "Lux");
+    assert.isUndefined(championInfo.skins);
 
   }).timeout(20000);
 
-  it('3.0.1 => Get champion info by championId without specify a culture (default culture)', async () => {
+  it('3.0.1 => Get summary champion info by championId without specify a culture (default culture)', async () => {
     const championInfo: DragonChampion = await DragonService.getChampionInfoById(99, undefined);
 
     assert.ok(championInfo);
@@ -296,10 +262,11 @@ describe('===> Test DragonService', () => {
     assert.equal(championInfo.key, "99");
     assert.equal(championInfo.id, "Lux");
     assert.equal(championInfo.name, "Lux");
+    assert.isUndefined(championInfo.skins);
 
   }).timeout(20000);
 
-  it('3.0.2 => Get champion info in file by championName', async () => {
+  it('3.0.2 => Get summary champion info in file by championName', async () => {
     const championInfo: DragonChampion = await DragonService.getChampionInfoByName("LUX", DragonCulture.fr_fr);
 
     assert.ok(championInfo);
@@ -308,10 +275,11 @@ describe('===> Test DragonService', () => {
     assert.equal(championInfo.key, "99");
     assert.equal(championInfo.id, "Lux");
     assert.equal(championInfo.name, "Lux");
+    assert.isUndefined(championInfo.skins);
 
   }).timeout(20000);
 
-  it('3.0.3 => Get champion info by championName without specify a culture (default culture)', async () => {
+  it('3.0.3 => Get summary champion info by championName without specify a culture (default culture)', async () => {
     const championInfo: DragonChampion = await DragonService.getChampionInfoByName("LUX", undefined);
 
     assert.ok(championInfo);
@@ -320,15 +288,17 @@ describe('===> Test DragonService', () => {
     assert.equal(championInfo.key, "99");
     assert.equal(championInfo.id, "Lux");
     assert.equal(championInfo.name, "Lux");
+    assert.isUndefined(championInfo.skins);
+
   }).timeout(20000);
 
-
-  it('3.1 => Get multi champions info', async () => {
+  it('3.0.4 => Get several summary champions info by id', async () => {
     const firstChampionInfo: DragonChampion = await DragonService.getChampionInfoById(99, DragonCulture.fr_fr);
     assert.ok(firstChampionInfo);
     assert.isNotNull(firstChampionInfo);
     assert.isDefined(firstChampionInfo);
     assert.equal(firstChampionInfo.key, "99");
+    assert.isUndefined(firstChampionInfo.skins);
 
     const secondChampionInfo: DragonChampion = await DragonService.getChampionInfoById(69, DragonCulture.fr_fr)
     assert.ok(secondChampionInfo);
@@ -337,8 +307,139 @@ describe('===> Test DragonService', () => {
     assert.equal(secondChampionInfo.key, "69");
     assert.equal(secondChampionInfo.id, "Cassiopeia");
     assert.equal(secondChampionInfo.name, "Cassiopeia");
+    assert.isUndefined(secondChampionInfo.skins);
 
   }).timeout(30000);
+
+  it('3.0.5 => Get several summary champions info by id (without cache)', async () => {
+    const firstChampionInfo: DragonChampion = await DragonService.getChampionInfoById(99, DragonCulture.fr_fr);
+    assert.ok(firstChampionInfo);
+    assert.isNotNull(firstChampionInfo);
+    assert.isDefined(firstChampionInfo);
+    assert.equal(firstChampionInfo.key, "99");
+    assert.isUndefined(firstChampionInfo.skins);
+
+    CacheService.getInstance().cleanCache();
+
+    const secondChampionInfo: DragonChampion = await DragonService.getChampionInfoById(69, DragonCulture.fr_fr)
+    assert.ok(secondChampionInfo);
+    assert.isNotNull(secondChampionInfo);
+    assert.isDefined(secondChampionInfo);
+    assert.equal(secondChampionInfo.key, "69");
+    assert.equal(secondChampionInfo.id, "Cassiopeia");
+    assert.equal(secondChampionInfo.name, "Cassiopeia");
+    assert.isUndefined(secondChampionInfo.skins);
+
+  }).timeout(30000);
+
+  it('3.0.6 => Get several summary champions info by name', async () => {
+    const firstChampionInfo: DragonChampion = await DragonService.getChampionInfoByName("Lux", DragonCulture.fr_fr);
+    assert.ok(firstChampionInfo);
+    assert.isNotNull(firstChampionInfo);
+    assert.isDefined(firstChampionInfo);
+    assert.equal(firstChampionInfo.key, "99");
+    assert.isUndefined(firstChampionInfo.skins);
+
+    const secondChampionInfo: DragonChampion = await DragonService.getChampionInfoByName("Cassiopeia", DragonCulture.fr_fr)
+    assert.ok(secondChampionInfo);
+    assert.isNotNull(secondChampionInfo);
+    assert.isDefined(secondChampionInfo);
+    assert.equal(secondChampionInfo.key, "69");
+    assert.equal(secondChampionInfo.id, "Cassiopeia");
+    assert.equal(secondChampionInfo.name, "Cassiopeia");
+    assert.isUndefined(secondChampionInfo.skins);
+
+  }).timeout(30000);
+
+  it('3.0.7 => Get several summary champions info by name (without cache)', async () => {
+    const firstChampionInfo: DragonChampion = await DragonService.getChampionInfoByName("Lux", DragonCulture.fr_fr);
+    assert.ok(firstChampionInfo);
+    assert.isNotNull(firstChampionInfo);
+    assert.isDefined(firstChampionInfo);
+    assert.equal(firstChampionInfo.key, "99");
+    assert.isUndefined(firstChampionInfo.skins);
+
+    CacheService.getInstance().cleanCache();
+
+    const secondChampionInfo: DragonChampion = await DragonService.getChampionInfoByName("Cassiopeia", DragonCulture.fr_fr)
+    assert.ok(secondChampionInfo);
+    assert.isNotNull(secondChampionInfo);
+    assert.isDefined(secondChampionInfo);
+    assert.equal(secondChampionInfo.key, "69");
+    assert.equal(secondChampionInfo.id, "Cassiopeia");
+    assert.equal(secondChampionInfo.name, "Cassiopeia");
+    assert.isUndefined(secondChampionInfo.skins);
+
+  }).timeout(30000);
+
+  it('3.1.0 => Get detailed champion info in file by championId', async () => {
+    const championInfo: DragonChampion = await DragonService.getDetailedChampionInfoByName("Lux", DragonCulture.fr_fr);
+
+    assert.ok(championInfo);
+    assert.isNotNull(championInfo);
+    assert.isDefined(championInfo);
+    assert.equal(championInfo.key, "99");
+    assert.equal(championInfo.id, "Lux");
+    assert.equal(championInfo.name, "Lux");
+    assert.isNotNull(championInfo.skins);
+    assert.isDefined(championInfo.skins);
+
+  }).timeout(20000);
+
+  it('3.1.1 => Get detailed champion info by championId without specify a culture (default culture)', async () => {
+    const championInfo: DragonChampion = await DragonService.getDetailedChampionInfoByName("Lux", undefined);
+
+    assert.ok(championInfo);
+    assert.isNotNull(championInfo);
+    assert.isDefined(championInfo);
+    assert.equal(championInfo.key, "99");
+    assert.equal(championInfo.id, "Lux");
+    assert.equal(championInfo.name, "Lux");
+    assert.isNotNull(championInfo.skins);
+    assert.isDefined(championInfo.skins);
+
+  }).timeout(20000);
+
+  it('3.1.2 => Get several detail champions info by name', async () => {
+    const firstChampionInfo: DragonChampion = await DragonService.getDetailedChampionInfoByName("Lux", DragonCulture.fr_fr);
+    assert.ok(firstChampionInfo);
+    assert.isNotNull(firstChampionInfo);
+    assert.isDefined(firstChampionInfo);
+    assert.equal(firstChampionInfo.key, "99");
+    assert.isDefined(firstChampionInfo.skins);
+
+    const secondChampionInfo: DragonChampion = await DragonService.getDetailedChampionInfoByName("Cassiopeia", DragonCulture.fr_fr)
+    assert.ok(secondChampionInfo);
+    assert.isNotNull(secondChampionInfo);
+    assert.isDefined(secondChampionInfo);
+    assert.equal(secondChampionInfo.key, "69");
+    assert.equal(secondChampionInfo.id, "Cassiopeia");
+    assert.equal(secondChampionInfo.name, "Cassiopeia");
+    assert.isDefined(secondChampionInfo.skins);
+
+  }).timeout(30000);
+
+  it('3.1.3 => Get several detail champions info by name (without cache)', async () => {
+    const firstChampionInfo: DragonChampion = await DragonService.getDetailedChampionInfoByName("Lux", DragonCulture.fr_fr);
+    assert.ok(firstChampionInfo);
+    assert.isNotNull(firstChampionInfo);
+    assert.isDefined(firstChampionInfo);
+    assert.equal(firstChampionInfo.key, "99");
+    assert.isDefined(firstChampionInfo.skins);
+
+    CacheService.getInstance().cleanCache();
+
+    const secondChampionInfo: DragonChampion = await DragonService.getDetailedChampionInfoByName("Cassiopeia", DragonCulture.fr_fr)
+    assert.ok(secondChampionInfo);
+    assert.isNotNull(secondChampionInfo);
+    assert.isDefined(secondChampionInfo);
+    assert.equal(secondChampionInfo.key, "69");
+    assert.equal(secondChampionInfo.id, "Cassiopeia");
+    assert.equal(secondChampionInfo.name, "Cassiopeia");
+    assert.isDefined(secondChampionInfo.skins);
+
+  }).timeout(30000);
+
 
   // it('3.2 => Get champs in cache', async () => { 
   //   // let value: boolean = EnvVars.cache.enabled;
