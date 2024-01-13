@@ -8,8 +8,6 @@ import { DragonChampion, DragonFile, DragonVersion, IDragonChampion, IDragonVers
 import { ReturnData } from '../declaration/interface/IReturnData';
 import RiotHttpStatusCode from '../declaration/RiotHttpStatusCode';
 import { RequestService } from './RequestService';
-import { castToNumber } from '../declaration/functions';
-// import { compareVersions } from 'compare-versions';
 import { gt } from 'semver';
 
 // **** Variables **** //
@@ -245,9 +243,10 @@ export abstract class DragonService {
         if (downloadResult && downloadResult.code == 200 && downloadResult.data != null && Array.isArray(downloadResult.data)) {
             intData.data!.onlineVersion = downloadResult.data[0].toString();
 
-            const currentVersionStr: string = (intData.data!.internalVersion != null ? intData.data!.internalVersion! : "0.0.0");
-            const onlineVersionStr: string = (intData.data!.onlineVersion != null ? intData.data!.onlineVersion! : "0.0.0");
+            const currentVersionStr: string = (intData.data!.internalVersion != null ? intData.data!.internalVersion! : '0.0.0');
+            const onlineVersionStr: string = (intData.data!.onlineVersion != null ? intData.data!.onlineVersion! : '0.0.0');
 
+            /* istanbul ignore else */
             if (gt(onlineVersionStr, currentVersionStr)) {
                 intData.data!.requiredUpdate = true;
             }
@@ -347,7 +346,7 @@ export abstract class DragonService {
 
     // #endregion
 
-    //#region "Read Dragon file"
+    // #region "Read Dragon file"
     /**
      * Read dragon champion details file. The detail file content all information for a specific champion.
      * @param championName League of Legend champion name
@@ -393,8 +392,8 @@ export abstract class DragonService {
                         name: dragonChampionInfo.name,
                         title: dragonChampionInfo.title,
                         image: dragonChampionInfo.image,
-                        skins: dragonChampionInfo.skins
-                    }
+                        skins: dragonChampionInfo.skins,
+                    };
                 }
             }
 
@@ -538,7 +537,7 @@ export abstract class DragonService {
 
         return championData;
     }
-    //#endregion
+    // #endregion
 
     // #region "Download/Write dragon file"
 
@@ -559,11 +558,11 @@ export abstract class DragonService {
 
     /**
      * Download a specific dragon champion file and write the file in server
-     * @param championName 
-     * @param dragonCulture 
-     * @returns 
+     * @param championName
+     * @param dragonCulture
+     * @returns
      */
-    private static async downloadAndReadDetailedChampionFile<T>(championName: string, dragonCulture: DragonCulture): Promise<ReturnData<DragonFile<DragonChampion[]>>> {
+    private static async downloadAndReadDetailedChampionFile(championName: string, dragonCulture: DragonCulture): Promise<ReturnData<DragonFile<DragonChampion[]>>> {
         // console.log('Enter in DragonService.downloadAndReadDetailedChampionFile');
 
         // We check the version
@@ -606,7 +605,7 @@ export abstract class DragonService {
 
         // ---------------------
         // Prepare return data
-        let returnData: ReturnData<DragonFile<T>> = new ReturnData<DragonFile<T>>;
+        const returnData: ReturnData<DragonFile<T>> = new ReturnData<DragonFile<T>>;
         let tmpData: DragonFile<T> = new DragonFile<T>();
 
         /* istanbul ignore else */
@@ -614,8 +613,10 @@ export abstract class DragonService {
             tmpData = FileService.readInternalJSONFile(dragonFilePath);
 
             // Check if current dragon file required a update
-            const currentDragonFileVersionStr: string = (tmpData.version != null ? tmpData.version! : "0.0.0");
-            const currentOnlineVersionStr: string = (versionData.data!.onlineVersion != null ? versionData.data!.onlineVersion! : "0.0.0");
+            const currentDragonFileVersionStr: string = (tmpData.version != null ? tmpData.version! : '0.0.0');
+            const currentOnlineVersionStr: string = (versionData.data!.onlineVersion != null ? versionData.data!.onlineVersion! : '0.0.0');
+
+            /* istanbul ignore else */
             if (gt(currentOnlineVersionStr, currentDragonFileVersionStr)) {
                 versionData.data!.requiredUpdate = true;
             }
