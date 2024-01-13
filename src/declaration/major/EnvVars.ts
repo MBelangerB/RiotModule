@@ -35,12 +35,12 @@ export default {
             loadingScreenByChampion: 'https://ddragon.leagueoflegends.com/cdn/img/champion/loading/{championName}_{skinId}.jpg',
             splashArtByChampionId: 'https://cdn.communitydragon.org/latest/champion/{championId}/splash-art/centered.jpg',
             skinSplashArtByChampionId: 'https://cdn.communitydragon.org/latest/champion/{championId}/splash-art/centered/skin/{skinId}.jpg',
-            tilesByChampionId: 'https://cdn.communitydragon.org/latest/champion/{championId}/tile.jpg',    
-            skinTilesByChampionId: 'https://cdn.communitydragon.org/latest/champion/{championId}/tile/skin/{skinId}.jpg',         
+            tilesByChampionId: 'https://cdn.communitydragon.org/latest/champion/{championId}/tile.jpg',
+            skinTilesByChampionId: 'https://cdn.communitydragon.org/latest/champion/{championId}/tile/skin/{skinId}.jpg',
         },
         rawUrl: {
-            champion_tiles: 'https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/champion-tiles/{championId}/{skinId}.jpg'
-        }
+            champion_tiles: 'https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/champion-tiles/{championId}/{skinId}.jpg',
+        },
     },
     routes: {
         account: {
@@ -51,8 +51,8 @@ export default {
         },
         spectator: {
             v4: {
-                getCurrentGameInfoBySummoner: 'https://{region}.api.riotgames.com/lol/spectator/v4/active-games/by-summoner/{encryptedSummonerId}',    
-            }
+                getCurrentGameInfoBySummoner: 'https://{region}.api.riotgames.com/lol/spectator/v4/active-games/by-summoner/{encryptedSummonerId}',
+            },
         },
         match: {
             v4: {
@@ -60,7 +60,7 @@ export default {
                 getMatchlist: 'https://{region}.api.riotgames.com/lol/match/v4/matchlists/by-account/{encryptedAccountId}?endIndex={end}&beginIndex={begin}',
             },
             v5: {
-            }
+            },
         },
         league: {
             v4: {

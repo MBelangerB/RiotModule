@@ -131,10 +131,11 @@ export abstract class FileService {
 
     /**
      * Read the content on a static file (if file exists)
-     * @param filePath {string} 
+     * @param filePath {string}
      * @returns {any | undefined}
      */
-    static readStaticFileContent<T>(filePath: string) : any | undefined {
+    /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+    static readStaticFileContent(filePath: string) : any | undefined {
         /* istanbul ignore else */
         if (FileService.checkFileExists(filePath)) {
             // If version file already exists we read the file

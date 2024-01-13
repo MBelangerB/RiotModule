@@ -1,6 +1,6 @@
 {
   "name": "@mbelangerb/riotmodule",
-  "version": "2024.1.0",
+  "version": "2024.1.1",
   "description": "Bedy Riot module - Module for call Riot service and obtains information",
   "main": "build/index.js",
   "types": "./build/index.d.ts",
@@ -49,7 +49,8 @@
     "axios": "^1.6.3",
     "fs-extra": "^11.2.0",
     "node-cache": "^5.1.2",
-    "path": "^0.12.7"
+    "path": "^0.12.7",
+    "semver": "^7.5.4"
   },
   "devDependencies": {
     "@istanbuljs/nyc-config-typescript": "^1.0.2",
@@ -57,6 +58,7 @@
     "@types/fs-extra": "^11.0.4",
     "@types/mocha": "^10.0.6",
     "@types/node": "^20.10.6",
+    "@types/semver": "^7.5.6",
     "@types/sinon": "^17.0.2",
     "@typescript-eslint/eslint-plugin": "^6.16.0",
     "chai": "^4.3.10",

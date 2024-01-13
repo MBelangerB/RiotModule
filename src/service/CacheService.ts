@@ -61,7 +61,7 @@ export const CacheName = {
     DRAGON_CHAMPIONS_KEY_NAME: 'dragonChampion_name-{0}',
 
     /**
-    * Params 
+    * Params
     *   {0} = Culture
     *   {1} = Name
     * Contains IDragonChampion

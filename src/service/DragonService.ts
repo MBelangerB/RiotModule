@@ -8,7 +8,7 @@ import { DragonChampion, DragonFile, DragonVersion, IDragonChampion, IDragonVers
 import { ReturnData } from '../declaration/interface/IReturnData';
 import RiotHttpStatusCode from '../declaration/RiotHttpStatusCode';
 import { RequestService } from './RequestService';
-import { castToNumber } from '../declaration/functions';
+import { gt } from 'semver';
 
 // **** Variables **** //
 
@@ -235,9 +235,6 @@ export abstract class DragonService {
         intData = DragonService.prepareTree();
         intData.data = dataDragon;
 
-        // Convert FULL version to string version
-        const currentVersion: number = (intData.data!.internalVersion != null ? castToNumber(intData.data!.internalVersion!) : 0);
-
         // Download file content
         const versionUrl = EnvVars.dragon.url.version;
         const downloadResult: ReturnData<VersionData> = await DragonService.downloadExternalFileContent<VersionData>(versionUrl);
@@ -246,9 +243,13 @@ export abstract class DragonService {
         if (downloadResult && downloadResult.code == 200 && downloadResult.data != null && Array.isArray(downloadResult.data)) {
             intData.data!.onlineVersion = downloadResult.data[0].toString();
 
-            const newVersion: number = castToNumber(intData.data!.onlineVersion!);
-            const requiredUpdate: boolean = (currentVersion < newVersion);
-            intData.data!.requiredUpdate = requiredUpdate;
+            const currentVersionStr: string = (intData.data!.internalVersion != null ? intData.data!.internalVersion! : '0.0.0');
+            const onlineVersionStr: string = (intData.data!.onlineVersion != null ? intData.data!.onlineVersion! : '0.0.0');
+
+            /* istanbul ignore else */
+            if (gt(onlineVersionStr, currentVersionStr)) {
+                intData.data!.requiredUpdate = true;
+            }
         }
 
         /* istanbul ignore else */
@@ -345,7 +346,7 @@ export abstract class DragonService {
 
     // #endregion
 
-    //#region "Read Dragon file"
+    // #region "Read Dragon file"
     /**
      * Read dragon champion details file. The detail file content all information for a specific champion.
      * @param championName League of Legend champion name
@@ -391,8 +392,8 @@ export abstract class DragonService {
                         name: dragonChampionInfo.name,
                         title: dragonChampionInfo.title,
                         image: dragonChampionInfo.image,
-                        skins: dragonChampionInfo.skins
-                    }
+                        skins: dragonChampionInfo.skins,
+                    };
                 }
             }
 
@@ -536,7 +537,7 @@ export abstract class DragonService {
 
         return championData;
     }
-    //#endregion
+    // #endregion
 
     // #region "Download/Write dragon file"
 
@@ -557,11 +558,11 @@ export abstract class DragonService {
 
     /**
      * Download a specific dragon champion file and write the file in server
-     * @param championName 
-     * @param dragonCulture 
-     * @returns 
+     * @param championName
+     * @param dragonCulture
+     * @returns
      */
-    private static async downloadAndReadDetailedChampionFile<T>(championName: string, dragonCulture: DragonCulture): Promise<ReturnData<DragonFile<DragonChampion[]>>> {
+    private static async downloadAndReadDetailedChampionFile(championName: string, dragonCulture: DragonCulture): Promise<ReturnData<DragonFile<DragonChampion[]>>> {
         // console.log('Enter in DragonService.downloadAndReadDetailedChampionFile');
 
         // We check the version
@@ -589,7 +590,7 @@ export abstract class DragonService {
      * @returns
     */
     private static async downloadAndReadDragonFile<T>(url: string, dragonFileType: DragonFileType,
-                                                        dragonFilePath: string, dragonCulture: DragonCulture): Promise<ReturnData<DragonFile<T>>> {
+        dragonFilePath: string, dragonCulture: DragonCulture): Promise<ReturnData<DragonFile<T>>> {
         // console.log('Enter in DragonService.downloadAndReadDragonFile');
 
         // We check the version
@@ -604,7 +605,7 @@ export abstract class DragonService {
 
         // ---------------------
         // Prepare return data
-        let returnData: ReturnData<DragonFile<T>> = new ReturnData<DragonFile<T>>;
+        const returnData: ReturnData<DragonFile<T>> = new ReturnData<DragonFile<T>>;
         let tmpData: DragonFile<T> = new DragonFile<T>();
 
         /* istanbul ignore else */
@@ -612,11 +613,13 @@ export abstract class DragonService {
             tmpData = FileService.readInternalJSONFile(dragonFilePath);
 
             // Check if current dragon file required a update
-            const currentDragonFileVersion: number = castToNumber(tmpData.version);
-            const currentOnlineVersion: number = castToNumber(versionData.data?.onlineVersion!);
+            const currentDragonFileVersionStr: string = (tmpData.version != null ? tmpData.version! : '0.0.0');
+            const currentOnlineVersionStr: string = (versionData.data!.onlineVersion != null ? versionData.data!.onlineVersion! : '0.0.0');
 
-            const requiredUpdate: boolean = (currentDragonFileVersion < currentOnlineVersion);
-            versionData.data!.requiredUpdate = requiredUpdate;
+            /* istanbul ignore else */
+            if (gt(currentOnlineVersionStr, currentDragonFileVersionStr)) {
+                versionData.data!.requiredUpdate = true;
+            }
         }
 
         // If required, download and write new dragon file data
@@ -674,7 +677,7 @@ export const DragonPath = {
     dragonFolder: join(DragonService.getMainPath(), EnvVars.dragon.folder),
     dragonFilePath: (filename: string) => join(DragonPath.dragonFolder, filename),
     dragonCulturePath: (culture: string, fileName: string) => join(DragonPath.dragonFolder, culture, fileName),
-    dragonChampionFolder: (culture: string) =>  join(DragonPath.dragonFolder, culture, 'champion'),
+    dragonChampionFolder: (culture: string) => join(DragonPath.dragonFolder, culture, 'champion'),
 } as const;
 
 export const DragonFileName = {
