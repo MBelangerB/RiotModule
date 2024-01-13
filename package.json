@@ -1,6 +1,6 @@
 {
   "name": "@mbelangerb/riotmodule",
-  "version": "2024.1.0",
+  "version": "2024.1.1",
   "description": "Bedy Riot module - Module for call Riot service and obtains information",
   "main": "build/index.js",
   "types": "./build/index.d.ts",
