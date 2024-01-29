@@ -1,4 +1,4 @@
-// Import data for export default and module.exports
+// Import data for export on default and module.exports
 import { RiotService } from './service/RiotService';
 import { DragonService } from './service/DragonService';
 import { CacheService } from './service/CacheService';
@@ -6,17 +6,22 @@ import { ValidationService } from './service/ValidationService';
 import { RiotGameType, DragonCulture, DragonFileType } from './declaration/enum';
 import { RiotHttpStatusCode } from './declaration/RiotHttpStatusCode';
 
+// Import Entity for export on default and module.exports
+import { AccountDTO } from './entity/Account-v1/AccountDTO';
+import { SummonerDTO } from './entity/Summoner-v4/SummonerDTO';
+import { LeagueEntryDTO } from './entity/League-v4/LeagueEntryDTO';
+
 // Export Declaraions pour import via { }
 export { RiotHttpStatusCode } from './declaration/RiotHttpStatusCode';
 export { RiotGameType, DragonCulture, DragonFileType } from './declaration/enum';
 export { RegionData, ChampionOption } from './declaration/types';
 
 // Export DTO pour import via { }
-export { IAccountDTO } from './entity/Account-v1/AccountDTO';
-export { ISummonerDTO } from './entity/Summoner-v4/SummonerDTO';
+export { IAccountDTO, AccountDTO } from './entity/Account-v1/AccountDTO';
+export { ISummonerDTO, SummonerDTO } from './entity/Summoner-v4/SummonerDTO';
 export { IChampionInfo } from './entity/Champion-v3/ChampionInfo';
 export { IChampionMasteryDTO } from './entity/ChampionMasteries-v4/ChampionMasteryDTO';
-export { ILeagueEntryDTO } from './entity/League-v4/LeagueEntryDTO';
+export { ILeagueEntryDTO, LeagueEntryDTO } from './entity/League-v4/LeagueEntryDTO';
 
 // Export RiotService for import with { }
 // Ex. : import { DragonService } from './service/DragonService';
@@ -47,6 +52,9 @@ export default {
     DragonFileType,
     RiotHttpStatusCode,
     CacheService,
+    AccountDTO,
+    SummonerDTO,
+    LeagueEntryDTO,
 } as const;
 
 
@@ -60,4 +68,7 @@ module.exports = {
     DragonCulture: DragonCulture,
     DragonFileType: DragonFileType,
     CacheService: CacheService,
+    AccountDTO: AccountDTO,
+    SummonerDTO: SummonerDTO,
+    LeagueEntryDTO: LeagueEntryDTO
 };

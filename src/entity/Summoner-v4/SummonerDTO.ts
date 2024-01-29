@@ -29,12 +29,12 @@ export interface ISummonerDTO {
     summonerLevel: number;
 }
 
-// export class SummonerDTO implements ISummonerDTO {
-//     accountId: string = '';
-//     profileIconId: number = 0;
-//     revisionDate: number = 0;
-//     name: string = '';
-//     id: string = '';
-//     puuid: string = '';
-//     summonerLevel: number = 0;
-// }
+export class SummonerDTO implements ISummonerDTO {
+    accountId!: string; // = '';
+    profileIconId!: number; // = 0;
+    revisionDate!: number; // = 0;
+    name!: string; // = '';
+    id!: string; // = '';
+    puuid!: string; // = '';
+    summonerLevel!: number; // = 0;
+}

@@ -7,7 +7,7 @@ https://shields.io/badges/git-hub-last-commit-branch
 https://shields.io/badges/git-hub-pre-release-date
 `![GitHub (Pre-)Release Date](https://img.shields.io/github/release-date-pre/MBelangerB/RiotModule?label=Last%20Release)`
 
-
+-- npm install ./lib/mbelangerb-riotentity-2024.1.1.tgz
 Coverage badge :
 https://app.codecov.io/gh/MBelangerB/RiotModule/settings/badge
 https://shields.io/badges/codecov
