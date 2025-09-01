@@ -368,7 +368,7 @@ export class ChampionV3 {
         returnValue.maxNewPlayerLevel = riotRotation.maxNewPlayerLevel;
 
         for (const currentChampId of riotRotation.freeChampionIds) {
-          const info: DragonChampion = await DragonService.getChampionInfoById(currentChampId, options?.culture);
+          const info: DragonChampion = await DragonService.getChampionInfoById(BigInt(currentChampId), options?.culture);
 
           const freeChamp: IChampion = {
             id: parseInt(info.key),
@@ -392,7 +392,7 @@ export class ChampionV3 {
         }
 
         for (const currentChampId of riotRotation.freeChampionIdsForNewPlayers) {
-          const info: DragonChampion = await DragonService.getChampionInfoById(currentChampId, options?.culture);
+          const info: DragonChampion = await DragonService.getChampionInfoById(BigInt(currentChampId), options?.culture);
 
           const freeChamp: IChampion = {
             id: parseInt(info.key),
