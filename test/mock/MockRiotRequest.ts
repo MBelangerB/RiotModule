@@ -1,4 +1,5 @@
-import { IAccountDTO } from "../../src/entity/Account-v1/AccountDTO";
+// import { IAccountDTO } from "../../src/entity/Account-v1/AccountDTO";
+import { IAccountDTO } from "@bedy90/riotentity";
 // import { random } from "faker";
 // faker.random.uuid();
 

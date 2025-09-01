@@ -1,4 +1,5 @@
-import NodeCache = require('node-cache');
+// import NodeCache = require('node-cache');
+import NodeCache from 'node-cache';
 
 // https://www.npmjs.com/package/node-cache
 // https://losikov.medium.com/part-7-internal-caching-in-node-js-3f18411bcf2
@@ -28,19 +29,19 @@ export const CacheName = {
     /**
      * Params
      *      {0} = REGION
-     *      {1} = SUMMONER NAME (or accountId ??)
+     *      {1} = PUUID
      */
     LEAGUE_SUMMONER: 'leagueSummoner-{0}-{1}',
     /**
      * Params
      *      {0} = REGION
-     *      {1} = SUMMONER NAME (or accountId ??)
+     *      {1} = PUUID
      */
     LEAGUE_MASTERIES: 'leagueMasteries-{0}-{1}',
     /**
      * Params
      *      {0} = REGION
-     *      {1} = SUMMONER NAME (or accountId ??)
+     *      {1} = PUUID
      */
     LEAGUE_RANK: 'leagueRank-{0}-{1}',
 

@@ -1,6 +1,3 @@
-/* eslint-disable max-len */
-/* eslint-disable no-shadow */
-
 export enum RiotGameType {
     LeagueOfLegend = 1,
     TeamFightTactic = 2,

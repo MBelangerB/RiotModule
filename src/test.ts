@@ -1,27 +1,39 @@
-import { IAccountDTO, AccountChecker, ISummonerDTO, SummonerChecker } from '@bedy90/riotentity';
+// import { IAccountDTO, ISummonerDTO, ITFT_SummonerDTO } from '@bedy90/riotentity';
+// import { Validators } from '@bedy90/riotentity';
 
-// Create IAccount DTO
-let myObj: IAccountDTO = {
-    gameName : "test",
-    puuid: "test",
-    tagLine: "#NA"
-}
+// // Create IAccount DTO
+// const invalidAccount: IAccountDTO = {
+//     gameName : 'test',
+//     puuid: 'test',
+//     tagLine: '#NA',
+// };
 
-// AccountChecker
-let isAccount: boolean = false;
-isAccount = AccountChecker.isAccountDTO(myObj);
+// const validAccount: IAccountDTO = {
+//     gameName: 'gameName',
+//     puuid: 'pDxMtQ0DTUZAxSu3WZz9itOTPphTc-9b9uTIrQXsQGFXxhgnaIIhyfY9NEaoZZGdKD-qgYbMPK42jg',
+//     tagLine: 'tag',
+// };
 
-// Create ISummonerDTO DTO
-let myObj2: ISummonerDTO = {
-    accountId: "test",
-    profileIconId: 1,
-    revisionDate: 1,
-    name: "test",
-    id: "test",
-    puuid: "test",
-    summonerLevel: 10
-}
+// // AccountChecker
+// let isAccount: boolean = false;
+// isAccount = Validators.AccountValidator.validate(invalidAccount).success;
+// console.log(isAccount);
 
-// AccountChecker
-let isSummoner: boolean = false;
-isSummoner = SummonerChecker.isSummonerDTO(myObj2);
+// isAccount = Validators.AccountValidator.validate(validAccount).success;
+// console.log(isAccount);
+
+// // Create ISummonerDTO DTO
+// const myObj2: ISummonerDTO = {
+//     // accountId: 'test',
+//     profileIconId: 1,
+//     revisionDate: 1n,
+//     // name: "test",
+//     // id: 'test',
+//     puuid: 'test',
+//     summonerLevel: 10n,
+// };
+
+// // SummonerChecker
+// let isSummoner: boolean = false;
+// isSummoner = Validators.SummonerValidator.validate(myObj2).success;
+// console.log(isSummoner);

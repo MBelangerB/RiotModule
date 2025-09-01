@@ -2,14 +2,15 @@
 process.env.dragonBaseFolder = './_result/static/dragon';
 process.env.CacheEnabled = 'false';
 
-import { assert, expect } from "chai";
+import { describe, expect, test } from '@jest/globals';
 import * as sinon from "sinon";
-import EnvVars from "../../src/declaration/major/EnvVars";
-import { DragonCulture, RiotService, Rotation, ValidationService } from "../../src";
-import { IAccountDTO } from "../../src/entity/Account-v1/AccountDTO";
-import { MockRiotRequest } from "../mock/MockRiotRequest";
-import { FileService } from '../../src/service/FileService';
-import { DragonPath } from '../../src/service/DragonService';
+import { IAccountDTO } from "@bedy90/riotentity";
+
+// import EnvVars from "../../src/declaration/major/EnvVars.js";
+import { DragonCulture, RiotService, Rotation, ValidationService } from "../../src/riotmodule.js";
+import { MockRiotRequest } from "../mock/MockRiotRequest.js";
+import { FileService } from '../../src/service/FileService.js';
+import { DragonPath } from '../../src/service/DragonService.js';
 
 // import * from "sinon";
 // export { RiotService, ChampionV3, ChampionMasteryV4, LeagueV4, SummonerV4 } from '../../src/service/RiotService';
@@ -48,21 +49,26 @@ describe('===> Test RiotService', () => {
             riotService.AccountV1.getByPuuid(puuid, region).then((accountInfo: IAccountDTO) => {
                 console.log(accountInfo);
 
-                expect(getByPuuidStub.calledOnce).to.be.true;
-                assert.ok(accountInfo);
-                assert.isDefined(accountInfo);
-                assert.equal(accountInfo.puuid, result.puuid);
-                assert.equal(accountInfo.gameName, result.gameName);
-                assert.equal(accountInfo.tagLine, result.tagLine);
+                expect(getByPuuidStub.calledOnce).toBe(true);
+
+                // Vérifie que accountInfo est défini et truthy
+                expect(accountInfo).toBeTruthy();
+                expect(accountInfo).toBeDefined();
+
+                // Vérifie l'égalité des propriétés
+                expect(accountInfo.puuid).toBe(result.puuid);
+                expect(accountInfo.gameName).toBe(result.gameName);
+                expect(accountInfo.tagLine).toBe(result.tagLine);
             });
 
             getByPuuidStub.restore();
 
         } catch (error: any) {
-            assert.fail(error);
+            throw new Error(error);
+
         }
 
-    }).timeout(3000);
+    }, 3000);
 
     it('1.0.2 => (MOCK Riot call) Get AccountInfo by GameName and TagLine', async () => {
         try {
@@ -77,21 +83,26 @@ describe('===> Test RiotService', () => {
             riotService.AccountV1.getByGameNameTagLine(gameName, tagLine, region).then((accountInfo: IAccountDTO) => {
                 console.log(accountInfo);
 
-                expect(getByPuuidStub.calledOnce).to.be.true;
-                assert.ok(accountInfo);
-                assert.isDefined(accountInfo);
-                assert.equal(accountInfo.puuid, result.puuid);
-                assert.equal(accountInfo.gameName, result.gameName);
-                assert.equal(accountInfo.tagLine, result.tagLine);
+                // Vérifie que la fonction getByPuuidStub a été appelée une fois (utilisation sinon ou jest.fn())
+                expect(getByPuuidStub.calledOnce).toBe(true);
+
+                // Vérifie que accountInfo est défini et truthy
+                expect(accountInfo).toBeTruthy();
+                expect(accountInfo).toBeDefined();
+
+                // Vérifie l'égalité des propriétés
+                expect(accountInfo.puuid).toBe(result.puuid);
+                expect(accountInfo.gameName).toBe(result.gameName);
+                expect(accountInfo.tagLine).toBe(result.tagLine);
             });
 
             getByPuuidStub.restore();
 
         } catch (error: any) {
-            assert.fail(error);
+            throw new Error(error);
         }
 
-    }).timeout(3000);
+    }, 3000);
 
     it('1.0.1 => Get current rotation', async () => {
         // Call Riot API
@@ -109,22 +120,23 @@ describe('===> Test RiotService', () => {
             }).then((rotateInfo: Rotation) => {
                 // console.log(rotateInfo);
 
-                assert.ok(rotateInfo);
-                assert.isDefined(rotateInfo);
-                assert.isNotNull(rotateInfo);
-                assert.isArray(rotateInfo.freeChampionIds);
-                assert.isArray(rotateInfo.freeChampionIdsForNewPlayers);
-                assert.isDefined(rotateInfo.freeChampionIds[0].skins)
-
-                expect(rotateInfo).to.be.true;
+                expect(rotateInfo).toBeTruthy();
+                expect(rotateInfo).toBeDefined();
+                expect(rotateInfo).not.toBeNull();
+                expect(Array.isArray(rotateInfo.freeChampionIds)).toBe(true);
+                expect(Array.isArray(rotateInfo.freeChampionIdsForNewPlayers)).toBe(true);
+                expect(rotateInfo.freeChampionIds[0].skins).toBeDefined();
+                
+                expect(rotateInfo).toBeTruthy();
             });
         } catch (error: any) {
             // Use case success
-            assert.ok(error, 'In error use case');
+            // assert.ok(error, 'In error use case');
+            expect(error).toBeTruthy();
         }
 
 
-    }).timeout(20000);
+    }, 20000);
 
 
 }); // End describe RiotService

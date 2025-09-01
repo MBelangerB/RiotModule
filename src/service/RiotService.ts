@@ -1,18 +1,14 @@
 import { AxiosError } from 'axios';
-import EnvVars from '../declaration/major/EnvVars';
-import { RiotGameType } from '../declaration/enum';
-import { ValidationService } from './ValidationService';
-import { RequestService } from './RequestService';
-import { IAccountDTO } from '../entity/Account-v1/AccountDTO';
-import { ISummonerDTO } from '../entity/Summoner-v4/SummonerDTO';
-import { IChampionInfo } from '../entity/Champion-v3/ChampionInfo';
-import { IChampionMasteryDTO } from '../entity/ChampionMasteries-v4/ChampionMasteryDTO';
-import { ILeagueEntryDTO } from '../entity/League-v4/LeagueEntryDTO';
-import { CacheService, CacheTimer, CacheName } from './CacheService';
-import { DragonService } from './DragonService';
-import { ChampionMasteries, ChampionMastery, IChampion, Rotation } from '../model/RiotModel';
-import { DragonChampion } from '../model/DragonModel';
-import { ChampionOption } from '../declaration/types';
+import EnvVars from '../declaration/major/EnvVars.js';
+import { RiotGameType } from '../declaration/enum.js';
+import { ValidationService } from './ValidationService.js';
+import { RequestService } from './RequestService.js';
+import { IAccountDTO, ISummonerDTO, ILeagueEntryDTO, IChampionMasteryDTO, IChampionInfo_v3 } from '@bedy90/riotentity';
+import { CacheService, CacheTimer, CacheName } from './CacheService.js';
+import { DragonService } from './DragonService.js';
+import { ChampionMasteries, ChampionMastery, IChampion, Rotation } from '../model/index.js';
+import { DragonChampion } from '../model/DragonModel.js';
+import { ChampionOption } from '../declaration/types.js';
 
 // **** Variables **** //
 // TEst : Htetkokolij
@@ -265,88 +261,65 @@ export class ChampionMasteryV4 {
     }
 
 /**
-  * Use [IChampionInfo] for build Rotation with option.
+  * Use [IChampionInfo_v3] for build Rotation with option.
   * [TODO: Review]
   * @param riotRotation
   * @param options
   * @returns
   */
-    private async buildChampionMasteries(summonerMasteries: Array<IChampionMasteryDTO>, options?: ChampionOption | null): Promise<ChampionMasteries> {
-        /* eslint-disable @typescript-eslint/no-explicit-any */
-        // TODO: Rework
-        const prepareMasteries = new Promise<ChampionMasteries>(async (resolve: any) => {
-            const returnValue: ChampionMasteries = new ChampionMasteries();
+private async buildChampionMasteries(summonerMasteries: Array<IChampionMasteryDTO>, options?: ChampionOption | null): Promise<ChampionMasteries> {
+    const prepareMasteries = new Promise<ChampionMasteries>((resolve) => {
+      const returnValue: ChampionMasteries = new ChampionMasteries();
 
+      summonerMasteries.reduce((prevMasteries, currentMasteries) => {
+        return prevMasteries.then(() => {
+          return DragonService.getChampionInfoById(currentMasteries.championId, options?.culture).then((info) => {
+            const masteries: ChampionMastery = new ChampionMastery();
+            // masteries.summonerId = currentMasteries.summonerId;
+            masteries.puuid = currentMasteries.puuid;
+            masteries.championId = currentMasteries.championId;
+            masteries.championLevel = currentMasteries.championLevel;
+            masteries.championPoints = currentMasteries.championPoints;
+            masteries.championPointsSinceLastLevel = currentMasteries.championPointsSinceLastLevel;
+            masteries.championPointsUntilNextLevel = currentMasteries.championPointsUntilNextLevel;
+            masteries.chestGranted = currentMasteries.chestGranted;
+            masteries.lastPlayTime = currentMasteries.lastPlayTime;
+            masteries.tokensEarned = currentMasteries.tokensEarned;
+            masteries.championId = currentMasteries.championId;
 
-            await summonerMasteries.reduce(async (prevMasteries, currentMasteries) => {
-                await prevMasteries;
+            if (options) {
+              masteries.champion = {
+                id: parseInt(info.key),
+              };
 
-                const info: DragonChampion = await DragonService.getChampionInfoById(currentMasteries.championId, options?.culture);
-
-                const masteries: ChampionMastery = new ChampionMastery();
-                masteries.summonerId = currentMasteries.summonerId;
-                masteries.championId = currentMasteries.championId;
-                masteries.championLevel = currentMasteries.championLevel;
-                masteries.championPoints = currentMasteries.championPoints;
-                masteries.championPointsSinceLastLevel = currentMasteries.championPointsSinceLastLevel;
-                masteries.championPointsUntilNextLevel = currentMasteries.championPointsUntilNextLevel;
-                masteries.chestGranted = currentMasteries.chestGranted;
-                masteries.lastPlayTime = currentMasteries.lastPlayTime;
-                masteries.tokensEarned = currentMasteries.tokensEarned;
-                masteries.championId = currentMasteries.championId;
-
-                if (options) {
-                    masteries.champion = {
-                        id: parseInt(info.key),
-                    };
-
-                    if (options.showChampionName == true) {
-                        masteries.champion.name = info.name;
-                    }
-                    if (options.showSquare == true) {
-                        masteries.champion.squareUrl = EnvVars.dragon.imageUrl.squareByChampionId.replace('{championId}', info.key);
-                    }
-                    if (options.showLoadingScreen == true) {
-                        masteries.champion.loadingScreenUrl = EnvVars.dragon.imageUrl.loadingScreenByChampion.replace('{championName}', info.id).replace('{skinId}', '0');
-                    }
-                }
-
-                returnValue.championMastery.push(masteries);
-
-            }, Promise.resolve());
-
-            // Todo CHeck
-
-
-            if (options && options.showChampionName == true) {
-                returnValue.championMastery.sort(function (a: ChampionMastery, b: ChampionMastery) {
-                    // Inverted ( < = -1 | > 1 )
-                    if (a.championPoints < b.championPoints) {
-                        return 1;
-                    }
-                    if (a.championPoints > b.championPoints) {
-                        return -1;
-                    }
-                    // return 0;
-                    return a.champion.name!.localeCompare(b.champion.name!);
-                    // return a.champion.name!.localeCompare(b.champion.name!);
-                });
+              if (options.showChampionName == true) {
+                masteries.champion.name = info.name;
+              }
+              if (options.showSquare == true) {
+                masteries.champion.squareUrl = EnvVars.dragon.imageUrl.squareByChampionId.replace('{championId}', info.key);
+              }
+              if (options.showLoadingScreen == true) {
+                masteries.champion.loadingScreenUrl = EnvVars.dragon.imageUrl.loadingScreenByChampion.replace('{championId}', info.key);
+              }
             }
 
-            resolve(returnValue);
+            returnValue.championMastery.push(masteries);
+          });
         });
-
-        return await Promise.resolve(prepareMasteries);
-    }
-
+      }, Promise.resolve()).then(() => {
+        resolve(returnValue);
+      });
+    });
+    return prepareMasteries;
+  }
 }
 
 export class ChampionV3 {
 
     /**
-     * Return a @type {IChampionInfo}
+     * Return a @type {IChampionInfo_v3}
      * @param region
-     * @returns  {IChampionInfo}
+     * @returns  {IChampionInfo_v3}
      */
     async getChampionRotations(region: string, options?: ChampionOption | null): Promise<Rotation> {
 
@@ -355,15 +328,15 @@ export class ChampionV3 {
 
         const cacheName = CacheName.LEAGUE_ROTATE.replace('{0}', realRegion);
         if (EnvVars.cache.enabled) {
-            const cacheValue: IChampionInfo = CacheService.getInstance().getCache<IChampionInfo>(cacheName)!;
+            const cacheValue: IChampionInfo_v3 = CacheService.getInstance().getCache<IChampionInfo_v3>(cacheName)!;
 
             if (cacheValue != undefined) {
                 return await this.buildRotation(cacheValue, options);
             }
         }
 
-        let riotReturnValue!: IChampionInfo;
-        await RequestService.callRiotAPI<IChampionInfo>(championRotateUrl, RiotGameType.LeagueOfLegend).then((result) => {
+        let riotReturnValue!: IChampionInfo_v3;
+        await RequestService.callRiotAPI<IChampionInfo_v3>(championRotateUrl, RiotGameType.LeagueOfLegend).then((result) => {
             riotReturnValue = result;
         }).catch((err) => {
             console.error(exports.RiotLocalization.errInFunction('getChampionRotations'));
@@ -378,7 +351,7 @@ export class ChampionV3 {
         });
 
         if (EnvVars.cache.enabled) {
-            CacheService.getInstance().setCache<IChampionInfo>(cacheName, riotReturnValue, CacheTimer.ROTATE);
+            CacheService.getInstance().setCache<IChampionInfo_v3>(cacheName, riotReturnValue, CacheTimer.ROTATE);
         }
 
         return await this.buildRotation(riotReturnValue, options);
@@ -390,82 +363,146 @@ export class ChampionV3 {
      * @param options
      * @returns
      */
-    private async buildRotation(riotRotation: IChampionInfo, options?: ChampionOption | null): Promise<Rotation> {
-        /* eslint-disable @typescript-eslint/no-explicit-any */
-        /* eslint-disable @typescript-eslint/no-unused-vars */
-        // TODO: Reowrk
-        const prepareRotation = new Promise<Rotation>(async (resolve: any, reject: any) => {
-            const returnValue: Rotation = new Rotation();
-            returnValue.maxNewPlayerLevel = riotRotation.maxNewPlayerLevel;
+    private async buildRotation(riotRotation: IChampionInfo_v3, options?: ChampionOption | null): Promise<Rotation> {
+        const returnValue: Rotation = new Rotation();
+        returnValue.maxNewPlayerLevel = riotRotation.maxNewPlayerLevel;
 
-            await riotRotation.freeChampionIds.reduce(async (prevChampionId, currentChampId) => {
-                await prevChampionId;
+        for (const currentChampId of riotRotation.freeChampionIds) {
+          const info: DragonChampion = await DragonService.getChampionInfoById(currentChampId, options?.culture);
 
-                const info: DragonChampion = await DragonService.getChampionInfoById(currentChampId, options?.culture);
+          const freeChamp: IChampion = {
+            id: parseInt(info.key),
+          };
 
-                const freeChamp: IChampion = {
-                    id: parseInt(info.key),
-                };
+          if (options && options.showChampionName == true) {
+            freeChamp.name = info.name;
+          }
+          if (options && options.showSquare == true) {
+            freeChamp.squareUrl = EnvVars.dragon.imageUrl.squareByChampionId.replace('{championId}', info.key);
+          }
+          if (options && options.showLoadingScreen == true) {
+            freeChamp.loadingScreenUrl = EnvVars.dragon.imageUrl.loadingScreenByChampion.replace('{championName}', info.id).replace('{skinId}', '0');
+          }
+          if (options && options.getSkins == true) {
+            const detailInfo: DragonChampion = await DragonService.getDetailedChampionInfoByName(info.id, options?.culture);
+            freeChamp.skins = detailInfo.skins;
+          }
 
-                if (options && options.showChampionName == true) {
-                    freeChamp.name = info.name;
-                }
-                if (options && options.showSquare == true) {
-                    freeChamp.squareUrl = EnvVars.dragon.imageUrl.squareByChampionId.replace('{championId}', info.key);
-                }
-                if (options && options.showLoadingScreen == true) {
-                    freeChamp.loadingScreenUrl = EnvVars.dragon.imageUrl.loadingScreenByChampion.replace('{championName}', info.id).replace('{skinId}', '0');
-                }
-                if (options && options.getSkins == true) {
-                    const detailInfo: DragonChampion = await DragonService.getDetailedChampionInfoByName(info.id, options?.culture);
-                    freeChamp.skins = detailInfo.skins;
-                }
+          returnValue.freeChampionIds.push(freeChamp);
+        }
 
-                returnValue.freeChampionIds.push(freeChamp);
-            }, Promise.resolve());
+        for (const currentChampId of riotRotation.freeChampionIdsForNewPlayers) {
+          const info: DragonChampion = await DragonService.getChampionInfoById(currentChampId, options?.culture);
 
-            await riotRotation.freeChampionIdsForNewPlayers.reduce(async (prevChampionId, currentChampId) => {
-                await prevChampionId;
+          const freeChamp: IChampion = {
+            id: parseInt(info.key),
+          };
 
-                const info: DragonChampion = await DragonService.getChampionInfoById(currentChampId, options?.culture);
+          if (options && options.showChampionName == true) {
+            freeChamp.name = info.name;
+          }
+          if (options && options.showSquare == true) {
+            freeChamp.squareUrl = EnvVars.dragon.imageUrl.squareByChampionId.replace('{championId}', info.key);
+          }
+          if (options && options.showLoadingScreen == true) {
+            freeChamp.loadingScreenUrl = EnvVars.dragon.imageUrl.loadingScreenByChampion.replace('{championName}', info.id).replace('{skinId}', '0');
+          }
+          if (options && options.getSkins == true) {
+            const detailInfo: DragonChampion = await DragonService.getDetailedChampionInfoByName(info.id, options?.culture);
+            freeChamp.skins = detailInfo.skins;
+          }
 
-                const freeChamp: IChampion = {
-                    id: parseInt(info.key),
-                };
+          returnValue.freeChampionIdsForNewPlayers.push(freeChamp);
+        }
 
-                if (options && options.showChampionName == true) {
-                    freeChamp.name = info.name;
-                }
-                if (options && options.showSquare == true) {
-                    freeChamp.squareUrl = EnvVars.dragon.imageUrl.squareByChampionId.replace('{championId}', info.key);
-                }
-                if (options && options.showLoadingScreen == true) {
-                    freeChamp.loadingScreenUrl = EnvVars.dragon.imageUrl.loadingScreenByChampion.replace('{championName}', info.id).replace('{skinId}', '0');
-                }
-                if (options && options.getSkins == true) {
-                    const detailInfo: DragonChampion = await DragonService.getDetailedChampionInfoByName(info.id, options?.culture);
-                    freeChamp.skins = detailInfo.skins;
-                }
+        if (options && options.showChampionName == true) {
+          returnValue.freeChampionIds.sort((a: IChampion, b: IChampion) => {
+            return a.name!.localeCompare(b.name!);
+          });
+          returnValue.freeChampionIdsForNewPlayers.sort((a: IChampion, b: IChampion) => {
+            return a.name!.localeCompare(b.name!);
+          });
+        }
 
-                returnValue.freeChampionIdsForNewPlayers.push(freeChamp);
-            }, Promise.resolve());
+        return returnValue;
+      }
 
-            // TODO CHECK IF OK
-            if (options && options.showChampionName == true) {
-                returnValue.freeChampionIds.sort(function (a: IChampion, b: IChampion) {
-                    return a.name!.localeCompare(b.name!);
-                });
-                returnValue.freeChampionIdsForNewPlayers.sort((a: IChampion, b: IChampion) => {
-                    return a.name!.localeCompare(b.name!);
-                });
-            }
+    // private async buildRotation(riotRotation: IChampionInfo_v3, options?: ChampionOption | null): Promise<Rotation> {
+    //     /* eslint-disable @typescript-eslint/no-explicit-any */
+    //     /* eslint-disable @typescript-eslint/no-unused-vars */
+    //     // TODO: Reowrk
+    //     const prepareRotation = new Promise<Rotation>(async (resolve: any, reject: any) => {
+    //         const returnValue: Rotation = new Rotation();
+    //         returnValue.maxNewPlayerLevel = riotRotation.maxNewPlayerLevel;
+
+    //         await riotRotation.freeChampionIds.reduce(async (prevChampionId, currentChampId) => {
+    //             await prevChampionId;
+
+    //             const info: DragonChampion = await DragonService.getChampionInfoById(currentChampId, options?.culture);
+
+    //             const freeChamp: IChampion = {
+    //                 id: parseInt(info.key),
+    //             };
+
+    //             if (options && options.showChampionName == true) {
+    //                 freeChamp.name = info.name;
+    //             }
+    //             if (options && options.showSquare == true) {
+    //                 freeChamp.squareUrl = EnvVars.dragon.imageUrl.squareByChampionId.replace('{championId}', info.key);
+    //             }
+    //             if (options && options.showLoadingScreen == true) {
+    //                 freeChamp.loadingScreenUrl = EnvVars.dragon.imageUrl.loadingScreenByChampion.replace('{championName}', info.id).replace('{skinId}', '0');
+    //             }
+    //             if (options && options.getSkins == true) {
+    //                 const detailInfo: DragonChampion = await DragonService.getDetailedChampionInfoByName(info.id, options?.culture);
+    //                 freeChamp.skins = detailInfo.skins;
+    //             }
+
+    //             returnValue.freeChampionIds.push(freeChamp);
+    //         }, Promise.resolve());
+
+    //         await riotRotation.freeChampionIdsForNewPlayers.reduce(async (prevChampionId, currentChampId) => {
+    //             await prevChampionId;
+
+    //             const info: DragonChampion = await DragonService.getChampionInfoById(currentChampId, options?.culture);
+
+    //             const freeChamp: IChampion = {
+    //                 id: parseInt(info.key),
+    //             };
+
+    //             if (options && options.showChampionName == true) {
+    //                 freeChamp.name = info.name;
+    //             }
+    //             if (options && options.showSquare == true) {
+    //                 freeChamp.squareUrl = EnvVars.dragon.imageUrl.squareByChampionId.replace('{championId}', info.key);
+    //             }
+    //             if (options && options.showLoadingScreen == true) {
+    //                 freeChamp.loadingScreenUrl = EnvVars.dragon.imageUrl.loadingScreenByChampion.replace('{championName}', info.id).replace('{skinId}', '0');
+    //             }
+    //             if (options && options.getSkins == true) {
+    //                 const detailInfo: DragonChampion = await DragonService.getDetailedChampionInfoByName(info.id, options?.culture);
+    //                 freeChamp.skins = detailInfo.skins;
+    //             }
+
+    //             returnValue.freeChampionIdsForNewPlayers.push(freeChamp);
+    //         }, Promise.resolve());
+
+    //         // TODO CHECK IF OK
+    //         if (options && options.showChampionName == true) {
+    //             returnValue.freeChampionIds.sort(function (a: IChampion, b: IChampion) {
+    //                 return a.name!.localeCompare(b.name!);
+    //             });
+    //             returnValue.freeChampionIdsForNewPlayers.sort((a: IChampion, b: IChampion) => {
+    //                 return a.name!.localeCompare(b.name!);
+    //             });
+    //         }
 
 
-            resolve(returnValue);
-        });
+    //         resolve(returnValue);
+    //     });
 
-        return await Promise.resolve(prepareRotation);
-    }
+    //     return await Promise.resolve(prepareRotation);
+    // }
 }
 
 export class LeagueV4 {

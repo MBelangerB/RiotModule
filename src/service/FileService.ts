@@ -1,6 +1,6 @@
 import { readFileSync, mkdirSync, existsSync, writeFileSync, copyFileSync } from 'fs';
-import { rmSync } from 'fs-extra';
-import { castDataToJSON, isNullOrEmpty } from '../declaration/functions';
+import fsExtra from 'fs-extra';
+import { castDataToJSON, isNullOrEmpty } from '../declaration/functions.js';
 
 // **** Variables **** //
 
@@ -33,9 +33,10 @@ export abstract class FileService {
      * @returns
      */
     static removeFile(filePath: string): void {
+        // Recursive remove not available
         if (FileService.checkFileExists(filePath)) {
-            return rmSync(filePath, { recursive: true });
-        }
+            return fsExtra.removeSync(filePath);
+          }
     }
 
     /**
@@ -124,7 +125,7 @@ export abstract class FileService {
      * @param flag
      * @returns
      */
-    /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+
     static readInternalTextFile(filePath: string, fileEncoding: BufferEncoding = 'utf8', flag = 'r'): string {
         return readFileSync(filePath, { encoding: fileEncoding, flag: flag });
     }

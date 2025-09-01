@@ -1,0 +1,7 @@
+{
+    "typescript.tsdk": "node_modules\\typescript\\lib",
+    "jest.jestCommandLine": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
+    "jest.nodeEnv": {
+      "NODE_OPTIONS": "--experimental-vm-modules"
+    }
+} 

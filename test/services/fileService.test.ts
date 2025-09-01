@@ -3,11 +3,9 @@ process.env.dragonBaseFolder = './_result/static/dragon';
 process.env.CacheEnabled = 'false';
 process.env.showTraceStack = 'false'
 
-import { assert } from "chai";
-import { describe } from "mocha";
-
-import { FileService } from '../../src/service/FileService';
+import { describe, expect, test } from '@jest/globals';
 import { join } from "path";
+import { FileService } from '../../src/service/FileService.js';
 
 describe('===> Test File Service', () => {
   const test_Folder: string = './_result/static/test';
@@ -36,9 +34,9 @@ describe('===> Test File Service', () => {
     FileService.createFolder(test_Folder);
     let result: boolean = FileService.checkFileExists(test_Folder);
 
-    assert.ok(result);
-    assert.isNotNull(result);
-    assert.isTrue(result);
+    expect(result).toBeTruthy()
+    expect(result).not.toBeNull();
+    expect(result).toBe(true)
 
     done();
   });
@@ -50,12 +48,12 @@ describe('===> Test File Service', () => {
     // Test « File already exists »
     let secondReturn : string = FileService.createFolder(test_Folder);
 
-    assert.ok(result);
-    assert.isTrue(result);
-    assert.isNotNull(result);
+    expect(result).toBeTruthy()
+    expect(result).toBe(true)
+    expect(result).not.toBeNull();
 
-    assert.ok(secondReturn);
-    assert.include(secondReturn, 'already exists');
+    expect(secondReturn).toBeTruthy();
+    expect(secondReturn).toEqual(expect.stringContaining('already exists'));
 
     done();
   });
@@ -63,8 +61,8 @@ describe('===> Test File Service', () => {
   it('1.2 => Try create folder with invalid name', (done) => {
     let result: string = FileService.createFolder('');
 
-    assert.ok(result);
-    assert.include(result, 'is null or empty');
+    expect(result).toBeTruthy()
+    expect(result).toEqual(expect.stringContaining('is null or empty'));
 
     done();
   });
@@ -76,9 +74,9 @@ describe('===> Test File Service', () => {
     FileService.writeFile(test_TextFilePath, '');
     let finalCheck: boolean = FileService.checkFileExists(test_TextFilePath);
 
-    assert.isFalse(initialCheck);
-    assert.notEqual(initialCheck, finalCheck)
-    assert.isTrue(finalCheck);
+    expect(initialCheck).toBeFalsy();
+    expect(initialCheck).not.toEqual(finalCheck);
+    expect(finalCheck).toBeTruthy();
 
     done();
   });
@@ -92,23 +90,23 @@ describe('===> Test File Service', () => {
       let finalCheck: boolean = FileService.checkFileExists(test_TextFilePath);
   
       let content: string = FileService.readInternalTextFile(test_TextFilePath);
-  
-      assert.isFalse(initialCheck);
-      assert.notEqual(initialCheck, finalCheck)
-      assert.isTrue(finalCheck);
-      assert.equal(content, test_FileContent);
+
+      expect(initialCheck).toBeFalsy();
+      expect(initialCheck).not.toEqual(finalCheck);
+      expect(finalCheck).toBeTruthy();
+      expect(content).toEqual(test_FileContent);
 
       done();
     } catch (ex) {
       console.error(ex);
-      assert.fail("Error on 1.4");
+      throw new Error('Error on 1.4');
     }   
   });
 
   it('1.5 => Trying to write a new text file without filename', (done) => {
     let result: boolean = FileService.writeFile('', test_FileContent);
 
-    assert.isFalse(result);
+    expect(result).toBeFalsy();
     done();
   });
 
@@ -121,11 +119,11 @@ describe('===> Test File Service', () => {
 
     let content: any = FileService.readInternalJSONFile(test_JsonFilePath);
 
-    assert.isFalse(initialCheck);
-    assert.notEqual(initialCheck, finalCheck)
+    expect(initialCheck).toBeFalsy();
+    expect(initialCheck).not.toEqual(finalCheck);
 
-    assert.isTrue(finalCheck);
-    assert.equal(content.msg, JSON.parse(test_JsonFileContent).msg);
+    expect(finalCheck).toBeTruthy();
+    expect(content.msg).toEqual(JSON.parse(test_JsonFileContent).msg);
     
     done();
 

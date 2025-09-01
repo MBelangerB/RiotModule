@@ -1,8 +1,8 @@
 import axios, { ResponseType } from 'axios';
-import { RiotGameType } from '../declaration/enum';
-import EnvVars from '../declaration/major/EnvVars';
-import RiotHttpStatusCode from '../declaration/RiotHttpStatusCode';
-import { FileService } from './FileService';
+import { RiotGameType } from '../declaration/enum.js';
+import EnvVars from '../declaration/major/EnvVars.js';
+import { RiotHttpStatusCode } from '@bedy90/riotentity';
+import { FileService } from './FileService.js';
 
 // **** Variables **** //
 
@@ -39,6 +39,7 @@ export abstract class RequestService {
                             // Do whatever you want to transform the data
                             return JSON.parse(data);
                         }
+                        // eslint-disable-next-line @typescript-eslint/no-unused-vars
                     } catch (ex) {
                         return data; // Never supposed to happen with API Riot.
                     }
@@ -46,7 +47,7 @@ export abstract class RequestService {
             }).then(response => {
                 switch (response.status) {
                     case RiotHttpStatusCode.OK:
-                        resolve(response.data);
+                        resolve(response?.data);
                         break;
 
                     /* istanbul ignore next */
@@ -68,8 +69,8 @@ export abstract class RequestService {
      * @param responseType
      * @returns
      */
-    /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-    static async downloadExternalFile<T>(requestUrl: string, responseType: ResponseType = 'json'): Promise<T> {
+
+    static async downloadExternalFile<T>(requestUrl: string, responseType: ResponseType = 'json', contentType: string | null = null): Promise<T> {
         console.info(`Downloading the '${requestUrl}' file.`);
 
         const axiosQuery = new Promise<T>(function (resolve, reject) {
@@ -77,6 +78,9 @@ export abstract class RequestService {
                 method: 'GET',
                 responseType: responseType,
                 responseEncoding: 'utf8',
+                headers: {
+                    ...(contentType ? { 'Content-Type': contentType } : {}),
+                },
                 transformResponse: [function (data) {
                     try {
                         /* istanbul ignore else */
@@ -84,11 +88,13 @@ export abstract class RequestService {
                             // Do whatever you want to transform the data
                             return JSON.parse(data);
                         }
+                        // eslint-disable-next-line @typescript-eslint/no-unused-vars
                     } catch (ex) {
                         return data;
                     }
                 }],
             }).then(response => {
+                // TODO: It's not a Riot Call, use HttpStatusCode
                 switch (response.status) {
                     case RiotHttpStatusCode.OK:
                         resolve(response.data);
@@ -126,9 +132,14 @@ export abstract class RequestService {
                     try {
                         /* istanbul ignore else */
                         if (data) {
-                            // Do whatever you want to transform the data
-                            return JSON.parse(data);
+                            if (responseType == 'json') {
+                                // Do whatever you want to transform the data
+                                return JSON.parse(data);
+                            } else {
+                                return data;
+                            }
                         }
+                        // eslint-disable-next-line @typescript-eslint/no-unused-vars
                     } catch (ex) {
                         return data;
                     }
@@ -162,3 +173,4 @@ export default {
     RequestLocalization,
     RequestService,
 } as const;
+

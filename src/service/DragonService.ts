@@ -1,14 +1,15 @@
 import { join, resolve } from 'path';
-import { FileService } from './FileService';
-import { CacheService, CacheName, CacheTimer } from './CacheService';
-
-import EnvVars from '../declaration/major/EnvVars';
-import { DragonCulture, DragonFileType } from '../declaration/enum';
-import { DragonChampion, DragonFile, DragonVersion, IDragonChampion, IDragonVersion, VersionData } from '../model/DragonModel';
-import { ReturnData } from '../declaration/interface/IReturnData';
-import RiotHttpStatusCode from '../declaration/RiotHttpStatusCode';
-import { RequestService } from './RequestService';
+import { RiotHttpStatusCode } from '@bedy90/riotentity';
 import { gt } from 'semver';
+
+import EnvVars from '../declaration/major/EnvVars.js';
+
+import { RequestService } from './RequestService.js';
+import { FileService } from './FileService.js';
+import { CacheService, CacheName, CacheTimer } from './CacheService.js';
+import { DragonCulture, DragonFileType } from '../declaration/enum.js';
+import { DragonChampion, DragonFile, DragonVersion, IDragonChampion, IDragonVersion, VersionData } from '../model/DragonModel.js';
+import { ReturnData } from '../declaration/interface/IReturnData.js';
 
 // **** Variables **** //
 
@@ -214,6 +215,7 @@ export abstract class DragonService {
                 CacheService.getInstance().setCache<DragonVersion>(versionCacheKey, dragonData, CacheTimer.DRAGON_VERSION);
             }
 
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (ex) /* istanbul ignore next */ {
             returnData.addMessage(DragonServiceLocalization.errInFunction('getDragonVersion'));
             returnData.code = RiotHttpStatusCode.INTERNAL_SERVER_ERROR;
@@ -275,7 +277,7 @@ export abstract class DragonService {
      * @returns {DragonChampion}
      * TODO: ReturnData<DragonChampion> ?
      */
-    static async getChampionInfoById(championId: number, dragonCulture: DragonCulture | undefined): Promise<DragonChampion> {
+    static async getChampionInfoById(championId: bigint, dragonCulture: DragonCulture | undefined): Promise<DragonChampion> {
         // console.log('Enter in DragonService.getChampionInfoById');
 
         /* istanbul ignore else */
@@ -284,7 +286,7 @@ export abstract class DragonService {
         }
 
         let championInfo: DragonChampion = new DragonChampion();
-        const dragonData: Map<number, IDragonChampion> = await DragonService.readDragonChampionsFileById(dragonCulture);
+        const dragonData: Map<bigint, IDragonChampion> = await DragonService.readDragonChampionsFileById(dragonCulture);
 
         /* istanbul ignore else */
         if (dragonData.has(championId)) {
@@ -409,16 +411,16 @@ export abstract class DragonService {
     /**
      * Reads the dragon champion file.  Mapped by ChampionId
      * @param dragonCulture Dragon culture
-     * @returns {Map<number, IDragonChampion>}
+     * @returns {Map<bigint, IDragonChampion>}
      */
-    private static async readDragonChampionsFileById(dragonCulture: DragonCulture): Promise<Map<number, IDragonChampion>> {
-        let championData: Map<number, IDragonChampion> = new Map<number, IDragonChampion>();
+    private static async readDragonChampionsFileById(dragonCulture: DragonCulture): Promise<Map<bigint, IDragonChampion>> {
+        let championData: Map<bigint, IDragonChampion> = new Map<bigint, IDragonChampion>();
 
         // Check if champions data is cached
         const championsCache = CacheName.DRAGON_CHAMPIONS_KEY_ID.replace('{0}', dragonCulture);
         /* istanbul ignore else */
         if (EnvVars.cache.enabled) {
-            const cacheValue: Map<number, IDragonChampion> | undefined = CacheService.getInstance().getCache<Map<number, IDragonChampion>>(championsCache);
+            const cacheValue: Map<bigint, IDragonChampion> | undefined = CacheService.getInstance().getCache<Map<bigint, IDragonChampion>>(championsCache);
 
             /* istanbul ignore else */
             if (cacheValue != undefined) {
@@ -454,13 +456,13 @@ export abstract class DragonService {
                         skins: undefined,
                     };
 
-                    championData.set(Number(dragonChampionInfo.key), tmpChampion);
+                    championData.set(BigInt(dragonChampionInfo.key), tmpChampion);
                 }
             }
 
             /* istanbul ignore else */
             if (EnvVars.cache.enabled) {
-                CacheService.getInstance().setCache<Map<number, IDragonChampion>>(championsCache, championData, CacheTimer.DRAGON_CHAMPION);
+                CacheService.getInstance().setCache<Map<bigint, IDragonChampion>>(championsCache, championData, CacheTimer.DRAGON_CHAMPION);
             }
         }
 
@@ -649,7 +651,7 @@ export abstract class DragonService {
         // console.log('Enter in DragonService.downloadExternalFileContent');
 
         const retData: ReturnData<T> = new ReturnData<T>();
-        retData.data = await RequestService.downloadExternalFile<T>(url);
+        retData.data = await RequestService.downloadExternalFile<T>(url, 'json', null);
         return retData;
     }
 
@@ -662,7 +664,7 @@ export abstract class DragonService {
         // console.log('Enter in DragonService.downloadExternalDragonFile');
 
         let retData: DragonFile<T> = new DragonFile<T>();
-        retData = await RequestService.downloadExternalFile<DragonFile<T>>(url);
+        retData = await RequestService.downloadExternalFile<DragonFile<T>>(url, 'json', null);
 
         return retData;
     }

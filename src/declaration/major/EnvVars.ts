@@ -1,10 +1,11 @@
-import { RiotGameType } from '../enum';
-import { getBoolean } from '../functions';
+import { RiotGameType } from '../enum.js';
+import { getBoolean } from '../functions.js';
+import { IEnvVars } from '../interface/IEnvVars.js';
 
 import * as dotenv from 'dotenv';
 dotenv.config();
 
-export default {
+const EnvVars: IEnvVars = {
     nodeEnv: (process.env.NODE_ENV ?? 'development'),
     riot: {
         leagueToken: (process.env.Riot_LolToken ?? ''),
@@ -103,12 +104,13 @@ export default {
      * @param gameMode
      * @returns
      */
-      validateToken(gameMode : RiotGameType) {
+      validateToken(gameMode : RiotGameType) : boolean {
         let apiKey = '';
         if (this.nodeEnv.toLocaleLowerCase() == 'development') {
             // In DEV check if API Dev key exists
             apiKey = this.riot.apiToken;
             return (apiKey.toString().trim().length > 0);
+
         } else {
             apiKey = this.getToken(gameMode);
             return (apiKey.toString().trim().length > 0);
@@ -120,7 +122,7 @@ export default {
      * @param gameMode
      * @returns
      */
-    getToken(gameMode : RiotGameType) {
+    getToken(gameMode : RiotGameType) : string {
         let token = '';
         switch (gameMode) {
             case RiotGameType.TeamFightTactic:
@@ -140,5 +142,10 @@ export default {
         }
         return token;
     },
+}
 
-} as const;
+// export default {
+//     EnvVars,
+// } as const;
+
+export default EnvVars;

@@ -1,5 +1,5 @@
-import { assert, expect } from "chai";
-import { CacheService } from "../../src/service/CacheService";
+import { describe, expect, test } from '@jest/globals';
+import { CacheService } from "../../src/service/CacheService.js";
 import { setTimeout } from "timers/promises";
 
 describe('===> Test CacheService', () => {
@@ -13,7 +13,7 @@ describe('===> Test CacheService', () => {
     it('1.0 => Add data to the cache', (done) => {
 
         let state: boolean = CacheService.getInstance().setCache<string>(cacheKeyName, cacheValue);
-        assert.isTrue(state);
+        expect(state).toBe(true);
 
         done();
     });
@@ -21,10 +21,11 @@ describe('===> Test CacheService', () => {
     it('1.1.0 => Add data to the cache and read the cache value', (done) => {
 
         let state: boolean = CacheService.getInstance().setCache<string>(cacheKeyName, cacheValue);
-        assert.isTrue(state);
+        expect(state).toBe(true);
 
         let dataValue: string | undefined = CacheService.getInstance().getCache<string>(cacheKeyName);
-        assert.equal(cacheValue, dataValue);
+        
+        expect(cacheValue).toBe(dataValue);
 
         done();
     });
@@ -32,10 +33,10 @@ describe('===> Test CacheService', () => {
     it('1.1.1 => Add data to cache and check key exists.', (done) => {
 
         let state: boolean = CacheService.getInstance().setCache<string>(cacheKeyName, cacheValue);
-        assert.isTrue(state);
+        expect(state).toBe(true);
 
         let keyExists: boolean = CacheService.getInstance().checkIfExists(cacheKeyName);
-        assert.equal(keyExists, true);
+        expect(keyExists).toBe(true);
 
         done();
     });
@@ -43,10 +44,10 @@ describe('===> Test CacheService', () => {
     it('1.1.2 => Add data to cache and validate with an invalid key.', (done) => {
 
         let state: boolean = CacheService.getInstance().setCache<string>(cacheKeyName, cacheValue);
-        assert.isTrue(state);
+        expect(state).toBe(true);
 
         let keyExists: boolean = CacheService.getInstance().checkIfExists("Toto");
-        assert.equal(keyExists, false);
+        expect(keyExists).toBe(false);
 
         done();
     });
@@ -54,26 +55,26 @@ describe('===> Test CacheService', () => {
     it('1.2 => Add data on cache and wait for expiration.', async () => {
 
         let state: boolean = CacheService.getInstance().setCache<string>(cacheKeyName, cacheValue, 3);
-        assert.isTrue(state);
+        expect(state).toBe(true);
 
         // wait 5 secs
         await setTimeout(5000).then(() => {
             let dataValue: string | undefined = CacheService.getInstance().getCache<string>(cacheKeyName);
-            assert.isUndefined(dataValue);
+            expect(dataValue).toBeUndefined();
         });
 
-    }).timeout(10000);
+    }, 10000);
 
     it('1.3.0 => Add multi data on cache and get keylist', (done) => {
 
         let state1: boolean = CacheService.getInstance().setCache<string>("Key-1", cacheValue);
         let state2: boolean = CacheService.getInstance().setCache<string>("Key-2", cacheValue);
-        assert.isTrue(state1);
-        assert.isTrue(state2);
+        expect(state1).toBe(true);
+        expect(state2).toBe(true);
 
         let keyList: Array<string> = CacheService.getInstance().getKeyList();
-        assert.ok(keyList);
-        assert.equal(keyList.length, 2);
+        expect(keyList).toBeTruthy();
+        expect(keyList).toHaveLength(2);
 
         done();
     });
@@ -83,18 +84,18 @@ describe('===> Test CacheService', () => {
         let state1: boolean = CacheService.getInstance().setCache<string>("Key-1", cacheValue);
         let state2: boolean = CacheService.getInstance().setCache<string>("Key-2", cacheValue);
         let state3: boolean = CacheService.getInstance().setCache<string>("Key-3", cacheValue);
-        assert.isTrue(state1);
-        assert.isTrue(state2);
-        assert.isTrue(state3);
+        expect(state1).toBe(true);
+        expect(state2).toBe(true);
+        expect(state3).toBe(true);
 
         let keyList: Array<string> = CacheService.getInstance().getKeyList();
-        assert.ok(keyList);
-        assert.equal(keyList.length, 3);
+        expect(keyList).toBeTruthy();
+        expect(keyList).toHaveLength(3);
 
         let nbRemoveKey: number = CacheService.getInstance().removeCache("Key-1");
         keyList = CacheService.getInstance().getKeyList();
-        assert.equal(nbRemoveKey, 1);
-        assert.equal(keyList.length, 2);
+        expect(nbRemoveKey).toBe(1);
+        expect(keyList).toHaveLength(2);
 
         done();
     });
@@ -103,13 +104,13 @@ describe('===> Test CacheService', () => {
 
         let state1: boolean = CacheService.getInstance().setCache<string>("Key-1", cacheValue);
         let state2: boolean = CacheService.getInstance().setCache<string>("Key-2", cacheValue);
-        assert.isTrue(state1);
-        assert.isTrue(state2);
+        expect(state1).toBe(true);
+        expect(state2).toBe(true);
 
         CacheService.getInstance().cleanCache();
 
         let keyList: Array<string> = CacheService.getInstance().getKeyList();
-        assert.equal(keyList.length, 0);
+        expect(keyList).toHaveLength(0);
 
         done();
     });
@@ -117,10 +118,10 @@ describe('===> Test CacheService', () => {
     it('1.4 => Add data to the cache and check remaining delay', (done) => {
 
         let state: boolean = CacheService.getInstance().setCache<string>(cacheKeyName, cacheValue, 10);
-        assert.isTrue(state);
+        expect(state).toBe(true);
 
         let delay: number | undefined = CacheService.getInstance().getDelayBeforeExpiration(cacheKeyName);
-        assert.notEqual(delay, 10);
+        expect(delay).not.toBe(10);
 
         done();
     });
