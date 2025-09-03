@@ -1,4 +1,4 @@
-import { RiotGameType } from "../../riotmodule.js";
+import { RiotGameType } from '../../riotmodule.js';
 
 interface IEnvVars {
     nodeEnv: string;
@@ -53,7 +53,7 @@ type ModuleVersion = {
       [key: string]: string;
     };
   };
-  
+
   type Route = {
     [module: string]: ModuleVersion;
   };

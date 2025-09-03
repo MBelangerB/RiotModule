@@ -47,7 +47,7 @@ describe('===> Test RiotService', () => {
 
             // Run test
             riotService.AccountV1.getByPuuid(puuid, region).then((accountInfo: IAccountDTO) => {
-                console.log(accountInfo);
+                // console.log(accountInfo);
 
                 expect(getByPuuidStub.calledOnce).toBe(true);
 
@@ -81,7 +81,7 @@ describe('===> Test RiotService', () => {
 
             // Run test
             riotService.AccountV1.getByGameNameTagLine(gameName, tagLine, region).then((accountInfo: IAccountDTO) => {
-                console.log(accountInfo);
+                // console.log(accountInfo);
 
                 // Vérifie que la fonction getByPuuidStub a été appelée une fois (utilisation sinon ou jest.fn())
                 expect(getByPuuidStub.calledOnce).toBe(true);
@@ -104,7 +104,7 @@ describe('===> Test RiotService', () => {
 
     }, 3000);
 
-    it('1.0.1 => Get current rotation', async () => {
+    it('1.1.1 => Get current rotation', async () => {
         // Call Riot API
         const realRegion: string = ValidationService.convertToRealRegion('NA');
         let riotService: RiotService = new RiotService();

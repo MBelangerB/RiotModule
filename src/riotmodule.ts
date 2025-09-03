@@ -28,7 +28,7 @@ export type { IDragonVersion, DragonVersion, IDragonChampion, IDragonFile, ICham
 export { ReturnData } from './declaration/interface/IReturnData.js';
 
 // 2025
-export * from './model/index.js'
+export * from './model/index.js';
 // 2025 END
 
 

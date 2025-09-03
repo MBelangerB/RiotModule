@@ -35,8 +35,8 @@ export abstract class FileService {
     static removeFile(filePath: string): void {
         // Recursive remove not available
         if (FileService.checkFileExists(filePath)) {
-            return fsExtra.removeSync(filePath);
-          }
+            fsExtra.removeSync(filePath);
+        }
     }
 
     /**
@@ -60,7 +60,7 @@ export abstract class FileService {
                 return FileServiceLocalization.msgFolderAlreadyExists(folderPath);
             }
 
-        /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+            /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
         } catch (ex: any) /* istanbul ignore next */ {
             console.error('****************************************');
             console.error(FileServiceLocalization.errInFunction('createFolder'));
@@ -92,7 +92,7 @@ export abstract class FileService {
 
             return true;
 
-        /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+            /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
         } catch (ex: any) /* istanbul ignore next */ {
             console.error('****************************************');
             console.error(FileServiceLocalization.errInFunction('writeFile'));
@@ -136,7 +136,7 @@ export abstract class FileService {
      * @returns {any | undefined}
      */
     /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-    static readStaticFileContent(filePath: string) : any | undefined {
+    static readStaticFileContent(filePath: string): any | undefined {
         /* istanbul ignore else */
         if (FileService.checkFileExists(filePath)) {
             // If version file already exists we read the file
@@ -145,7 +145,7 @@ export abstract class FileService {
         return undefined;
     }
 
-    static copyFile(sourcePath: string, destionationPath: string) : void {
+    static copyFile(sourcePath: string, destionationPath: string): void {
         return copyFileSync(sourcePath, destionationPath);
     }
 }

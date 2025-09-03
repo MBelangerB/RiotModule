@@ -10,9 +10,8 @@ import { DragonService, ReturnData } from '../../src/index.js';
 import { FileService } from '../../src/service/FileService.js';
 import { DragonFileName, DragonPath } from '../../src/service/DragonService.js';
 import { DragonCulture, DragonFileType } from '../../src/declaration/enum.js';
-import { DragonChampion, DragonFile, DragonVersion, IDragonChampion } from '../../src/model/DragonModel.js';
+import { DragonChampion, DragonVersion, IDragonChampion } from '../../src/model/DragonModel.js';
 import { CacheService, CacheName } from '../../src/service/CacheService.js';
-import { getBoolean } from '../../src/declaration/functions.js';
 import EnvVars from '../../src/declaration/major/EnvVars.js';
 
 // https://medium.com/nodejsmadeeasy/elegant-ways-to-pass-env-variables-to-mocha-test-cases-4486cb238bb1
@@ -153,7 +152,10 @@ describe('===> Test DragonService', () => {
     expect(folders).not.toBeNull();
     expect(folders).toBeInstanceOf(Array);
 
+    // console.dir(folders);
+
     folders.forEach((folder: string) => {
+      // console.info(folder);
       expect(FileService.checkFileExists(folder)).toBeTruthy();
     });
 

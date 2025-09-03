@@ -142,7 +142,7 @@ const EnvVars: IEnvVars = {
         }
         return token;
     },
-}
+};
 
 // export default {
 //     EnvVars,

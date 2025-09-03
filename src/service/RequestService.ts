@@ -25,7 +25,7 @@ export abstract class RequestService {
         const token = EnvVars.getToken(gameType);
 
         const axiosQuery = new Promise<T>(function (resolve, reject) {
-            console.info(`Call Riot API with '${requestUrl}'`);
+            // console.info(`Call Riot API with '${requestUrl}'`);
 
             axios(encodeURI(requestUrl), {
                 method: 'GET',
@@ -71,7 +71,7 @@ export abstract class RequestService {
      */
 
     static async downloadExternalFile<T>(requestUrl: string, responseType: ResponseType = 'json', contentType: string | null = null): Promise<T> {
-        console.info(`Downloading the '${requestUrl}' file.`);
+        // console.info(`Downloading the '${requestUrl}' file.`);
 
         const axiosQuery = new Promise<T>(function (resolve, reject) {
             axios(encodeURI(requestUrl), {
@@ -121,7 +121,8 @@ export abstract class RequestService {
      * @returns
      */
     static async downloadAndWriteFile<T>(requestUrl: string, filePath: string, responseType: ResponseType = 'json'): Promise<T> {
-        console.info(`Attempt to download file '${requestUrl}' and write content to file '${filePath}'.`);
+        // console.info(`Attempt to download file '${requestUrl}' and write content to file '${filePath}'.`);
+        
         // ---------------
         const axiosQuery = new Promise<T>(function (resolve, reject) {
             axios(encodeURI(requestUrl), {
