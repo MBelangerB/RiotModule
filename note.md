@@ -104,3 +104,9 @@ En résumé :
 `export default EnvVars;` : exporte l'objet EnvVars comme la valeur par défaut du module, sans restriction sur sa modification.
 `export EnvVars;` : exporte l'objet EnvVars comme une propriété du module, sans restriction sur sa modification.
 `export default EnvVars as const;` : exporte l'objet EnvVars comme la valeur par défaut du module, mais comme une constante, ce qui signifie qu'il ne peut pas être modifié après son exportation.
+
+
+Ouvrir les Préférences > Raccourcis clavier (ou Ctrl+K Ctrl+S).
+- Chercher les commandes code-coverage.show ou code-coverage.hide.
+
+CTRL+ALT+SHIFT+T : Toggle Coverage

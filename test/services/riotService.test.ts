@@ -6,14 +6,9 @@ import { describe, expect, test } from '@jest/globals';
 import * as sinon from "sinon";
 import { IAccountDTO } from "@bedy90/riotentity";
 
-// import EnvVars from "../../src/declaration/major/EnvVars.js";
 import { DragonCulture, RiotService, Rotation, ValidationService } from "../../src/riotmodule.js";
 import { MockRiotRequest } from "../mock/MockRiotRequest.js";
-import { FileService } from '../../src/service/FileService.js';
-import { DragonPath } from '../../src/service/DragonService.js';
-
-// import * from "sinon";
-// export { RiotService, ChampionV3, ChampionMasteryV4, LeagueV4, SummonerV4 } from '../../src/service/RiotService';
+import { FileService, DragonPath } from '../../src/index.js';
 
 
 describe('===> Test RiotService', () => {
@@ -39,6 +34,7 @@ describe('===> Test RiotService', () => {
     it('1.0.1 => (MOCK Riot call) Get AccountInfo by PUUID', async () => {
         try {
             let riotService: RiotService = new RiotService();
+
             let expectedResult: Promise<IAccountDTO> = MockRiotRequest.getAsyncRiotAccount();
 
             // Stub result

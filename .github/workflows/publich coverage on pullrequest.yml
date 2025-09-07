@@ -12,7 +12,8 @@
 name: RiotModule Test Coverage on PR and Codecov
 
 on:
-  pull_request:
+  # pull_request:
+    
     # branches:
     # - rework/syncPattern
     

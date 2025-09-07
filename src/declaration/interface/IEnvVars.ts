@@ -3,12 +3,7 @@ import { RiotGameType } from '../../riotmodule.js';
 interface IEnvVars {
     nodeEnv: string;
 
-    readonly riot: {
-        leagueToken: string;
-        tftToken: string;
-        valoToken: string;
-        apiToken: string;
-    };
+    readonly riot: IRiotTokens;
 
     cache: {
         enabled: boolean;
@@ -42,25 +37,37 @@ interface IEnvVars {
         };
     };
 
-    readonly routes: Route;
+    readonly routes: Routes;
 
     validateToken(gameMode : RiotGameType) : boolean;
     getToken(gameMode : RiotGameType) : string;
 };
 
-type ModuleVersion = {
-    [version: string]: {
-      [key: string]: string;
-    };
+
+  interface IRiotTokens {
+    leagueToken: string;
+    tftToken: string;
+    valoToken: string;
+    apiToken: string;
+  }
+
+  // Niveau finale, URL
+  export type ModuleRoute = string;
+
+  // Version : objet avec plusieurs routes
+  export type ModuleVersion = {
+    [routeName: string]: ModuleRoute;
   };
 
-  type Route = {
-    [module: string]: ModuleVersion;
+  // Module : objet avec plusieurs versions
+  export type Module = {
+    [version: string]: ModuleVersion;
   };
 
-  type GameToken = {
-    [gameName: string]: string;
+  // Routes globales : objet avec plusieurs modules
+  export type Routes = {
+    [moduleName: string]: Module;
   };
 
 
-export type { IEnvVars, ModuleVersion, Route };
+export type { IRiotTokens, IEnvVars };

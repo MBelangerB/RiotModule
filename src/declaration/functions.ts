@@ -1,3 +1,5 @@
+import { ValidationService } from "../riotmodule.js";
+
 /**
  * Replace a value in a string
  * @param baseString initial string
@@ -68,4 +70,20 @@ export function isNullOrEmpty(value: string): boolean {
     return true;
   }
   return false;
+}
+
+export function getGlobalRegion(region: string): string {
+  const realRegion = ValidationService.convertToRealRegion(region);
+  const globalRegion = ValidationService.convertToGlobalRegion(realRegion);
+
+  return globalRegion;
+}
+
+export function replaceRouteParams(route: string, params: Record<string, string>): string {
+  let result = route;
+  for (const [key, value] of Object.entries(params)) {
+    const placeholder = `{${key}}`;
+    result = result.replace(new RegExp(placeholder, 'g'), value);
+  }
+  return result;
 }

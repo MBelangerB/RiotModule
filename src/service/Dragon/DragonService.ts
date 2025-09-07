@@ -2,14 +2,12 @@ import { join, resolve } from 'path';
 import { RiotHttpStatusCode } from '@bedy90/riotentity';
 import { gt } from 'semver';
 
-import EnvVars from '../declaration/major/EnvVars.js';
-
-import { RequestService } from './RequestService.js';
-import { FileService } from './FileService.js';
-import { CacheService, CacheName, CacheTimer } from './CacheService.js';
-import { DragonCulture, DragonFileType } from '../declaration/enum.js';
-import { DragonChampion, DragonFile, DragonVersion, IDragonChampion, IDragonVersion, VersionData } from '../model/DragonModel.js';
-import { ReturnData } from '../declaration/interface/IReturnData.js';
+// Global Import
+import { EnvVars, ReturnData } from '../../riotmodule.js';
+// Dragon import
+import { DragonCulture, DragonFileType, DragonChampion, DragonFile, DragonVersion, IDragonChampion, IDragonVersion, VersionData } from '../../riotmodule.js';
+// Service import
+import { RequestService, FileService, CacheService, CacheName, CacheTimer } from '../index.js';
 
 // **** Variables **** //
 

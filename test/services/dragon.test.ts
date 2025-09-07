@@ -6,13 +6,9 @@ process.env.dragonBaseFolder = './_result/static/dragon';
 import { join, resolve } from 'path';
 import { describe, expect, test, beforeAll, afterAll } from '@jest/globals';
 
-import { DragonService, ReturnData } from '../../src/index.js';
-import { FileService } from '../../src/service/FileService.js';
-import { DragonFileName, DragonPath } from '../../src/service/DragonService.js';
-import { DragonCulture, DragonFileType } from '../../src/declaration/enum.js';
-import { DragonChampion, DragonVersion, IDragonChampion } from '../../src/model/DragonModel.js';
-import { CacheService, CacheName } from '../../src/service/CacheService.js';
-import EnvVars from '../../src/declaration/major/EnvVars.js';
+import { EnvVars, DragonCulture, DragonFileType, ReturnData  } from '../../src/index.js';
+import { DragonChampion, DragonVersion, IDragonChampion } from '../../src/index.js';
+import { DragonService, FileService, DragonFileName, DragonPath, CacheService, CacheName } from '../../src/index.js';
 
 // https://medium.com/nodejsmadeeasy/elegant-ways-to-pass-env-variables-to-mocha-test-cases-4486cb238bb1
 // https://www.tabnine.com/code/javascript/functions/chai/Assertion/status

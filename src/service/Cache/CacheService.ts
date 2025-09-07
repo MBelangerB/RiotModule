@@ -30,8 +30,9 @@ export const CacheName = {
      * Params
      *      {0} = REGION
      *      {1} = PUUID
+     *      {2} = GAME TYPE
      */
-    LEAGUE_SUMMONER: 'leagueSummoner-{0}-{1}',
+    LEAGUE_SUMMONER: 'leagueSummoner-{0}-{1}-{2}',
     /**
      * Params
      *      {0} = REGION
@@ -42,8 +43,9 @@ export const CacheName = {
      * Params
      *      {0} = REGION
      *      {1} = PUUID
+     *      {2} = GAME TYPE
      */
-    LEAGUE_RANK: 'leagueRank-{0}-{1}',
+    LEAGUE_RANK: 'leagueRank-{0}-{1}-{2}',
 
     // /**
     //  * Params {0} = Dragon champion key (Number)

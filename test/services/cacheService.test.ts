@@ -1,6 +1,7 @@
 import { describe, expect, test } from '@jest/globals';
-import { CacheService } from "../../src/service/CacheService.js";
 import { setTimeout } from "timers/promises";
+
+import { CacheService } from '../../src/index.js';
 
 describe('===> Test CacheService', () => {
     const cacheValue: string = "Hello, i'm Mocha."

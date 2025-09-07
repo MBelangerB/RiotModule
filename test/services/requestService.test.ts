@@ -7,10 +7,10 @@ import { describe, expect, test } from '@jest/globals';
 import { join } from "path";
 import { IAccountDTO, ISummonerDTO } from "@bedy90/riotentity";
 
+import { EnvVars, RiotGameType } from "../../src/riotmodule.js";
 import { RequestService } from '../../src/service/RequestService.js';
 import { ValidationService } from '../../src/service/ValidationService.js';
-import { RiotGameType } from "../../src/riotmodule.js";
-import EnvVars from "../../src/declaration/major/EnvVars.js";
+
 import { VersionData } from "../../src/model/DragonModel.js";
 
 describe('===> Test RequestService', () => {

@@ -66,6 +66,7 @@ const EnvVars: IEnvVars = {
         league: {
             v4: {
                 getLeagueEntriesForSummoner: 'https://{region}.api.riotgames.com/lol/league/v4/entries/by-summoner/{encryptedSummonerId}',
+                getLeagueEntriesForPuuid: 'https://{region}.api.riotgames.com/lol/league/v4/entries/by-puuid/{puuid}',
             },
         },
         championMastery: {
@@ -95,6 +96,7 @@ const EnvVars: IEnvVars = {
         tft_league: {
             v1: {
                 getTFTLeagueEntriesForSummoner: 'https://{region}.api.riotgames.com/tft/league/v1/entries/by-summoner/{encryptedSummonerId}',
+                getLeagueEntriesForPuuid: 'https://{region}.api.riotgames.com/tft/league/v1/by-puuid/{puuid}#',
             },
         },
     },

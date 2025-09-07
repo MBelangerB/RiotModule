@@ -18,8 +18,8 @@
   },
   "scripts": {
     "== Compile ==": "",
-    "compile:npx": "npx tsc",
-    "compile:rim": "rimraf ./build && tsc",
+    "build:tsc": "npx tsc && tsc-alias",
+    "build:tsc_rim": "rimraf ./build && npm run build:tsc",
     "== NPM ==": "",
     "npm:refreshLock": "npm i --package-lock-only",
     "npm:unUsedPackage": "npm prune",
@@ -35,10 +35,13 @@
     "eslintFix": "npx eslint . --fix",
     "== JS ==": "",
     "test:js_build": "rimraf ./build && tsc -p tsconfig-test.json",
-    "test:js_run": "mocha ./build/test/*.spec.js --timeout 10000",
-    "== 2025 ==": "",
+    "== TEST 2025 ==": "",
     "jest:test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest",
-    "jest:test:coverage": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --coverage"
+    "jest:test:coverage": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --coverage",
+    "== Build 2025 ==": "",
+    "build:package": "node scripts/generate-prod-package.cjs",
+    "build:tsup_pack": "tsup --config tsup.config.ts",
+    "build:tsup_pack_rim": "rimraf ./build && tsup --config tsup.config.ts && npm run build:package"
   },
   "files": [
     "build/**/*",
@@ -94,6 +97,8 @@
     "ts-jest": "^29.4.1",
     "ts-jest-resolver": "^2.0.1",
     "ts-node": "^10.9.2",
+    "tsc-alias": "^1.8.16",
+    "tsup": "^8.5.0",
     "typescript": "^5.8.3"
   }
 }
