@@ -61,8 +61,8 @@ try {
 
 // Copie des fichiers MD
 try {
-  let destinationFolder = path.join(__dirname, '..', 'build', 'README.md');
-  let markdownFile = path.join(__dirname, '..', 'README.md');
+  const destinationFolder = path.join(__dirname, '..', 'build', 'README.md');
+  const markdownFile = path.join(__dirname, '..', 'README.md');
   fs.copyFileSync(markdownFile, destinationFolder);
   fs.existsSync(markdownFile);
   console.log('Copie du fichier « README.md ».');

@@ -7,11 +7,11 @@ import { EnvVars, RiotGameType, ModuleVersion, replaceRouteParams } from '../../
 // Cache and type Import
 import { ChampionMasteries, ChampionMastery, ChampionOption } from '../../riotmodule.js';
 
-// Service import 
+// Service import
 import { ValidationService, DragonService, RequestService, CacheService, CacheTimer, CacheName } from '../index.js';
 
 
-import { RiotServiceLocalization } from '../RiotService.js'
+import { RiotServiceLocalization } from '../RiotService.js';
 
 export class ChampionMasteryService_V4 {
   routeService: ModuleVersion = EnvVars.routes.championMastery.v4;

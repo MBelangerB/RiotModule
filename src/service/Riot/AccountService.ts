@@ -4,12 +4,13 @@ import { IAccountDTO } from '@bedy90/riotentity';
 // Declaration import
 import { EnvVars, RiotGameType, ModuleVersion, getGlobalRegion, replaceRouteParams, ReturnData } from '../../riotmodule.js';
 
-// Service import 
+// Service import
 import { ResponseService, RequestService, CacheService, CacheTimer, CacheName } from '../index.js';
 
-import { RiotServiceLocalization } from '../RiotService.js'
+import { RiotServiceLocalization } from '../RiotService.js';
 
-export class AccountService_V1 extends ResponseService<IAccountDTO> {
+// <IAccountDTO>
+export class AccountService_V1 extends ResponseService {
     routeService: ModuleVersion = EnvVars.routes.account.v1;
 
     /**

@@ -4,13 +4,13 @@ import { ISummonerDTO } from '@bedy90/riotentity';
 // Declaration import
 import { EnvVars, RiotGameType, ModuleVersion, replaceRouteParams, ReturnData } from '../../riotmodule.js';
 
-// Service import 
+// Service import
 import { ResponseService, ValidationService, RequestService, CacheService, CacheTimer, CacheName } from '../index.js';
 
-import { RiotServiceLocalization } from '../RiotService.js'
+import { RiotServiceLocalization } from '../RiotService.js';
 
-
-export class SummonerService_V4 extends ResponseService<ISummonerDTO> {
+// <ISummonerDTO>
+export class SummonerService_V4 extends ResponseService {
     routeService: ModuleVersion = EnvVars.routes.summoner.v4;
     tftRouteService: ModuleVersion = EnvVars.routes.tft_summoner.v1;
 
@@ -24,6 +24,7 @@ export class SummonerService_V4 extends ResponseService<ISummonerDTO> {
     * @returns {ISummonerDTO}
     * @throws Error params is invalid
     */
+   // eslint-disable-next-line @typescript-eslint/no-unused-vars
     async getBySummonerName(summonerName: string, region: string): Promise<ReturnData<ISummonerDTO>> { // Promise<ISummonerDTO> {
         try {
             throw new Error('getBySummonerName is deprecated. Please use getByPuuid');
@@ -46,7 +47,7 @@ export class SummonerService_V4 extends ResponseService<ISummonerDTO> {
         const realRegion = ValidationService.convertToRealRegion(region);
 
         let routeUrl: string = '';
-        let cacheName: string = CacheName.LEAGUE_SUMMONER.replace('{0}', realRegion).replace('{1}', puuid).replace('{2}', riotGameType.toString());
+        const cacheName: string = CacheName.LEAGUE_SUMMONER.replace('{0}', realRegion).replace('{1}', puuid).replace('{2}', riotGameType.toString());
         switch (riotGameType) {
             case RiotGameType.LeagueOfLegend:
                 routeUrl = replaceRouteParams(this.routeService.getByPuuid, { puuid: puuid, region: realRegion });

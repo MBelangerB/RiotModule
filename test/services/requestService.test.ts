@@ -1,28 +1,29 @@
-//During the test the env variable is set to test
+// During the test the env variable is set to test
 process.env.dragonBaseFolder = './_result/static/dragon';
 process.env.CacheEnabled = 'false';
-process.env.showTraceStack = 'false'
+process.env.showTraceStack = 'false';
 
-import { describe, expect, test } from '@jest/globals';
-import { join } from "path";
-import { IAccountDTO, ISummonerDTO } from "@bedy90/riotentity";
+import { describe, expect } from '@jest/globals';
+import { join } from 'path';
+import { IAccountDTO, ISummonerDTO } from '@bedy90/riotentity';
 
-import { EnvVars, RiotGameType } from "../../src/riotmodule.js";
+import { EnvVars, RiotGameType } from '../../src/riotmodule.js';
 import { RequestService } from '../../src/service/RequestService.js';
 import { ValidationService } from '../../src/service/ValidationService.js';
 
-import { VersionData } from "../../src/model/DragonModel.js";
+import { VersionData } from '../../src/model/DragonModel.js';
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
 describe('===> Test RequestService', () => {
     const test_Folder: string = './_result/static/test';
     const test_FileName: string = '/test.txt';
     const test_TextFilePath: string = join(test_Folder, test_FileName);
 
-    const summonerName: string = "Bedy90";
+    const summonerName: string = 'Bedy90';
 
-    const puuid: string = "CSclTcHvrAgLq5VStnEUCTCiVDY1hhJpcmlCS6gWt3nxwKSwNOSH-tdlSDzDuboeN4-p_RJWp2sGgQ";
-    const gameName: string = "Bedy90";
-    const tagLine: string = "NA1"
+    // const puuid: string = 'CSclTcHvrAgLq5VStnEUCTCiVDY1hhJpcmlCS6gWt3nxwKSwNOSH-tdlSDzDuboeN4-p_RJWp2sGgQ';
+    const gameName: string = 'Bedy90';
+    const tagLine: string = 'NA1';
 
     beforeEach(() => {
         // runs once before the first test in this block
@@ -38,9 +39,9 @@ describe('===> Test RequestService', () => {
         const summonerUrl: string = EnvVars.routes.summoner.v4.getBySummonerName.replace('{summonerName}', summonerName).replace('{region}', realRegion);
 
         try {
-            let returnValue: ISummonerDTO = await RequestService.callRiotAPI<ISummonerDTO>(summonerUrl, RiotGameType.LeagueOfLegend);
+            const returnValue: ISummonerDTO = await RequestService.callRiotAPI<ISummonerDTO>(summonerUrl, RiotGameType.LeagueOfLegend);
 
-            expect(returnValue).toBeTruthy()
+            expect(returnValue).toBeTruthy();
             expect(returnValue).toBeDefined();
 
         } catch (error: any) {
@@ -58,10 +59,10 @@ describe('===> Test RequestService', () => {
         const accountUrl = EnvVars.routes.account.v1.getRiotIdByGameNameAndTagLine.replace('{gameName}', gameName)
             .replace('{tagLine}', tagLine).replace('{globalRegion}', globalRegion);
         try {
-            let returnValue: IAccountDTO = await RequestService.callRiotAPI<IAccountDTO>(accountUrl, RiotGameType.LeagueOfLegend);
+            const returnValue: IAccountDTO = await RequestService.callRiotAPI<IAccountDTO>(accountUrl, RiotGameType.LeagueOfLegend);
             console.log(returnValue.puuid);
 
-            expect(returnValue).toBeTruthy()
+            expect(returnValue).toBeTruthy();
             expect(returnValue).toBeDefined();
             expect(returnValue.gameName).toBe(gameName);
             expect(returnValue.tagLine).toBe(tagLine);
@@ -87,7 +88,7 @@ describe('===> Test RequestService', () => {
 
             if (error.response.statusText === 'Forbidden') {
                 expect(error.response.status).toBe(403);
-            } else if (token === "") {
+            } else if (token === '') {
                 expect(error.response.status).toBe(401);
             } else {
                 expect(error.response.status).toBe(404);
@@ -103,7 +104,7 @@ describe('===> Test RequestService', () => {
     //   expect(returnValue).not.toBeNull();
     // });
 
-    // Get a HTML page. RiotCall try to casting in JSON. 
+    // Get a HTML page. RiotCall try to casting in JSON.
     it('1.11 => (Riot call) Get text file - 404', async () => {
         try {
             await RequestService.callRiotAPI<string>('https://en.wikipedia.org/bedyapi', RiotGameType.Valorant);
@@ -114,10 +115,10 @@ describe('===> Test RequestService', () => {
     });
 
     it('2.0 => Get dragon version file', async () => {
-        let returnValue: VersionData = new VersionData();
+        const returnValue: VersionData = new VersionData();
         returnValue.version = await RequestService.downloadExternalFile<string[]>(EnvVars.dragon.url.version);
 
-        expect(returnValue).toBeTruthy()
+        expect(returnValue).toBeTruthy();
         expect(returnValue).toBeDefined();
         expect(Array.isArray(returnValue.version)).toBe(true);
     });
@@ -141,8 +142,8 @@ describe('===> Test RequestService', () => {
 
     it('3.0 => Try downlaod and write a file with a invalid URL. - 403', async () => {
         try {
-            let invalidFileUrl: string = EnvVars.dragon.url.championIcon;
-            let returnValue: string = await RequestService.downloadAndWriteFile<string>(invalidFileUrl, test_TextFilePath);
+            const invalidFileUrl: string = EnvVars.dragon.url.championIcon;
+            const returnValue: string = await RequestService.downloadAndWriteFile<string>(invalidFileUrl, test_TextFilePath);
 
             throw new Error(returnValue);
 

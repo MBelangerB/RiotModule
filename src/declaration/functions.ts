@@ -1,4 +1,4 @@
-import { ValidationService } from "../riotmodule.js";
+import { ValidationService } from '../riotmodule.js';
 
 /**
  * Replace a value in a string

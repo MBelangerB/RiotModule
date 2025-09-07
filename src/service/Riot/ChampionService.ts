@@ -7,10 +7,10 @@ import { EnvVars, RiotGameType, ChampionOption, ModuleVersion, replaceRouteParam
 // Model import
 import { IChampion, Rotation, DragonChampion } from '../../riotmodule.js';
 
-// Service import 
+// Service import
 import { ValidationService, DragonService, RequestService, CacheService, CacheTimer, CacheName } from '../index.js';
 
-import { RiotServiceLocalization} from '../RiotService.js'
+import { RiotServiceLocalization } from '../RiotService.js';
 
 export class ChampionService_V3 {
     routeService: ModuleVersion = EnvVars.routes.champion.v3;

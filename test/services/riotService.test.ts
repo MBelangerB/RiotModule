@@ -1,23 +1,23 @@
-//During the test the env variable is set to test
+// During the test the env variable is set to test
 process.env.dragonBaseFolder = './_result/static/dragon';
 process.env.CacheEnabled = 'false';
 
-import { describe, expect, test } from '@jest/globals';
-import * as sinon from "sinon";
-import { IAccountDTO } from "@bedy90/riotentity";
+import { describe, expect } from '@jest/globals';
+import * as sinon from 'sinon';
+import { IAccountDTO } from '@bedy90/riotentity';
 
-import { DragonCulture, RiotService, Rotation, ValidationService } from "../../src/riotmodule.js";
-import { MockRiotRequest } from "../mock/MockRiotRequest.js";
+import { DragonCulture, RiotService, Rotation, ValidationService } from '../../src/riotmodule.js';
+import { MockRiotRequest } from '../mock/MockRiotRequest.js';
 import { FileService, DragonPath } from '../../src/index.js';
 
-
+/* eslint-disable @typescript-eslint/no-explicit-any */
 describe('===> Test RiotService', () => {
 
     // Variables
-    const puuid: string = "CSclTcHvrAgLq5VStnEUCTCiVDY1hhJpcmlCS6gWt3nxwKSwNOSH-tdlSDzDuboeN4-p_RJWp2sGgQ";
-    const region: string = "NA1";
-    const gameName: string = "Bedy Tester";
-    const tagLine: string = "Test"
+    const puuid: string = 'CSclTcHvrAgLq5VStnEUCTCiVDY1hhJpcmlCS6gWt3nxwKSwNOSH-tdlSDzDuboeN4-p_RJWp2sGgQ';
+    const region: string = 'NA1';
+    const gameName: string = 'Bedy Tester';
+    const tagLine: string = 'Test';
 
     // Each call
     beforeEach(() => {
@@ -33,13 +33,13 @@ describe('===> Test RiotService', () => {
     // Scenario
     it('1.0.1 => (MOCK Riot call) Get AccountInfo by PUUID', async () => {
         try {
-            let riotService: RiotService = new RiotService();
+            const riotService: RiotService = new RiotService();
 
-            let expectedResult: Promise<IAccountDTO> = MockRiotRequest.getAsyncRiotAccount();
+            const expectedResult: Promise<IAccountDTO> = MockRiotRequest.getAsyncRiotAccount();
 
             // Stub result
-            const getByPuuidStub: any = await sinon.stub(riotService.AccountV1, "getByPuuid").returns(expectedResult);
-            let result: IAccountDTO = await expectedResult;
+            const getByPuuidStub: any = await sinon.stub(riotService.AccountV1, 'getByPuuid').returns(expectedResult);
+            const result: IAccountDTO = await expectedResult;
 
             // Run test
             riotService.AccountV1.getByPuuid(puuid, region).then((accountInfo: IAccountDTO) => {
@@ -68,12 +68,12 @@ describe('===> Test RiotService', () => {
 
     it('1.0.2 => (MOCK Riot call) Get AccountInfo by GameName and TagLine', async () => {
         try {
-            let riotService: RiotService = new RiotService();
-            let expectedResult: Promise<IAccountDTO> = MockRiotRequest.getAsyncRiotAccount();
+            const riotService: RiotService = new RiotService();
+            const expectedResult: Promise<IAccountDTO> = MockRiotRequest.getAsyncRiotAccount();
 
             // Stub result
-            const getByPuuidStub: any = await sinon.stub(riotService.AccountV1, "getByGameNameTagLine").returns(expectedResult);
-            let result: IAccountDTO = await expectedResult;
+            const getByPuuidStub: any = await sinon.stub(riotService.AccountV1, 'getByGameNameTagLine').returns(expectedResult);
+            const result: IAccountDTO = await expectedResult;
 
             // Run test
             riotService.AccountV1.getByGameNameTagLine(gameName, tagLine, region).then((accountInfo: IAccountDTO) => {
@@ -103,7 +103,7 @@ describe('===> Test RiotService', () => {
     it('1.1.1 => Get current rotation', async () => {
         // Call Riot API
         const realRegion: string = ValidationService.convertToRealRegion('NA');
-        let riotService: RiotService = new RiotService();
+        const riotService: RiotService = new RiotService();
 
         try {
             // Run test
@@ -122,9 +122,11 @@ describe('===> Test RiotService', () => {
                 expect(Array.isArray(rotateInfo.freeChampionIds)).toBe(true);
                 expect(Array.isArray(rotateInfo.freeChampionIdsForNewPlayers)).toBe(true);
                 expect(rotateInfo.freeChampionIds[0].skins).toBeDefined();
-                
+
                 expect(rotateInfo).toBeTruthy();
             });
+
+
         } catch (error: any) {
             // Use case success
             // assert.ok(error, 'In error use case');

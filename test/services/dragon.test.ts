@@ -1,4 +1,4 @@
-//During the test the env variable is set to test
+// During the test the env variable is set to test
 // process.env.NODE_ENV = 'test';
 process.env.dragonBaseFolder = './_result/static/dragon';
 // process.env.CacheEnabled = 'false';
@@ -6,7 +6,7 @@ process.env.dragonBaseFolder = './_result/static/dragon';
 import { join, resolve } from 'path';
 import { describe, expect, test, beforeAll, afterAll } from '@jest/globals';
 
-import { EnvVars, DragonCulture, DragonFileType, ReturnData  } from '../../src/index.js';
+import { EnvVars, DragonCulture, DragonFileType, ReturnData } from '../../src/index.js';
 import { DragonChampion, DragonVersion, IDragonChampion } from '../../src/index.js';
 import { DragonService, FileService, DragonFileName, DragonPath, CacheService, CacheName } from '../../src/index.js';
 
@@ -15,10 +15,10 @@ import { DragonService, FileService, DragonFileName, DragonPath, CacheService, C
 describe('===> Test DragonService', () => {
 
   const test_Folder: string = './_result/static/test';
-  const test_subFolder: string = 'champion'
+  const test_subFolder: string = 'champion';
   const versionSourceFile: string = './test/baseFile/versions.json';
   const defaultTestFileName: string = 'text.txt';
-  const lastDragonVersion: string = "13.10.1";
+  const lastDragonVersion: string = '13.10.1';
 
   // beforeEach
   beforeAll(() => {
@@ -28,7 +28,7 @@ describe('===> Test DragonService', () => {
       FileService.removeFile(DragonPath.dragonFolder);
       FileService.removeFile(test_Folder);
     } catch (err) {
-      console.error(err)
+      console.error(err);
     }
   });
 
@@ -42,40 +42,40 @@ describe('===> Test DragonService', () => {
 
 
   test('1.0.0 => Get dragon default folder', (done) => {
-    let result: string = DragonService.getDragonFullPath();
+    const result: string = DragonService.getDragonFullPath();
     // console.info('Get DragonFullPath : ' + result);
 
-    let baseString: string = resolve(process.env.dragonBaseFolder?.replace('./', '') || '');
+    const baseString: string = resolve(process.env.dragonBaseFolder?.replace('./', '') || '');
 
-    expect(result).not.toBeNull;
+    expect(result).not.toBeNull();
     expect(result).toContain(baseString);
 
     done();
   });
 
   test('1.0.1 => Get dragon default folder with culture', (done) => {
-    let frenchResult: string = DragonService.getDragonFullPath(DragonCulture.fr_fr);
-    let englishResult: string = DragonService.getDragonFullPath(DragonCulture.en_us);
+    const frenchResult: string = DragonService.getDragonFullPath(DragonCulture.fr_fr);
+    const englishResult: string = DragonService.getDragonFullPath(DragonCulture.en_us);
 
-    let baseString: string | undefined = process.env.dragonBaseFolder?.replace('./', '');
-    let frenchBaseString = join(baseString!, DragonCulture.fr_fr)
-    let englishBaseString = join(baseString!, DragonCulture.en_us)
+    const baseString: string | undefined = process.env.dragonBaseFolder?.replace('./', '');
+    const frenchBaseString = join(baseString!, DragonCulture.fr_fr);
+    const englishBaseString = join(baseString!, DragonCulture.en_us);
 
-    expect(frenchResult).not.toBeNull;
+    expect(frenchResult).not.toBeNull();
     expect(frenchResult).toContain(frenchBaseString);
-    expect(englishResult).not.toBeNull;
+    expect(englishResult).not.toBeNull();
     expect(englishResult).toContain(englishBaseString);
 
     done();
   });
 
   test('1.0.2 => Get dragon default folder with culture and filename', (done) => {
-    let frenchResult: string = DragonService.getDragonFullPath(DragonCulture.fr_fr, defaultTestFileName);
-    let englishResult: string = DragonService.getDragonFullPath(DragonCulture.en_us, defaultTestFileName);
+    const frenchResult: string = DragonService.getDragonFullPath(DragonCulture.fr_fr, defaultTestFileName);
+    const englishResult: string = DragonService.getDragonFullPath(DragonCulture.en_us, defaultTestFileName);
 
-    let baseString: string | undefined = process.env.dragonBaseFolder?.replace('./', '');
-    let frenchBaseString = join(baseString!, DragonCulture.fr_fr, defaultTestFileName);
-    let englishBaseString = join(baseString!, DragonCulture.en_us, defaultTestFileName);
+    const baseString: string | undefined = process.env.dragonBaseFolder?.replace('./', '');
+    const frenchBaseString = join(baseString!, DragonCulture.fr_fr, defaultTestFileName);
+    const englishBaseString = join(baseString!, DragonCulture.en_us, defaultTestFileName);
 
     expect(frenchResult).toBeTruthy();
     expect(frenchResult).toContain(frenchBaseString);
@@ -85,12 +85,12 @@ describe('===> Test DragonService', () => {
   });
 
   test('1.0.3 => Get dragon default folder with culture, filename and subfolder', (done) => {
-    let frenchResult: string = DragonService.getDragonFullPath(DragonCulture.fr_fr, defaultTestFileName, test_subFolder);
-    let englishResult: string = DragonService.getDragonFullPath(DragonCulture.en_us, defaultTestFileName, test_subFolder);
+    const frenchResult: string = DragonService.getDragonFullPath(DragonCulture.fr_fr, defaultTestFileName, test_subFolder);
+    const englishResult: string = DragonService.getDragonFullPath(DragonCulture.en_us, defaultTestFileName, test_subFolder);
 
-    let baseString: string | undefined = process.env.dragonBaseFolder?.replace('./', '');
-    let frenchBaseString = join(baseString!, DragonCulture.fr_fr, test_subFolder, defaultTestFileName);
-    let englishBaseString = join(baseString!, DragonCulture.en_us, test_subFolder, defaultTestFileName);
+    const baseString: string | undefined = process.env.dragonBaseFolder?.replace('./', '');
+    const frenchBaseString = join(baseString!, DragonCulture.fr_fr, test_subFolder, defaultTestFileName);
+    const englishBaseString = join(baseString!, DragonCulture.en_us, test_subFolder, defaultTestFileName);
 
     expect(frenchResult).toBeTruthy();
     expect(frenchResult).toContain(frenchBaseString);
@@ -100,12 +100,12 @@ describe('===> Test DragonService', () => {
   });
 
   test('1.0.4 => Get dragon default folder with culture and subfolder', (done) => {
-    let frenchResult: string = DragonService.getDragonFullPath(DragonCulture.fr_fr, '', test_subFolder);
-    let englishResult: string = DragonService.getDragonFullPath(DragonCulture.en_us, '', test_subFolder);
+    const frenchResult: string = DragonService.getDragonFullPath(DragonCulture.fr_fr, '', test_subFolder);
+    const englishResult: string = DragonService.getDragonFullPath(DragonCulture.en_us, '', test_subFolder);
 
-    let baseString: string | undefined = process.env.dragonBaseFolder?.replace('./', '');
-    let frenchBaseString = join(baseString!, DragonCulture.fr_fr, test_subFolder);
-    let englishBaseString = join(baseString!, DragonCulture.en_us, test_subFolder);
+    const baseString: string | undefined = process.env.dragonBaseFolder?.replace('./', '');
+    const frenchBaseString = join(baseString!, DragonCulture.fr_fr, test_subFolder);
+    const englishBaseString = join(baseString!, DragonCulture.en_us, test_subFolder);
 
     expect(frenchResult).toBeTruthy();
     expect(frenchResult).toContain(frenchBaseString);
@@ -115,14 +115,14 @@ describe('===> Test DragonService', () => {
   });
 
   test('1.0.5 => Get dragon champion file url path', (done) => {
-    let testDragonVersion: DragonVersion = {
+    const testDragonVersion: DragonVersion = {
       internalVersion: null,
       onlineVersion: undefined,
     };
     testDragonVersion.internalVersion = lastDragonVersion;
     testDragonVersion.onlineVersion = lastDragonVersion;
 
-    let result: string = DragonService.getFileUrl(DragonFileType.Champion, DragonCulture.fr_fr, testDragonVersion);
+    const result: string = DragonService.getFileUrl(DragonFileType.Champion, DragonCulture.fr_fr, testDragonVersion);
     // console.log('Data : ', result);
 
     expect(result).toBeTruthy();
@@ -133,14 +133,14 @@ describe('===> Test DragonService', () => {
   });
 
   test('2.0 => Prepare dragon folder tree', (done) => {
-    let result: ReturnData<DragonVersion> = DragonService.prepareTree();
+    const result: ReturnData<DragonVersion> = DragonService.prepareTree();
 
     expect(result).toBeTruthy();
     expect(result).not.toBeNull();
     expect(result.messages).not.toBeNull();
     expect(result.data).not.toBeNull();
 
-    let folders = new Array<string>();
+    const folders = new Array<string>();
     folders.push(DragonPath.dragonFolder);
     folders.push(DragonService.getDragonFullPath(DragonCulture.fr_fr));
     folders.push(DragonService.getDragonFullPath(DragonCulture.en_us));
@@ -160,8 +160,8 @@ describe('===> Test DragonService', () => {
 
   test('2.1 => Download external file', async () => {
     try {
-      let textUrl: string = 'https://filesamples.com/samples/document/txt/sample3.txt';
-      let fileName: string = 'sample.txt'
+      const textUrl: string = 'https://filesamples.com/samples/document/txt/sample3.txt';
+      const fileName: string = 'sample.txt';
 
       FileService.createFolder(test_Folder);
       const test_TextFilePath: string = join(test_Folder, fileName);
@@ -178,15 +178,14 @@ describe('===> Test DragonService', () => {
         // assert.fail(err);
       });
 
-    }
-    catch (ex) {
+    } catch (ex) {
       console.error(ex);
     };
 
-  }); //, 5000);
+  }); // , 5000);
 
   test('2.2.0 => Download version list (Dragon)', async () => {
-    let result: ReturnData<DragonVersion> = await DragonService.getDragonVersion();
+    const result: ReturnData<DragonVersion> = await DragonService.getDragonVersion();
 
     expect(result).toBeTruthy();
     expect(result.data).toBeTruthy();
@@ -194,7 +193,7 @@ describe('===> Test DragonService', () => {
     expect(result).not.toBeNull();
     expect(result.messages).not.toBeNull();
 
-    let folders = new Array<string>();
+    const folders = new Array<string>();
     folders.push(DragonPath.dragonFolder);
     folders.push(DragonService.getDragonFullPath(DragonCulture.fr_fr));
     folders.push(DragonService.getDragonFullPath(DragonCulture.en_us));
@@ -210,19 +209,19 @@ describe('===> Test DragonService', () => {
     expect(result.data).not.toBeNull();
     expect(result.data?.internalVersion).not.toBeNull();
     expect(result.data?.internalVersion).toBeDefined();
-    expect(result.data?.internalVersion).not.toEqual("0.0.0");
+    expect(result.data?.internalVersion).not.toEqual('0.0.0');
 
-  }); //, 5000);
+  }); // , 5000);
 
   test('2.2.1 => Update version list (Dragon)', async () => {
     // Because cache is enabled, we need to clean the cache created  by lastest tests
     CacheService.getInstance().cleanCache();
 
-    let sourceFile: string = join(DragonService.getMainPath(), versionSourceFile);
-    let fileDestination: string = DragonPath.dragonFilePath(DragonFileName.version);
+    const sourceFile: string = join(DragonService.getMainPath(), versionSourceFile);
+    const fileDestination: string = DragonPath.dragonFilePath(DragonFileName.version);
 
     // Check if base version file exists
-    let baseFileExists: boolean = FileService.checkFileExists(sourceFile);
+    const baseFileExists: boolean = FileService.checkFileExists(sourceFile);
     expect(baseFileExists).toBe(true);
 
     if (baseFileExists) {
@@ -232,7 +231,7 @@ describe('===> Test DragonService', () => {
 
       // Copy base file
       FileService.copyFile(sourceFile, fileDestination);
-      let destinationFileExists: boolean = FileService.checkFileExists(fileDestination);
+      const destinationFileExists: boolean = FileService.checkFileExists(fileDestination);
       expect(destinationFileExists).toBe(true);
 
       // Check for update
@@ -253,12 +252,12 @@ describe('===> Test DragonService', () => {
     expect(championInfo).toBeTruthy();
     expect(championInfo).not.toBeNull();
     expect(championInfo).toBeDefined();
-    expect(championInfo.key).toBe("99");
-    expect(championInfo.id).toBe("Lux");
-    expect(championInfo.name).toBe("Lux");
+    expect(championInfo.key).toBe('99');
+    expect(championInfo.id).toBe('Lux');
+    expect(championInfo.name).toBe('Lux');
     expect(championInfo.skins).toBeUndefined();
 
-  }); //, 20000);
+  }); // , 20000);
 
   test('3.0.1 => Get summary champion info by championId without specify a culture (default culture)', async () => {
     const championInfo: DragonChampion = await DragonService.getChampionInfoById(BigInt(99), undefined);
@@ -266,222 +265,222 @@ describe('===> Test DragonService', () => {
     expect(championInfo).toBeTruthy();
     expect(championInfo).not.toBeNull();
     expect(championInfo).toBeDefined();
-    expect(championInfo.key).toBe("99");
-    expect(championInfo.id).toBe("Lux");
-    expect(championInfo.name).toBe("Lux");
+    expect(championInfo.key).toBe('99');
+    expect(championInfo.id).toBe('Lux');
+    expect(championInfo.name).toBe('Lux');
     expect(championInfo.skins).toBeUndefined();
 
-  }); //, 20000);
+  }); // , 20000);
 
   test('3.0.2 => Get summary champion info in file by championName', async () => {
-    const championInfo: DragonChampion = await DragonService.getChampionInfoByName("LUX", DragonCulture.fr_fr);
+    const championInfo: DragonChampion = await DragonService.getChampionInfoByName('LUX', DragonCulture.fr_fr);
 
     expect(championInfo).toBeTruthy();
     expect(championInfo).not.toBeNull();
     expect(championInfo).toBeDefined();
-    expect(championInfo.key).toBe("99");
-    expect(championInfo.id).toBe("Lux");
-    expect(championInfo.name).toBe("Lux");
+    expect(championInfo.key).toBe('99');
+    expect(championInfo.id).toBe('Lux');
+    expect(championInfo.name).toBe('Lux');
     expect(championInfo.skins).toBeUndefined();
-  }); //, 20000);
+  }); // , 20000);
 
   test('3.0.3 => Get summary champion info by championName without specify a culture (default culture)', async () => {
-    const championInfo: DragonChampion = await DragonService.getChampionInfoByName("LUX", undefined);
+    const championInfo: DragonChampion = await DragonService.getChampionInfoByName('LUX', undefined);
 
     expect(championInfo).toBeTruthy();
     expect(championInfo).not.toBeNull();
     expect(championInfo).toBeDefined();
-    expect(championInfo.key).toBe("99");
-    expect(championInfo.id).toBe("Lux");
-    expect(championInfo.name).toBe("Lux");
+    expect(championInfo.key).toBe('99');
+    expect(championInfo.id).toBe('Lux');
+    expect(championInfo.name).toBe('Lux');
     expect(championInfo.skins).toBeUndefined();
 
-  }); //, 20000);
+  }); // , 20000);
 
   test('3.0.4 => Get several summary champions info by id', async () => {
     const firstChampionInfo: DragonChampion = await DragonService.getChampionInfoById(BigInt(99), DragonCulture.fr_fr);
     expect(firstChampionInfo).toBeTruthy();
     expect(firstChampionInfo).not.toBeNull();
     expect(firstChampionInfo).toBeDefined();
-    expect(firstChampionInfo.key).toBe("99");
+    expect(firstChampionInfo.key).toBe('99');
     expect(firstChampionInfo.skins).toBeUndefined();
 
-    const secondChampionInfo: DragonChampion = await DragonService.getChampionInfoById(BigInt(69), DragonCulture.fr_fr)
+    const secondChampionInfo: DragonChampion = await DragonService.getChampionInfoById(BigInt(69), DragonCulture.fr_fr);
     expect(secondChampionInfo).toBeTruthy();
     expect(secondChampionInfo).not.toBeNull();
     expect(secondChampionInfo).toBeDefined();
-    expect(secondChampionInfo.key).toBe("69");
-    expect(secondChampionInfo.id).toBe("Cassiopeia");
-    expect(secondChampionInfo.name).toBe("Cassiopeia");
+    expect(secondChampionInfo.key).toBe('69');
+    expect(secondChampionInfo.id).toBe('Cassiopeia');
+    expect(secondChampionInfo.name).toBe('Cassiopeia');
     expect(secondChampionInfo.skins).toBeUndefined();
 
-  }); //, 30000);
+  }); // , 30000);
 
   test('3.0.5 => Get several summary champions info by id (without cache)', async () => {
     const firstChampionInfo: DragonChampion = await DragonService.getChampionInfoById(BigInt(99), DragonCulture.fr_fr);
     expect(firstChampionInfo).toBeTruthy();
     expect(firstChampionInfo).not.toBeNull();
     expect(firstChampionInfo).toBeDefined();
-    expect(firstChampionInfo.key).toBe("99");
+    expect(firstChampionInfo.key).toBe('99');
     expect(firstChampionInfo.skins).toBeUndefined();
 
     CacheService.getInstance().cleanCache();
 
-    const secondChampionInfo: DragonChampion = await DragonService.getChampionInfoById(BigInt(69), DragonCulture.fr_fr)
+    const secondChampionInfo: DragonChampion = await DragonService.getChampionInfoById(BigInt(69), DragonCulture.fr_fr);
     expect(secondChampionInfo).toBeTruthy();
     expect(secondChampionInfo).not.toBeNull();
     expect(secondChampionInfo).toBeDefined();
-    expect(secondChampionInfo.key).toBe("69");
-    expect(secondChampionInfo.id).toBe("Cassiopeia");
-    expect(secondChampionInfo.name).toBe("Cassiopeia");
+    expect(secondChampionInfo.key).toBe('69');
+    expect(secondChampionInfo.id).toBe('Cassiopeia');
+    expect(secondChampionInfo.name).toBe('Cassiopeia');
     expect(secondChampionInfo.skins).toBeUndefined();
 
-  }); //, 30000);
+  }); // , 30000);
 
   test('3.0.6 => Get several summary champions info by name', async () => {
     // process.env.CacheEnabled = 'false';
     // const cacheEnabled : boolean = getBoolean(process.env.CacheEnabled);
     // const newEnvVars = { ...EnvVars, cache: { ...EnvVars.cache, enabled: false } };
 
-    const firstChampionInfo: DragonChampion = await DragonService.getChampionInfoByName("Lux", DragonCulture.fr_fr);
+    const firstChampionInfo: DragonChampion = await DragonService.getChampionInfoByName('Lux', DragonCulture.fr_fr);
     expect(firstChampionInfo).toBeTruthy();
     expect(firstChampionInfo).not.toBeNull();
     expect(firstChampionInfo).toBeDefined();
-    expect(firstChampionInfo.key).toBe("99");
+    expect(firstChampionInfo.key).toBe('99');
     expect(firstChampionInfo.skins).toBeUndefined();
 
-    const secondChampionInfo: DragonChampion = await DragonService.getChampionInfoByName("Cassiopeia", DragonCulture.fr_fr)
+    const secondChampionInfo: DragonChampion = await DragonService.getChampionInfoByName('Cassiopeia', DragonCulture.fr_fr);
     expect(secondChampionInfo).toBeTruthy();
     expect(secondChampionInfo).not.toBeNull();
     expect(secondChampionInfo).toBeDefined();
-    expect(secondChampionInfo.key).toBe("69");
-    expect(secondChampionInfo.id).toBe("Cassiopeia");
-    expect(secondChampionInfo.name).toBe("Cassiopeia");
+    expect(secondChampionInfo.key).toBe('69');
+    expect(secondChampionInfo.id).toBe('Cassiopeia');
+    expect(secondChampionInfo.name).toBe('Cassiopeia');
     expect(secondChampionInfo.skins).toBeUndefined();
 
-  }); //, 30000);
+  }); // , 30000);
 
   test('3.0.7 => Get several summary champions info by name (without cache)', async () => {
-    const firstChampionInfo: DragonChampion = await DragonService.getChampionInfoByName("Lux", DragonCulture.fr_fr);
+    const firstChampionInfo: DragonChampion = await DragonService.getChampionInfoByName('Lux', DragonCulture.fr_fr);
     expect(firstChampionInfo).toBeTruthy();
     expect(firstChampionInfo).not.toBeNull();
     expect(firstChampionInfo).toBeDefined();
-    expect(firstChampionInfo.key).toBe("99");
+    expect(firstChampionInfo.key).toBe('99');
     expect(firstChampionInfo.skins).toBeUndefined();
 
     CacheService.getInstance().cleanCache();
 
-    const secondChampionInfo: DragonChampion = await DragonService.getChampionInfoByName("Cassiopeia", DragonCulture.fr_fr)
+    const secondChampionInfo: DragonChampion = await DragonService.getChampionInfoByName('Cassiopeia', DragonCulture.fr_fr);
     expect(secondChampionInfo).toBeTruthy();
     expect(secondChampionInfo).not.toBeNull();
     expect(secondChampionInfo).toBeDefined();
-    expect(secondChampionInfo.key).toBe("69");
-    expect(secondChampionInfo.id).toBe("Cassiopeia");
-    expect(secondChampionInfo.name).toBe("Cassiopeia");
+    expect(secondChampionInfo.key).toBe('69');
+    expect(secondChampionInfo.id).toBe('Cassiopeia');
+    expect(secondChampionInfo.name).toBe('Cassiopeia');
     expect(secondChampionInfo.skins).toBeUndefined();
 
-  }); //, 30000);
+  }); // , 30000);
 
   test('3.1.0 => Get detailed champion info in file by championId', async () => {
-    const championInfo: DragonChampion = await DragonService.getDetailedChampionInfoByName("Lux", DragonCulture.fr_fr);
+    const championInfo: DragonChampion = await DragonService.getDetailedChampionInfoByName('Lux', DragonCulture.fr_fr);
 
     expect(championInfo).toBeTruthy();
     expect(championInfo).not.toBeNull();
     expect(championInfo).toBeDefined();
-    expect(championInfo.key).toBe("99");
-    expect(championInfo.id).toBe("Lux");
-    expect(championInfo.name).toBe("Lux");
+    expect(championInfo.key).toBe('99');
+    expect(championInfo.id).toBe('Lux');
+    expect(championInfo.name).toBe('Lux');
     expect(championInfo.skins).not.toBeNull();
     expect(championInfo.skins).toBeDefined();
 
-  }); //, 20000);
+  }); // , 20000);
 
   test('3.1.1 => Get detailed champion info by championId without specify a culture (default culture)', async () => {
-    const championInfo: DragonChampion = await DragonService.getDetailedChampionInfoByName("Lux", undefined);
+    const championInfo: DragonChampion = await DragonService.getDetailedChampionInfoByName('Lux', undefined);
 
     expect(championInfo).toBeTruthy();
     expect(championInfo).not.toBeNull();
     expect(championInfo).toBeDefined();
-    expect(championInfo.key).toBe("99");
-    expect(championInfo.id).toBe("Lux");
-    expect(championInfo.name).toBe("Lux");
+    expect(championInfo.key).toBe('99');
+    expect(championInfo.id).toBe('Lux');
+    expect(championInfo.name).toBe('Lux');
     expect(championInfo.skins).not.toBeNull();
     expect(championInfo.skins).toBeDefined();
-  }); //, 20000);
+  }); // , 20000);
 
   test('3.1.2 => Get several detail champions info by name', async () => {
-    const firstChampionInfo: DragonChampion = await DragonService.getDetailedChampionInfoByName("Lux", DragonCulture.fr_fr);
+    const firstChampionInfo: DragonChampion = await DragonService.getDetailedChampionInfoByName('Lux', DragonCulture.fr_fr);
     expect(firstChampionInfo).toBeTruthy();
     expect(firstChampionInfo).not.toBeNull();
     expect(firstChampionInfo).toBeDefined();
-    expect(firstChampionInfo.key).toBe("99");
+    expect(firstChampionInfo.key).toBe('99');
     expect(firstChampionInfo.skins).toBeDefined();
 
-    const secondChampionInfo: DragonChampion = await DragonService.getDetailedChampionInfoByName("Cassiopeia", DragonCulture.fr_fr)
+    const secondChampionInfo: DragonChampion = await DragonService.getDetailedChampionInfoByName('Cassiopeia', DragonCulture.fr_fr);
     expect(secondChampionInfo).toBeTruthy();
     expect(secondChampionInfo).not.toBeNull();
     expect(secondChampionInfo).toBeDefined();
-    expect(secondChampionInfo.key).toBe("69");
-    expect(secondChampionInfo.id).toBe("Cassiopeia");
-    expect(secondChampionInfo.name).toBe("Cassiopeia");
+    expect(secondChampionInfo.key).toBe('69');
+    expect(secondChampionInfo.id).toBe('Cassiopeia');
+    expect(secondChampionInfo.name).toBe('Cassiopeia');
     expect(secondChampionInfo.skins).toBeDefined();
 
-  }); //, 30000);
+  }); // , 30000);
 
   test('3.1.3 => Get several detail champions info by name (without cache)', async () => {
-    const firstChampionInfo: DragonChampion = await DragonService.getDetailedChampionInfoByName("Lux", DragonCulture.fr_fr);
+    const firstChampionInfo: DragonChampion = await DragonService.getDetailedChampionInfoByName('Lux', DragonCulture.fr_fr);
     expect(firstChampionInfo).toBeTruthy();
     expect(firstChampionInfo).not.toBeNull();
     expect(firstChampionInfo).toBeDefined();
-    expect(firstChampionInfo.key).toBe("99");
+    expect(firstChampionInfo.key).toBe('99');
     expect(firstChampionInfo.skins).toBeDefined();
 
     CacheService.getInstance().cleanCache();
 
-    const secondChampionInfo: DragonChampion = await DragonService.getDetailedChampionInfoByName("Cassiopeia", DragonCulture.fr_fr)
+    const secondChampionInfo: DragonChampion = await DragonService.getDetailedChampionInfoByName('Cassiopeia', DragonCulture.fr_fr);
     expect(secondChampionInfo).toBeTruthy();
     expect(secondChampionInfo).not.toBeNull();
     expect(secondChampionInfo).toBeDefined();
-    expect(secondChampionInfo.key).toBe("69");
-    expect(secondChampionInfo.id).toBe("Cassiopeia");
-    expect(secondChampionInfo.name).toBe("Cassiopeia");
+    expect(secondChampionInfo.key).toBe('69');
+    expect(secondChampionInfo.id).toBe('Cassiopeia');
+    expect(secondChampionInfo.name).toBe('Cassiopeia');
     expect(secondChampionInfo.skins).toBeDefined();;
 
-  }); //, 30000);
+  }); // , 30000);
 
   test('3.2 => Get champs in cache', async () => {
-    let value: boolean = EnvVars.cache.enabled;
+    const value: boolean = EnvVars.cache.enabled;
     if (!value) {
       throw new Error('Cache is not enabled');
     }
-    let championIdKey: string = "Lux";
+    const championIdKey: string = 'Lux';
 
     // let championInfo: IDragonChampion | undefined;
 
-    await DragonService.getChampionInfoByName("LuX", DragonCulture.fr_fr).then((championInfo: DragonChampion) => {
+    await DragonService.getChampionInfoByName('LuX', DragonCulture.fr_fr).then((championInfo: DragonChampion) => {
       expect(championInfo).toBeTruthy();
       expect(championInfo).not.toBeNull();
-      expect(championInfo.key).toBe("99");
-      expect(championInfo.id).toBe("Lux");
-      expect(championInfo.name).toBe("Lux");
+      expect(championInfo.key).toBe('99');
+      expect(championInfo.id).toBe('Lux');
+      expect(championInfo.name).toBe('Lux');
     });
 
-    await DragonService.getChampionInfoByName("Lux", DragonCulture.fr_fr).then((championInfo: IDragonChampion) => {
+    await DragonService.getChampionInfoByName('Lux', DragonCulture.fr_fr).then((championInfo: IDragonChampion) => {
       expect(championInfo).toBeTruthy();
       expect(championInfo).not.toBeNull();
       // toBeTruthy and Not.ToBeNull can be transform to : expect(championInfo).toBeDefined();
-      expect(championInfo.key).toBe("99");
-      expect(championInfo.id).toBe("Lux");
-      expect(championInfo.name).toBe("Lux");
+      expect(championInfo.key).toBe('99');
+      expect(championInfo.id).toBe('Lux');
+      expect(championInfo.name).toBe('Lux');
     });
 
     const championsCache = CacheName.DRAGON_CHAMPIONS_KEY_NAME.replace('{0}', DragonCulture.fr_fr);
     const cacheValue: Map<string, IDragonChampion> | undefined = CacheService.getInstance().getCache<Map<string, IDragonChampion>>(championsCache);
     if (cacheValue != undefined) {
-      let data: IDragonChampion = cacheValue.get(championIdKey.toLowerCase())!;
+      const data: IDragonChampion = cacheValue.get(championIdKey.toLowerCase())!;
       expect(data).toBeTruthy();
       expect(data.id).toBe(championIdKey);
-      expect(data.key).toBe("99");
+      expect(data.key).toBe('99');
     } else {
       throw new Error('Value isn\'t in cache.');
     }

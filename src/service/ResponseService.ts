@@ -1,7 +1,8 @@
-import { AxiosError } from "axios";
-import { ReturnData } from "../riotmodule.js";
+import { AxiosError } from 'axios';
+import { ReturnData } from '../riotmodule.js';
 
-export class ResponseService<T> {
+/* eslint-disable @typescript-eslint/no-explicit-any */
+export class ResponseService {
   createResponse<T>(data?: T, messages?: string[], code?: number): ReturnData<T> {
     return new ReturnData<T>(code, messages, data);
   }
@@ -21,20 +22,18 @@ export class ResponseService<T> {
     } else if (error.response && error.response.data) {
       return this.createResponse<T>(undefined, [error.response.data], 500);
 
-    } else {
-      if (error instanceof Error) {
-        const errorMessage = error.message;
+    } else if (error instanceof Error) {
+      const errorMessage = error.message;
 
-        if (errorMessage.includes('deprecated')) {
-          return this.createResponse<T>(undefined, ['This feature is obsolete'], 500);
+      if (errorMessage.includes('deprecated')) {
+        return this.createResponse<T>(undefined, ['This feature is obsolete'], 500);
 
-        } else {
-          return this.createResponse<T>(undefined, [errorMessage], 500);
-
-        }
       } else {
-        return this.createResponse<T>(undefined, ['Unknown error'], 500);
+        return this.createResponse<T>(undefined, [errorMessage], 500);
+
       }
+    } else {
+      return this.createResponse<T>(undefined, ['Unknown error'], 500);
     }
 
   }

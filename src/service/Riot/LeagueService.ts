@@ -4,12 +4,13 @@ import { ILeagueEntryDTO } from '@bedy90/riotentity';
 // Declaration import
 import { EnvVars, RiotGameType, ModuleVersion, replaceRouteParams, ReturnData } from '../../riotmodule.js';
 
-// Service import 
+// Service import
 import { ResponseService, ValidationService, RequestService, CacheService, CacheTimer, CacheName } from '../index.js';
 
-import { RiotServiceLocalization } from '../RiotService.js'
+import { RiotServiceLocalization } from '../RiotService.js';
 
-export class LeagueService_V4 extends ResponseService<ILeagueEntryDTO> {
+// <ILeagueEntryDTO>
+export class LeagueService_V4 extends ResponseService {
     routeService: ModuleVersion = EnvVars.routes.league.v4;
     tftRouteService: ModuleVersion = EnvVars.routes.tft_league.v1;
 
@@ -18,6 +19,7 @@ export class LeagueService_V4 extends ResponseService<ILeagueEntryDTO> {
      * @see https://developer.riotgames.com/docs/summoner-name-to-riot-id-faq
      * @returns
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     async getLeagueEntriesByEncryptedSummonerId(encryptedSummonerId: string, region: string): Promise<ReturnData<Array<ILeagueEntryDTO>>> {
         try {
             throw new Error('getBySummonerName is deprecated. Please use getByPuuid');
@@ -61,6 +63,7 @@ export class LeagueService_V4 extends ResponseService<ILeagueEntryDTO> {
             default: // else case:
                 try {
                     throw new Error('riotGameType is invalid');
+
 
                 } catch (err) {
                     return this.catchError(err);
