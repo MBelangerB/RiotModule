@@ -25,6 +25,7 @@ runs:
         scope: ${{ inputs.node-scope-name }}
 
     - name: Configure npm for GitHub Packages
+      shell: bash
       run: |
         echo "${{ inputs.node-scope-name }}:registry=https://npm.pkg.github.com/" > ~/.npmrc
         echo "//npm.pkg.github.com/:_authToken=${{ inputs.npm-token }}" >> ~/.npmrc
@@ -39,5 +40,6 @@ runs:
 
     - name: Install dependencies
       run: npm ci
+      shell: bash
       env:
         NODE_AUTH_TOKEN: ${{ inputs.npm-token }}
