@@ -73,7 +73,7 @@ module.exports = async ({ github, context }) => {
   // const grouped = groupBySeverity(vulnerabilities);
 
   // Lire le template Mustache
-  const templatePath = '.github/template/audit.mustache';
+  const templatePath = '.github/template/audit.md';
   const templateRaw = fs.readFileSync(templatePath, 'utf8');
 
   // Rendre le template avec les données groupées
