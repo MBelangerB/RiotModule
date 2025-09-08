@@ -9,8 +9,8 @@
 # Public documentation: https://docs.github.com/en/code-security/supply-chain-security/understanding-your-software-supply-chain/about-dependency-review#dependency-review-enforcement
 name: 'Bedy90 - Riot Module - PullRequest Check OLD'
 on:
-  pull_request:
-    branches: [ "dev", "prod" ]
+  # pull_request:
+  #   branches: [ "dev", "prod" ]
 
   # Manual action
   workflow_dispatch:
