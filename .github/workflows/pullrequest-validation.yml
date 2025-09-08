@@ -47,7 +47,8 @@ jobs:
     
     - name: Configure npm for GitHub Packages
       run: |
-            echo "@bedy90:https://npm.pkg.github.com/:_authToken=${{ secrets.NPM_TOKEN }}" >> ~/.npmrc
+            echo "@bedy90:registry=https://npm.pkg.github.com/" >> ~/.npmrc
+            echo "//npm.pkg.github.com/:_authToken=${{ secrets.NPM_TOKEN }}" >> ~/.npmrc
 
     - name: Install dependencies
       run: npm ci
@@ -75,7 +76,15 @@ jobs:
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v4.0.2
       with:
-        node-version: ${{ matrix.node-version }}
+          node-version: ${{ matrix.node-version }}
+          registry-url: https://npm.pkg.github.com/
+           # Defaults to the user or organization that owns the workflow file
+          scope: '@bedy90'
+    
+    - name: Configure npm for GitHub Packages
+      run: |
+            echo "@bedy90:registry=https://npm.pkg.github.com/" >> ~/.npmrc
+            echo "//npm.pkg.github.com/:_authToken=${{ secrets.NPM_TOKEN }}" >> ~/.npmrc
 
     - name: Install dependencies
       run: npm ci
@@ -103,7 +112,15 @@ jobs:
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4.0.2
         with:
-          node-version: ${{ matrix.node-version }}
+            node-version: ${{ matrix.node-version }}
+            registry-url: https://npm.pkg.github.com/
+             # Defaults to the user or organization that owns the workflow file
+            scope: '@bedy90'
+      
+      - name: Configure npm for GitHub Packages
+        run: |
+              echo "@bedy90:registry=https://npm.pkg.github.com/" >> ~/.npmrc
+              echo "//npm.pkg.github.com/:_authToken=${{ secrets.NPM_TOKEN }}" >> ~/.npmrc
     
       - name: Install dependencies
         run: npm ci
@@ -130,11 +147,15 @@ jobs:
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4.0.2
         with:
-          node-version: ${{ matrix.node-version }}
- 
+            node-version: ${{ matrix.node-version }}
+            registry-url: https://npm.pkg.github.com/
+             # Defaults to the user or organization that owns the workflow file
+            scope: '@bedy90'
+      
       - name: Configure npm for GitHub Packages
         run: |
-          echo "@bedy90:https://npm.pkg.github.com/:_authToken=${{ secrets.NPM_TOKEN }}" >> ~/.npmrc
+              echo "@bedy90:registry=https://npm.pkg.github.com/" >> ~/.npmrc
+              echo "//npm.pkg.github.com/:_authToken=${{ secrets.NPM_TOKEN }}" >> ~/.npmrc
 
       - name: Install dependencies
         run: npm ci
