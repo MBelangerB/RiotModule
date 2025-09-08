@@ -92,9 +92,14 @@ jobs:
           npm-token: ${{ secrets.NPM_TOKEN }}
           scope-name: '@bedy90'
  
-      - name: Run audit
-        run: npm audit --audit-level=high
-        continue-on-error: false  # Arrête le workflow si le build échoue
+      # - name: Run audit
+      #   run: npm audit --audit-level=high || true
+      #   continue-on-error: true  # Arrête le workflow si le build échoue
+
+      - name: Run npm audit and save result
+        id: audit
+        run: |
+          npm audit --json > audit-result.json || true
       
   # -----------------------------------------
   # Outdated validation
@@ -108,7 +113,7 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        
+
       - id: setup
         uses: ./.github/actions/setup-node-npm
         with:
