@@ -12,6 +12,9 @@ on:
   pull_request:
     branches: [ "dev", "prod" ]
 
+  # Manual action
+  workflow_dispatch:
+
 permissions:
   contents: read
   # Write permissions for pull-requests are required for using the `comment-summary-in-pr` option, comment out if you aren't using this option
@@ -37,7 +40,14 @@ jobs:
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v4.0.2
       with:
-        node-version: ${{ matrix.node-version }}
+          node-version: ${{ matrix.node-version }}
+          registry-url: https://npm.pkg.github.com/
+           # Defaults to the user or organization that owns the workflow file
+          scope: '@bedy90'
+    
+    - name: Configure npm for GitHub Packages
+      run: |
+            echo "//npm.pkg.github.com/:_authToken=${{ secrets.NPM_TOKEN }}" >> ~/.npmrc
 
     - name: Install dependencies
       run: npm ci
