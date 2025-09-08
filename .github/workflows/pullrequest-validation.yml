@@ -32,6 +32,9 @@ jobs:
         node-version: [22.x]
 
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       - id: setup
         uses: ./.github/actions/setup-node-npm
         with:
@@ -54,6 +57,9 @@ jobs:
         node-version: [22.x]
 
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       - id: setup
         uses: ./.github/actions/setup-node-npm
         with:
@@ -76,6 +82,9 @@ jobs:
         node-version: [22.x]
     
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        
       - id: setup
         uses: ./.github/actions/setup-node-npm
         with:
@@ -97,6 +106,9 @@ jobs:
         node-version: [22.x]
     
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        
       - id: setup
         uses: ./.github/actions/setup-node-npm
         with:
