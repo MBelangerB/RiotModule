@@ -11,10 +11,11 @@ function groupBySeverity(vulnerabilities) {
   };
 
   vulnerabilities.forEach(vuln => {
-    const severity = vuln.cvss_score >= 9 ? 'Critical'
-      : vuln.cvss_score >= 7 ? 'High'
-      : vuln.cvss_score >= 4 ? 'Moderate'
-      : 'Low';
+    // const severity = vuln.cvss_score >= 9 ? 'Critical'
+    //   : vuln.cvss_score >= 7 ? 'High'
+    //   : vuln.cvss_score >= 4 ? 'Moderate'
+    //   : 'Low';
+    const severity = vuln.severity;
 
     severities[severity].push({
       name: vuln.package_name,
