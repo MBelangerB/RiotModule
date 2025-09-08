@@ -101,7 +101,11 @@ jobs:
         shell: bash -e {0}
         run: |
           npm audit --json > audit-result.json || true
-  
+        continue-on-error: true  # Continue même si vulnérabilités trouvées
+
+      - name: Install dependencies
+        run: npm install mustache
+
       - uses: actions/github-script@v5
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}

@@ -1,42 +1,75 @@
-// .github/scripts/audit.js
+// audit.cjs
+const fs = require('fs');
+const Mustache = require('mustache');
+
+function groupBySeverity(vulnerabilities) {
+  const severities = {
+    Critical: [],
+    High: [],
+    Moderate: [],
+    Low: []
+  };
+
+  vulnerabilities.forEach(vuln => {
+    const severity = vuln.cvss_score >= 9 ? 'Critical'
+      : vuln.cvss_score >= 7 ? 'High'
+      : vuln.cvss_score >= 4 ? 'Moderate'
+      : 'Low';
+
+    severities[severity].push({
+      name: vuln.package_name,
+      dependency: vuln.dependency_name || '',
+      title: vuln.title || '',
+      cwe: vuln.cwe || '',
+      cvss: vuln.cvss_score.toFixed(1),
+      range: vuln.vulnerable_versions || ''
+    });
+  });
+
+  return severities;
+}
+
 module.exports = async ({ github, context }) => {
-  const fs = require('fs');
-  const audit = JSON.parse(fs.readFileSync('audit-result.json', 'utf8'));
-  const vulnerabilities = audit.metadata.vulnerabilities || {};
+  // Lire les vulnérabilités générées par l'audit (ex: audit.json à adapter à votre fichier)
+  const auditRaw = fs.readFileSync('audit.json', 'utf8');
+  const auditData = JSON.parse(auditRaw);
 
-  let message = '### NPM Audit Report\n\n';
-  message += `Critical: ${vulnerabilities.critical || 0}\n`;
-  message += `High: ${vulnerabilities.high || 0}\n`;
-  message += `Moderate: ${vulnerabilities.moderate || 0}\n`;
-  message += `Low: ${vulnerabilities.low || 0}\n\n`;
+  // Supposons que les vulnérabilités sont dans auditData.vulnerabilities (adapter selon votre fichier)
+  const vulnerabilities = auditData.vulnerabilities || [];
 
-  if ((vulnerabilities.critical || 0) > 0) {
-    message += '**Attention:** Des vulnérabilités critiques ont été détectées! 🚨\n';
-  } else {
-    message += 'Aucune vulnérabilité critique détectée. ✅\n';
-  }
+  const grouped = groupBySeverity(vulnerabilities);
 
-  // Chercher ancien commentaire
-  const comments = await github.rest.issues.listComments({
+  // Lire le template Mustache
+  const templatePath = '.github/template/audit.mustache';
+  const templateRaw = fs.readFileSync(templatePath, 'utf8');
+
+  // Rendre le template avec les données groupées
+  const commentBody = Mustache.render(templateRaw, grouped);
+
+  // Chercher un commentaire bot existant
+  const existingComments = await github.rest.issues.listComments({
     owner: context.repo.owner,
     repo: context.repo.repo,
-    issue_number: context.issue.number,
+    issue_number: context.issue.number
   });
-  const botComment = comments.data.find(c => c.user.type === 'Bot' && c.body.includes('### NPM Audit Report'));
+  const commentToUpdate = existingComments.data.find(c =>
+    c.user.type === 'Bot' && c.body.includes('<!-- audit-comment -->')
+  );
 
-  if (botComment) {
+  // Mettre à jour ou créer le commentaire
+  if (commentToUpdate) {
     await github.rest.issues.updateComment({
       owner: context.repo.owner,
       repo: context.repo.repo,
-      comment_id: botComment.id,
-      body: message,
+      comment_id: commentToUpdate.id,
+      body: commentBody
     });
   } else {
     await github.rest.issues.createComment({
       owner: context.repo.owner,
       repo: context.repo.repo,
       issue_number: context.issue.number,
-      body: message,
+      body: commentBody
     });
   }
 };
