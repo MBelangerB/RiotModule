@@ -7,7 +7,7 @@
 #
 # Source repository: https://github.com/actions/dependency-review-action
 # Public documentation: https://docs.github.com/en/code-security/supply-chain-security/understanding-your-software-supply-chain/about-dependency-review#dependency-review-enforcement
-name: 'Bedy90 - Riot Module - PullRequest Check'
+name: 'Bedy90 - Riot Module - PullRequest Check OLD'
 on:
   pull_request:
     branches: [ "dev", "prod" ]
@@ -30,18 +30,34 @@ jobs:
     strategy:
       matrix:
         node-version: [22.x]
+        # language: [ 'javascript', 'typescript' ]
+        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
-      - id: setup
-        uses: ./.github/actions/setup-node-npm
-        with:
-          node-version: ${{ matrix.node-version }}
-          npm-token: ${{ secrets.NPM_TOKEN }}
-          scope-name: '@bedy90'
+    - name: Checkout
+      uses: actions/checkout@v4.1.7
 
-      - name: Run lint
-        run: npm run eslint
-        continue-on-error: false  # Arrête le workflow si le lint échoue      
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4.0.2
+      with:
+          node-version: ${{ matrix.node-version }}
+          registry-url: https://npm.pkg.github.com/
+           # Defaults to the user or organization that owns the workflow file
+          scope: '@bedy90'
+    
+    - name: Configure npm for GitHub Packages
+      run: |
+            echo "@bedy90:registry=https://npm.pkg.github.com/" >> ~/.npmrc
+            echo "//npm.pkg.github.com/:_authToken=${{ secrets.NPM_TOKEN }}" >> ~/.npmrc
+
+    - name: Install dependencies
+      run: npm ci
+      env:
+        NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+    - name: Run lint
+      run: npm run eslint
+      continue-on-error: false  # Arrête le workflow si le lint échoue      
 
   # -----------------------------------------
   # Build validation
@@ -54,16 +70,30 @@ jobs:
         node-version: [22.x]
 
     steps:
-      - id: setup
-        uses: ./.github/actions/setup-node-npm
-        with:
-          node-version: ${{ matrix.node-version }}
-          npm-token: ${{ secrets.NPM_TOKEN }}
-          scope-name: '@bedy90'
+    - name: Checkout
+      uses: actions/checkout@v4.1.7
 
-      - name: Run build tsup
-        run: npm run build:tsup_pack
-        continue-on-error: false  # Arrête le workflow si le build échoue
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4.0.2
+      with:
+          node-version: ${{ matrix.node-version }}
+          registry-url: https://npm.pkg.github.com/
+           # Defaults to the user or organization that owns the workflow file
+          scope: '@bedy90'
+    
+    - name: Configure npm for GitHub Packages
+      run: |
+            echo "@bedy90:registry=https://npm.pkg.github.com/" >> ~/.npmrc
+            echo "//npm.pkg.github.com/:_authToken=${{ secrets.NPM_TOKEN }}" >> ~/.npmrc
+
+    - name: Install dependencies
+      run: npm ci
+      env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+    - name: Run build tsup
+      run: npm run build:tsup_pack
+      continue-on-error: false  # Arrête le workflow si le build échoue
 
   # -----------------------------------------
   # NPM AUDIT
@@ -76,12 +106,26 @@ jobs:
         node-version: [22.x]
     
     steps:
-      - id: setup
-        uses: ./.github/actions/setup-node-npm
+      - name: Checkout
+        uses: actions/checkout@v4.1.7
+    
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4.0.2
         with:
-          node-version: ${{ matrix.node-version }}
-          npm-token: ${{ secrets.NPM_TOKEN }}
-          scope-name: '@bedy90'
+            node-version: ${{ matrix.node-version }}
+            registry-url: https://npm.pkg.github.com/
+             # Defaults to the user or organization that owns the workflow file
+            scope: '@bedy90'
+      
+      - name: Configure npm for GitHub Packages
+        run: |
+              echo "@bedy90:registry=https://npm.pkg.github.com/" >> ~/.npmrc
+              echo "//npm.pkg.github.com/:_authToken=${{ secrets.NPM_TOKEN }}" >> ~/.npmrc
+    
+      - name: Install dependencies
+        run: npm ci
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
  
       - name: Run audit
         run: npm audit --audit-level=high
@@ -97,12 +141,26 @@ jobs:
         node-version: [22.x]
     
     steps:
-      - id: setup
-        uses: ./.github/actions/setup-node-npm
+      - name: Checkout
+        uses: actions/checkout@v4.1.7
+    
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4.0.2
         with:
-          node-version: ${{ matrix.node-version }}
-          npm-token: ${{ secrets.NPM_TOKEN }}
-          scope-name: '@bedy90'
+            node-version: ${{ matrix.node-version }}
+            registry-url: https://npm.pkg.github.com/
+             # Defaults to the user or organization that owns the workflow file
+            scope: '@bedy90'
+      
+      - name: Configure npm for GitHub Packages
+        run: |
+              echo "@bedy90:registry=https://npm.pkg.github.com/" >> ~/.npmrc
+              echo "//npm.pkg.github.com/:_authToken=${{ secrets.NPM_TOKEN }}" >> ~/.npmrc
+
+      - name: Install dependencies
+        run: npm ci
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Check outdated dependencies
         id: outdated
@@ -110,6 +168,9 @@ jobs:
           npm outdated --json > outdated.json || true          
         shell: bash -e {0}
         continue-on-error: true  # Continuer en cas d'erreur pour diagnostiquer
+
+      # - name: show detail
+      #   run: ls -l
 
       - name: Install dependencies
         run: npm install mustache
