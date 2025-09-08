@@ -31,7 +31,7 @@ function groupBySeverity(vulnerabilities) {
 
 module.exports = async ({ github, context }) => {
   // Lire les vulnérabilités générées par l'audit (ex: audit.json à adapter à votre fichier)
-  const auditRaw = fs.readFileSync('audit.json', 'utf8');
+  const auditRaw = fs.readFileSync('audit-result.json', 'utf8');
   const auditData = JSON.parse(auditRaw);
 
   // Supposons que les vulnérabilités sont dans auditData.vulnerabilities (adapter selon votre fichier)

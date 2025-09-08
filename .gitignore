@@ -110,3 +110,6 @@ dist
 build/
 .npmrc
 old/
+
+audit-result.json
+outdated.json
