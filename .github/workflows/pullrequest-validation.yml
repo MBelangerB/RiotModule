@@ -45,9 +45,9 @@ jobs:
            # Defaults to the user or organization that owns the workflow file
           scope: '@bedy90'
     
-    # - name: Configure npm for GitHub Packages
-    #   run: |
-    #         echo "@bedy90:https://npm.pkg.github.com/:_authToken=${{ secrets.NPM_TOKEN }}" >> ~/.npmrc
+    - name: Configure npm for GitHub Packages
+      run: |
+            echo "@bedy90:https://npm.pkg.github.com/:_authToken=${{ secrets.NPM_TOKEN }}" >> ~/.npmrc
 
     - name: Install dependencies
       run: npm ci
@@ -131,7 +131,11 @@ jobs:
         uses: actions/setup-node@v4.0.2
         with:
           node-version: ${{ matrix.node-version }}
-    
+ 
+      - name: Configure npm for GitHub Packages
+        run: |
+          echo "@bedy90:https://npm.pkg.github.com/:_authToken=${{ secrets.NPM_TOKEN }}" >> ~/.npmrc
+
       - name: Install dependencies
         run: npm ci
         env:
