@@ -102,11 +102,11 @@ jobs:
         run: |
           npm audit --json > audit-result.json || true
   
-      - uses: actions/github-script@v6
+      - uses: actions/github-script@v5
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-              const auditScript = require('./.github/scripts/audit.js');
+              const auditScript = require('./.github/scripts/audit.cjs');
               await auditScript({ github, context }); 
 
   # -----------------------------------------
@@ -139,62 +139,9 @@ jobs:
       - name: Install dependencies
         run: npm install mustache
   
-      - name: Comment on Pull Request
-        if: steps.outdated.outcome == 'success'
-        uses: actions/github-script@v5
+      - name: Comment on Pull Request with outdated deps
+        uses: actions/github-script@v6
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            // Read JSON
-            const fs = require('fs');
-            const outdated = fs.readFileSync('outdated.json', 'utf8');
-            const result = JSON.parse(outdated);
-
-            // Prepare JSON data
-            const packageList = {
-              data: []
-            };
-
-            Object.keys(result).forEach(depName => {
-                const depInfo = result[depName];          
-                packageList.data.push({name: depName, current: depInfo.current, wanted: depInfo.wanted, latest: depInfo.latest })
-            });
-
-            // Read template
-            const templatePath = '.github/template/outdated.md';
-            const templateFile = fs.readFileSync(templatePath, 'utf8');
-            // const commentBody = renderTemplate(templateFile, packageList.data)
-
-            const Mustache = require('mustache');
-            const mustacheCommentBody = Mustache.render(templateFile, packageList);
-
-            // Trouver le commentaire existant
-            const existingComments = await github.rest.issues.listComments({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.issue.number
-            })
-            const commentToUpdate = existingComments.data.find(c => c.user.type === 'Bot' && c.body.includes('<!-- outdated-comment -->'))
+          script: require('./.github/scripts/outdated.cjs')
       
-            try {
-              if (commentToUpdate) {
-                // Mettre à jour le commentaire existant
-                await github.rest.issues.updateComment({
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  comment_id: commentToUpdate.id,
-                  body: mustacheCommentBody
-                })
-              } else {
-                // Créer un nouveau commentaire
-                await github.rest.issues.createComment({
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  issue_number: context.issue.number,
-                  body: mustacheCommentBody
-                })
-              }
-            } catch (error) {
-              console.error('Error commenting on pull request:', error);
-              throw error;
-            }
