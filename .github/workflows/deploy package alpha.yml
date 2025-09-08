@@ -36,7 +36,11 @@ jobs:
         registry-url: https://npm.pkg.github.com/
          # Defaults to the user or organization that owns the workflow file
         scope: '@bedy90'
-        
+  
+    - name: Configure npm for GitHub Packages
+      run: |
+          echo "//npm.pkg.github.com/:_authToken=${{ secrets.NPM_TOKEN }}" >> ~/.npmrc
+
     - name: Install Typescript
       run: npm install typescript@5.8.3 -g
       
@@ -45,7 +49,6 @@ jobs:
 
     - name: Build
       run: npm run build:tsup_pack
-      # run: npm run build:tsc
 
     - name: Generator prod package
       run: npm run build:package
