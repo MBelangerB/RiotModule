@@ -2,46 +2,13 @@
 
 # Rapport d'audit de vulnérabilités
 
-{{#Critical}}
-## 🔴 Critique
+{{#grouped}}
+### {{severity}}
 
 | Nom du paquet | Dépendance | Titre | CWE | CVSS | Versions affectées |
-| ------------ | ---------- | ----- | --- | ---- | ----------------- |
-{{#Critical}}
+|---------------|------------|-------|-----|------|--------------------|
+{{#vulnerabilities}}
 | {{name}} | {{dependency}} | {{title}} | {{cwe}} | {{cvss}} | {{range}} |
-{{/Critical}}
+{{/vulnerabilities}}
 
-{{/Critical}}
-
-{{#High}}
-## 🔴 Élevé
-
-| Nom du paquet | Dépendance | Titre | CWE | CVSS | Versions affectées |
-| ------------ | ---------- | ----- | --- | ---- | ----------------- |
-{{#High}}
-| {{name}} | {{dependency}} | {{title}} | {{cwe}} | {{cvss}} | {{range}} |
-{{/High}}
-
-{{/High}}
-
-{{#Moderate}}
-## 🟠 Modéré
-
-| Nom du paquet | Dépendance | Titre | CWE | CVSS | Versions affectées |
-| ------------ | ---------- | ----- | --- | ---- | ----------------- |
-{{#Moderate}}
-| {{name}} | {{dependency}} | {{title}} | {{cwe}} | {{cvss}} | {{range}} |
-{{/Moderate}}
-
-{{/Moderate}}
-
-{{#Low}}
-## 🟡 Faible
-
-| Nom du paquet | Dépendance | Titre | CWE | CVSS | Versions affectées |
-| ------------ | ---------- | ----- | --- | ---- | ----------------- |
-{{#Low}}
-| {{name}} | {{dependency}} | {{title}} | {{cwe}} | {{cvss}} | {{range}} |
-{{/Low}}
-
-{{/Low}}
+{{/grouped}}
