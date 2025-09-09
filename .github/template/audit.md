@@ -5,10 +5,10 @@
 {{#grouped}}
 ### {{severity}}
 
-| Nom du paquet | Dépendance | Titre | CWE | CVSS | Versions affectées |
-|---------------|------------|-------|-----|------|--------------------|
+| Nom du paquet | Dépendance | Titre | CWE | CVSS | Versions affectées | Lien |
+|--------------|------------|-------|-----|------|--------------------|------|
 {{#vulnerabilities}}
-| {{name}} | {{dependency}} | {{title}} | {{cwe}} | {{cvss}} | {{range}} |
+| {{name}} | {{dependency}} | {{title}} | {{cwe}} | {{cvss}} | {{range}} | [Details]({{url}}) |
 {{/vulnerabilities}}
 
 {{/grouped}}

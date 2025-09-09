@@ -10,20 +10,39 @@ function groupBySeverity(vulnerabilities) {
   };
 
   vulnerabilities.forEach(vuln => {
-    const cvssScore = vuln.cvss?.score ?? 0;
+    let severityRaw = vuln.severity || (vuln.cvss_score ? (
+      vuln.cvss_score >= 9 ? 'critical' :
+      vuln.cvss_score >= 7 ? 'high' :
+      vuln.cvss_score >= 4 ? 'moderate' : 'low'
+    ) : 'low');
 
-    const severity = cvssScore >= 9 ? 'Critical'
-      : cvssScore >= 7 ? 'High'
-      : cvssScore >= 4 ? 'Moderate'
-      : 'Low';
+    let severity;
+
+    switch (severityRaw.toString().toLowerCase()) {
+      case "critical":
+        severity = "Critical";
+        break;
+      case "high":
+        severity = "High";
+        break;
+      case "moderate":
+        severity = "Moderate";
+        break;
+      case "low":
+      default:
+        severity = "Low";
+        break;
+    }
 
     severities[severity].push({
       name: vuln.package_name,
       dependency: vuln.dependency_name || '',
       title: vuln.title || '',
       cwe: vuln.cwe || '',
-      cvss: cvssScore.toFixed(1),
-      range: vuln.vulnerable_versions || ''
+      cvss: vuln.cvss?.score !== undefined ? vuln.cvss.score : vuln.cvss_score,
+      range: vuln.vulnerable_versions || '',
+      url: vuln.url || '', 
+      severity: severityRaw
     });
   });
 
@@ -43,9 +62,11 @@ function extractVulnerabilities(vulnerabilitiesObj) {
           dependency_name: pkg.name,
           title: vuln.title || '',
           cwe: (vuln.cwe && Array.isArray(vuln.cwe)) ? vuln.cwe.join(', ') : '',
-          cvss: vuln.cvss?.score ?? 0,
-          cvss_score: vuln.cvss?.score ?? 0,  // deprecated, for compatibility
+          cvss: vuln.cvss,
+          cvss_score: vuln.cvss?.score ?? 0,
           vulnerable_versions: vuln.range || pkg.range || '',
+          severity: vuln.severity || pkg.severity || 'low',
+          url: vuln.url || '',
         });
       }
     });
@@ -55,7 +76,6 @@ function extractVulnerabilities(vulnerabilitiesObj) {
 }
 
 module.exports = async ({ github, context }) => {
-  // Lire le fichier audit JSON généré par 'npm audit --json'
   const auditRaw = fs.readFileSync('audit-result.json', 'utf8');
   const auditData = JSON.parse(auditRaw);
 
@@ -76,7 +96,6 @@ module.exports = async ({ github, context }) => {
 
   const commentBody = Mustache.render(templateRaw, { grouped: groupedArray });
 
-  // Chercher les commentaires existants pour mettre à jour ou créer nouveau
   const existingComments = await github.rest.issues.listComments({
     owner: context.repo.owner,
     repo: context.repo.repo,
