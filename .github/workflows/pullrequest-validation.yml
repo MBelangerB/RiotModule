@@ -147,5 +147,7 @@ jobs:
         uses: actions/github-script@v6
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: require('./.github/scripts/outdated.cjs')
+          script: |
+              const outdatedScript = require('./.github/scripts/outdated.cjs');
+              await outdatedScript({ github, context }); 
       
