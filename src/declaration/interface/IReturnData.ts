@@ -6,18 +6,22 @@ export interface IReturnData<T> {
 
 export class ReturnData<T> implements IReturnData<T> {
     code = 200;
-    messages?: string[];
+    messages: string[] = [];
     data?: T | undefined;
 
-    /* eslint-disable-next-line @typescript-eslint/no-empty-function */
-    constructor() {
-        /* Do nothing */
+    constructor(code?: number, messages?: string[], data?: T) {
+        if (code) {
+            this.code = code;
+        }
+        if (messages) {
+            this.messages = messages;
+        }
+        if (data) {
+            this.data = data;
+        }
     }
 
     addMessage(message: string) {
-        if (!this.messages) {
-            this.messages = [];
-        }
         if (message && message.length > 0) {
             this.messages.push(message);
         }

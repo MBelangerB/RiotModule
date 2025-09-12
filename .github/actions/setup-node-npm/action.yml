@@ -1,0 +1,45 @@
+name: Setup Node and NPM
+description: Setup Node.js, configure npm registry, caching and install dependencies.
+inputs:
+  node-version:
+    description: 'Node.js version to setup'
+    required: true
+  npm-token:
+    description: 'NPM authentication token'
+    required: true
+  scope-name:
+    description: 'NPM scope name'
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js ${{ inputs.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ inputs.node-version }}
+        registry-url: https://npm.pkg.github.com/
+        scope: ${{ inputs.node-scope-name }}
+
+    - name: Configure npm for GitHub Packages
+      shell: bash
+      run: |
+        echo "${{ inputs.node-scope-name }}:registry=https://npm.pkg.github.com/" > ~/.npmrc
+        echo "//npm.pkg.github.com/:_authToken=${{ inputs.npm-token }}" >> ~/.npmrc
+
+    - name: Cache node modules
+      uses: actions/cache@v3
+      with:
+        path: ~/.npm
+        key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-node-
+
+    - name: Install dependencies
+      run: npm ci
+      shell: bash
+      env:
+        NODE_AUTH_TOKEN: ${{ inputs.npm-token }}

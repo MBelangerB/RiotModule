@@ -1,4 +1,4 @@
-import { RegionData } from '../declaration/types';
+import { RegionData } from '../declaration/types.js';
 
 // **** Variables **** //
 
@@ -13,10 +13,10 @@ export abstract class ValidationService {
     // https://developer.riotgames.com/docs/lol
 
     // PLATFORM REGION
-    static autorizedRegion: string[] = ['BR1', 'EUN1', 'EUW1', 'JP1', 'KR', 'LA1', 'LA2', 'NA1', 'OC1', 'TR1', 'RU'];
+    static autorizedRegion: string[] = ['BR1', 'EUN1', 'EUW1', 'JP1', 'KR', 'LA1', 'LA2', 'ME1', 'NA1', 'OC1', 'RU', 'SG2', 'TR1', 'TW2', 'VN2'];
+
     // Regional region
     static globalRegion: string[] = ['AMERICAS', 'ASIA', 'EUROPE', 'SEA'];
-
 
     static regionDataMapping: RegionData = {
         // BR1
@@ -51,6 +51,9 @@ export abstract class ValidationService {
     } as const;
 
     static globalRegionDataMapping: RegionData = {
+        // -----------
+        // AMERICAS
+        // -----------
         // BR1
         'BR': 'americas',
         'BR1': 'americas',
@@ -61,12 +64,9 @@ export abstract class ValidationService {
         'NA': 'americas',
         'NA1': 'americas',
 
-        // JP1
-        'JP': 'asia',
-        'JP1': 'asia',
-        // KR
-        'KR': 'asia',
-
+        // -----------
+        // EUROPE
+        // -----------
         // EUN1
         'EUN': 'europe',
         'EUN1': 'europe',
@@ -80,9 +80,25 @@ export abstract class ValidationService {
         // RU
         'RU': 'europe',
 
-        // OC1
+        // -----------
+        // ASIA
+        // -----------
+        // JP
+        'JP': 'asia',
+        'JP1': 'asia',
+        // KR
+        'KR': 'asia',
+
+        // -----------
+        // SEA
+        // -----------
         'OC': 'sea',
         'OC1': 'sea',
+        'PH2': 'sea',
+        'SG2': 'sea',
+        'TH2': 'sea',
+        'TW2': 'sea',
+        'VN2': 'sea',
     };
 
     /**

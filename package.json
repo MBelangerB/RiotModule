@@ -1,36 +1,55 @@
 {
   "name": "@mbelangerb/riotmodule",
-  "version": "2024.1.2",
+  "version": "2025.1.2",
   "description": "Bedy Riot module - Module for call Riot service and obtains information",
+  "type": "module",
+  "module": "build/index.js",
   "main": "build/index.js",
   "types": "./build/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./build/index.js",
+      "require": "./build/index.js"
+    },
+    "./riotmodule": {
+      "import": "./build/riotmodule.js",
+      "require": "./build/riotmodule.js"
+    }
+  },
   "scripts": {
     "== Compile ==": "",
-    "compile:npx": "npx tsc",
-    "compile:rim": "rimraf ./build && tsc",
+    "build:tsc": "npx tsc && tsc-alias",
+    "build:tsc_rim": "rimraf ./build && npm run build:tsc",
+    "== NPM ==": "",
+    "npm:refreshLock": "npm i --package-lock-only",
+    "npm:unUsedPackage": "npm prune",
+    "npm:cleanDevPackage": "npm prune --production",
+    "npm:checkDependecy": "npx depcheck",
+    "npm:outdated": "npm outdated",
     "== DEV ==": "",
     "start:dev": "npx nodemon",
     "start:prod": "npm run compile:npx && node build/index.js",
     "local:pack": "npm run compile:npx && npm pack",
-    "npm:refreshLock": "npm i --package-lock-only",
     "== Eslint ==": "",
     "eslint": "npx eslint .",
     "eslintFix": "npx eslint . --fix",
     "== JS ==": "",
     "test:js_build": "rimraf ./build && tsc -p tsconfig-test.json",
-    "test:js_run": "mocha ./build/test/*.spec.js --timeout 10000",
-    "== TS ==": "",
-    "test:ts_run": "mocha -r ts-node/register test/**/*.spec.ts",
-    "test:local_coverage": "nyc --nycrc-path=./nycConfig/.nycrc_local.json mocha --timeout=10000",
-    "test:ts_coverage": "nyc --nycrc-path=./nycConfig/.nycrc_base.json mocha --timeout=10000",
-    "test:ts_html_coverage": "nyc --nycrc-path=./nycConfig/.nycrc_git_html.json mocha --timeout=10000",
-    "test:ts_json_coverage": "nyc --nycrc-path=./nycConfig/.nycrc_git.json mocha --timeout=10000"
+    "== TEST 2025 ==": "",
+    "jest:test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest",
+    "jest:test:coverage": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --coverage",
+    "== Build 2025 ==": "",
+    "build:package": "node scripts/generate-prod-package.cjs",
+    "build:tsup_pack": "tsup --config tsup.config.ts",
+    "build:tsup_pack_rim": "rimraf ./build && tsup --config tsup.config.ts && npm run build:package"
   },
   "files": [
-    "/build"
+    "build/**/*",
+    "changelog.md",
+    "readme.md"
   ],
   "engines": {
-    "node": ">=18.0.0"
+    "node": ">=22.0.0"
   },
   "repository": {
     "type": "git",
@@ -46,32 +65,38 @@
   },
   "homepage": "https://github.com/MBelangerB/RiotModule#readme",
   "dependencies": {
-    "@bedy90/riotentity": "file:lib/bedy90-riotentity-2024.1.1.tgz",
-    "axios": "^1.6.3",
-    "fs-extra": "^11.2.0",
+    "@bedy90/riotentity": "^2025.1.3",
+    "axios": "^1.11.0",
     "node-cache": "^5.1.2",
-    "path": "^0.12.7",
-    "semver": "^7.5.4"
+    "path": "^0.12.7"
   },
   "devDependencies": {
-    "@istanbuljs/nyc-config-typescript": "^1.0.2",
-    "@types/chai": "^4.3.11",
+    "@eslint/eslintrc": "^3.3.1",
+    "@eslint/js": "^9.35.0",
+    "@types/chai": "^5.2.2",
     "@types/fs-extra": "^11.0.4",
-    "@types/mocha": "^10.0.6",
-    "@types/node": "^20.10.6",
-    "@types/semver": "^7.5.6",
-    "@types/sinon": "^17.0.2",
-    "@typescript-eslint/eslint-plugin": "^6.16.0",
-    "chai": "^4.3.10",
-    "dotenv": "^16.3.1",
-    "eslint": "^8.56.0",
-    "faker": "^5.5.3",
-    "mocha": "^10.2.0",
-    "nodemon": "^3.0.2",
-    "nyc": "^15.1.0",
-    "rimraf": "^5.0.5",
-    "sinon": "^17.0.1",
+    "@types/jest": "^30.0.0",
+    "@types/node": "^24.3.1",
+    "@types/semver": "^7.7.1",
+    "@types/sinon": "^17.0.4",
+    "@typescript-eslint/eslint-plugin": "^8.43.0",
+    "cross-env": "^10.0.0",
+    "dotenv": "^17.2.2",
+    "eslint": "^9.35.0",
+    "faker": "^6.6.6",
+    "fs-extra": "^11.3.1",
+    "globals": "^16.4.0",
+    "jest": "^30.1.3",
+    "jest-junit": "^16.0.0",
+    "nodemon": "^3.1.10",
+    "rimraf": "^6.0.1",
+    "semver": "^7.7.2",
+    "sinon": "^21.0.0",
+    "ts-jest": "^29.4.1",
+    "ts-jest-resolver": "^2.0.1",
     "ts-node": "^10.9.2",
-    "typescript": "^5.3.3"
+    "tsc-alias": "^1.8.16",
+    "tsup": "^8.5.0",
+    "typescript": "^5.9.2"
   }
 }

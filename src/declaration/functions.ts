@@ -1,3 +1,5 @@
+import { ValidationService } from '../riotmodule.js';
+
 /**
  * Replace a value in a string
  * @param baseString initial string
@@ -5,7 +7,7 @@
  * @param replaceWith new value
  * @returns
  */
- export function replaceAll(baseString: string, search: string, replaceWith: string) : string {
+export function replaceAll(baseString: string, search: string, replaceWith: string): string {
   const searchRegExp = new RegExp(search, 'gi');
   return baseString.replace(searchRegExp, replaceWith);
 }
@@ -16,7 +18,7 @@
  * @returns
  */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-export function castDataToJSON(data: any) : string {
+export function castDataToJSON(data: any): string {
   return JSON.stringify(data, null, 2);
 }
 
@@ -25,7 +27,7 @@ export function castDataToJSON(data: any) : string {
  * @param version
  * @returns
  */
-export function castToNumber(version: string) : number {
+export function castToNumber(version: string): number {
   const replaceValue = replaceAll(version, '[_.]', '');
   return parseInt(replaceValue);
 }
@@ -47,20 +49,20 @@ export function tick(milliseconds: number): Promise<void> {
  * @param value
  * @returns {boolean} False by default
  */
-/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-export function getBoolean(value: any) : boolean {
+
+export function getBoolean(value: any): boolean {
   switch (value) {
-       case true:
-       case 'true':
-       case 1:
-       case '1':
-           return true;
-       default:
-           return false;
-   }
+    case true:
+    case 'true':
+    case 1:
+    case '1':
+      return true;
+    default:
+      return false;
+  }
 }
 
-export function isNullOrEmpty(value: string) : boolean {
+export function isNullOrEmpty(value: string): boolean {
   if (value === null) {
     return true;
   }
@@ -68,4 +70,20 @@ export function isNullOrEmpty(value: string) : boolean {
     return true;
   }
   return false;
+}
+
+export function getGlobalRegion(region: string): string {
+  const realRegion = ValidationService.convertToRealRegion(region);
+  const globalRegion = ValidationService.convertToGlobalRegion(realRegion);
+
+  return globalRegion;
+}
+
+export function replaceRouteParams(route: string, params: Record<string, string>): string {
+  let result = route;
+  for (const [key, value] of Object.entries(params)) {
+    const placeholder = `{${key}}`;
+    result = result.replace(new RegExp(placeholder, 'g'), value);
+  }
+  return result;
 }

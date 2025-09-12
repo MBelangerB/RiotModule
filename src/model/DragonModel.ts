@@ -13,7 +13,6 @@ export class DragonVersion implements IDragonVersion {
     previousVersion?: string | undefined;
     onlineVersion?: string | undefined;
     requiredUpdate?: boolean | undefined;
-
 }
 
 // -----------------------------

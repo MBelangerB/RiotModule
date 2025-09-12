@@ -47,3 +47,66 @@ Image ex
 - https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-static-assets/global/default/images/
 - https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/champions/
 
+# Gestion des différents exports
+
+## Export default X
+`export default EnvVars;`
+
+Cette syntaxe exporte l'objet EnvVars comme la valeur par défaut du module. Cela signifie que lorsque vous importez ce module dans un autre fichier, vous pouvez utiliser l'objet EnvVars sans avoir à spécifier son nom.
+
+Exemple :
+```typescript
+// env-vars.ts
+export default EnvVars;
+
+// autre-fichier.ts
+import EnvVars from './env-vars';
+```
+Dans ce cas, EnvVars est la valeur par défaut du module, donc vous pouvez l'importer sans avoir à spécifier son nom.
+
+## Export X;
+
+`export EnvVars;`
+
+Cette syntaxe exporte l'objet EnvVars comme une propriété du module. Cela signifie que lorsque vous importez ce module dans un autre fichier, vous devez spécifier le nom de l'objet EnvVars pour l'utiliser.
+
+Exemple :
+
+```typescript
+// env-vars.ts
+export EnvVars;
+
+// autre-fichier.ts
+import { EnvVars } from './env-vars';
+```
+Dans ce cas, EnvVars est une propriété du module, donc vous devez l'importer en spécifiant son nom entre accolades.
+
+## Export X as const
+
+`export default EnvVars as const;`
+
+Cette syntaxe exporte l'objet EnvVars comme une valeur par défaut du module, mais avec une différence importante : l'objet EnvVars est considéré comme une constante, ce qui signifie qu'il ne peut pas être modifié après son exportation.
+
+Exemple :
+```typescript
+// env-vars.ts
+export default EnvVars as const;
+
+// autre-fichier.ts
+import EnvVars from './env-vars';
+```
+Dans ce cas, EnvVars est la valeur par défaut du module, mais il est considéré comme une constante, donc vous ne pouvez pas le modifier après l'avoir importé.
+
+
+##
+En résumé :
+
+`export default EnvVars;` : exporte l'objet EnvVars comme la valeur par défaut du module, sans restriction sur sa modification.
+`export EnvVars;` : exporte l'objet EnvVars comme une propriété du module, sans restriction sur sa modification.
+`export default EnvVars as const;` : exporte l'objet EnvVars comme la valeur par défaut du module, mais comme une constante, ce qui signifie qu'il ne peut pas être modifié après son exportation.
+
+
+Ouvrir les Préférences > Raccourcis clavier (ou Ctrl+K Ctrl+S).
+- Chercher les commandes code-coverage.show ou code-coverage.hide.
+
+CTRL+ALT+SHIFT+T : Toggle Coverage
